@@ -7,6 +7,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * JPA Entity model for user of the ship organizer service.
+ *
+ * @author johanneslj
+ * @version 0.1
+ */
 @Entity
 @Table(name = "user")
 public class User {
