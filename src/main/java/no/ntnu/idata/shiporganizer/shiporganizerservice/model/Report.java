@@ -15,6 +15,4 @@ public class Report {
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id")
   private Long id;
-
-  @Column(name = "")
 }
