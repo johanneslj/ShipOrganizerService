@@ -1,10 +1,17 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.model;
 
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -14,18 +21,15 @@ import javax.persistence.Table;
  * @version 0.1
  */
 @Entity
-@Table(name = "user")
+@Table(name = "LoginTable")
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "id")
+  @Column(name = "PK_UserID")
   private Long id;
 
-  @Column(name = "firstname")
-  private String firstname;
-
-  @Column(name = "lastname")
-  private String lastname;
+  @Column(name = "Fullname")
+  private String fullname;
 
   @Column(name = "email", nullable = false)
   private String email;
@@ -33,26 +37,13 @@ public class User {
   @Column(name = "password", nullable = false)
   private String password;
 
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "ship_id", referencedColumnName = "id")
+  private Ship ship;
+
   // TODO Update departments to actual department.
   // Possible to store department columns as a list?
-  @Column(name = "department_a")
-  private int department_a;
-
-  @Column(name = "department_b")
-  private int department_b;
-
-  @Column(name = "department_c")
-  private int department_c;
-
-  @Column(name = "department_d")
-  private int department_d;
-
-  @Column(name = "department_e")
-  private int department_e;
-
-  @Column(name = "department_f")
-  private int department_f;
-
-  @Column(name = "department_g")
-  private int department_g;
+  @OneToMany(cascade = CascadeType.ALL)
+  @Column(name = "departments")
+  List<Department> departments;
 }
