@@ -19,6 +19,8 @@ public class User {
   @Id
   @Column(name = "PK_UserID")
   private int id;
+  
+  private String token;
 
   @Column(name = "Fullname")
   private String fullname;
