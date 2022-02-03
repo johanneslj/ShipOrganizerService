@@ -13,7 +13,7 @@ public class Report {
   @Id
   @Column(name = "PK_ReportID")
   private Long id;
-
+  
   @Column(name = "FK_Product")
   private int product;
 
