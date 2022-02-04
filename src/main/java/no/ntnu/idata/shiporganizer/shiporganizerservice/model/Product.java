@@ -1,10 +1,7 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.model;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * JPA Entity model for product of the ship organizer service.
