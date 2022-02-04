@@ -6,6 +6,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * Represents a report made when equipment is used
+ *
+ * it has a LatLng to show where it was used, as well as a date,
+ * and user who used the item
+ */
 @Entity
 @Table(name = "Reports")
 public class Report {
@@ -13,12 +19,6 @@ public class Report {
   @Id
   @Column(name = "PK_ReportID")
   private Long id;
-  
-  @Column(name = "FK_Product")
-  private int product;
-
-  @Column(name = "FK_UserID")
-  private int userId;
 
   @Column(name = "ProductName")
   private String productName;
@@ -35,6 +35,8 @@ public class Report {
   @Column(name = "Regdate")
   private Date registrationDate;
 
+  @Column(name = "FullName")
+  private String fullName;
   /**
    * Gets the product id
    * @return the product id
@@ -43,21 +45,6 @@ public class Report {
     return id;
   }
 
-  /**
-   * gets the product key
-   * @return the product key
-   */
-  private int getProduct() {
-    return product;
-  }
-
-  /**
-   * Gets the userid of the user who registered the product usage
-   * @return the userid of the user who registered the product usage
-   */
-  private int getUserId() {
-    return userId;
-  }
 
   /**
    * Gets the product name
@@ -81,6 +68,10 @@ public class Report {
    */
   private float getLongitude() {
     return longitude;
+  }
+
+  private String getLatLng() {
+    return getLatitude() + ", " + getLongitude();
   }
 
   /**
