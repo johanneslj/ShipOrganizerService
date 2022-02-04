@@ -20,4 +20,34 @@ public interface UserRepository extends JpaRepository<User, Integer> {
    */
   @Query(value = "EXEC SelectAll @Calltime = 'Users', @Department = '', @Username = :username;", nativeQuery = true)
   List<String> getUserDepartments(@Param(value = "username") String username);
+
+  /**
+   * Adds new user with specified arguments to database.
+   *
+   * @param email    Email/Username of new user.
+   * @param password Password (HASH) of new user.
+   * @param fullName Full name of new user.
+   */
+  @Query(value = "EXEC HandleUser @Calltime = 'Insert', @Username = :username, @Password = :password, @Fullname = :fullName;", nativeQuery = true)
+  void addUser(@Param(value = "username") String email,
+               @Param(value = "password") String password,
+               @Param(value = "fullName") String fullName);
+
+  /**
+   * Updates departments of user to new specified departments.
+   *
+   * @param email       Email/Username of user to update departments for.
+   * @param departments String of departments as comma-seperated values without space, i.e. "bridge,deck"
+   */
+  @Query(value = "EXEC UpdateDepartment @Username = :username, @Department = :departments;", nativeQuery = true)
+  void updateUserDepartment(@Param(value = "username") String email,
+                            @Param(value = "departments") String departments);
+
+  /**
+   * Deletes user with specified username from database.
+   *
+   * @param username Username of user to delete.
+   */
+  @Query(value = "EXEC HandleUser @Calltime = 'Delete', @Username = :username", nativeQuery = true)
+  void deleteUser(@Param(value = "Username") String username);
 }
