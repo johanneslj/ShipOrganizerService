@@ -80,6 +80,12 @@ public class UserController {
     }
   }
 
+  /**
+   * Lets a user delete themself, or an admin delete any user.
+   *
+   * @param entity HTTP Entity.
+   * @return Response Entity.
+   */
   @DeleteMapping("delete-user")
   public ResponseEntity<String> deleteUser(HttpEntity<String> entity) {
     try {
