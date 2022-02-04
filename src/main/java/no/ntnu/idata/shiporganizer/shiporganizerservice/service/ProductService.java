@@ -60,4 +60,26 @@ public class ProductService {
 		return products;
 	}
 
+	/**
+	 * Sets the new stock for a specific product
+	 *
+	 * @param requestBody All required parameters
+	 * @return Success or empty depending on if the query completed or not
+	 */
+	public String setNewStock(String requestBody) {
+		String[] data = requestBody.split(",");
+		String productNo = data[0].split(":")[1];
+		String username = data[1].split(":")[1];
+		int quantity = Integer.parseInt(data[2].split(":")[1]);
+		float longitude =Float.parseFloat(data[3].split(":")[1]);
+		float latitude = Float.parseFloat(data[4].split(":")[1]);
+		int result = productRepository.setNewStock(productNo, username, quantity, longitude, latitude);
+		if(result == 1){
+			return "Success";
+		}
+		return "";
+	}
+
+
+
 }
