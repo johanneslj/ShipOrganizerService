@@ -24,6 +24,28 @@ public class Product {
 	@Column(name = "EAN")
 	private String barcode;
 
+	private String stock;
+
+	public Product(String productname,String productnumber, String barcode, String stock) {
+		this.productnumber = productnumber;
+		this.productname = productname;
+		this.barcode = barcode;
+		this.stock = stock;
+	}
+
+	public Product() {
+
+	}
+
+	/**
+	 * Gets stock.
+	 *
+	 * @return the stock
+	 */
+	public String getStock() {
+		return stock;
+	}
+
 	/**
 	 * Gets product number.
 	 *
