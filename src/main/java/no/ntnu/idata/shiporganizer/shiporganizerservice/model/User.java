@@ -41,6 +41,14 @@ public class User {
     this.password = password;
   }
 
+  public User(int id, String token, String fullname, String email, String password) {
+    this.id = id;
+    this.token = token;
+    this.fullname = fullname;
+    this.email = email;
+    this.password = password;
+  }
+
   // TODO Update departments to actual department.
   // Possible to store department columns as a list?
 
