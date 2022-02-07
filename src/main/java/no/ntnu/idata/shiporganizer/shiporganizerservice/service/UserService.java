@@ -2,6 +2,7 @@ package no.ntnu.idata.shiporganizer.shiporganizerservice.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.UserRepository;
@@ -19,20 +20,13 @@ public class UserService {
     return userRepository.findAll();
   }
 
-  public void addNewUserWithDepartments(User user, List<Department> departments) {
-    userRepository.addUser(user.getEmail(), user.getPassword(), user.getFullname());
-
-    StringBuilder departmentsString = new StringBuilder();
-    for (Department department : departments) {
-      departmentsString.append(department.getName());
-      departmentsString.append(",");
-    }
-
-    userRepository.updateUserDepartment(user.getEmail(), departmentsString.toString());
-  }
-
-  public void deleteUser(String username) {
-    userRepository.deleteUser(username);
+  /**
+   * Delete authorized user on request.
+   *
+   * @param email Email of user to delete
+   */
+  public void deleteUser(String email) {
+    userRepository.deleteUser(email);
   }
 
   /**
