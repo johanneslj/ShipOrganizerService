@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * REST controller for user actions.
  */
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/api/user")
 public class UserController {
 
   private final UserService userService;
@@ -36,51 +36,6 @@ public class UserController {
   @GetMapping("/all-users")
   public ResponseEntity<List<User>> getAllUsers() {
     return ResponseEntity.ok(userService.getAllUsers());
-  }
-
-  /**
-   * Registers a new user with set departments.
-   * <p>
-   * Request body needs to be JSONObject in this format:
-   * {
-   * "fullname": "String with name",
-   * "email": "user@email.com",
-   * "password": "password",
-   * "departments": ["Department1", "Department2", ...]
-   * }
-   *
-   * @param entity HttpEntity of request
-   * @return ResponseEntity
-   */
-  @PostMapping("/register-user")
-  public ResponseEntity<String> registerUser(HttpEntity<String> entity) {
-    System.out.println(entity.getBody());
-    try {
-      JSONObject json = new JSONObject(entity.getBody());
-      User user =
-          new User(json.getString("fullname"), json.getString("email"), json.getString("password"));
-
-      System.out.println(user.getEmail() + user.getFullname() + user.getPassword());
-      // TODO Implement with Spring Security for registration.
-
-      // Get JSON array of departments and create list of departments.
-      List<Department> departments = new ArrayList<Department>();
-      JSONArray jsonArray = json.getJSONArray("departments");
-      System.out.println(jsonArray);
-
-      // Add departments to list.
-      for (int i = 0; i < jsonArray.length(); i++) {
-        departments.add(new Department(jsonArray.getString(i)));
-      }
-
-      // Add user with departments to database using service.
-      userService.addNewUserWithDepartments(user, departments);
-
-      // Registration successful.
-      return ResponseEntity.ok("User successfully registered.");
-    } catch (JSONException e) {
-      return ResponseEntity.badRequest().build();
-    }
   }
 
   /**

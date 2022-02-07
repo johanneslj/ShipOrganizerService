@@ -1,6 +1,7 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.repository;
 
 import java.util.List;
+import java.util.Optional;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -52,4 +53,27 @@ public interface UserRepository extends JpaRepository<User, Integer> {
    */
   @Query(value = "EXEC HandleUser @Calltime = 'Delete', @Username = :username;", nativeQuery = true)
   void deleteUser(@Param(value = "username") String username);
+
+  /**
+   * Finds a user by their username/email and password. Used for login.
+   * TODO implement with procedures?
+   *
+   * @param email    Users's email
+   * @param password
+   * @return Optional found user.
+   */
+  Optional<User> findFirstUserByEmailAndPassword(String email, String password);
+
+  /**
+   * May find a user by their token.
+   *
+   * @param token User's token.
+   * @return Optional found user.
+   */
+  //Optional<User> findUserByToken(String token);
+
+  // TODO Remove this method. Only for testing purposes.
+  Optional<User> findFirst();
+
+
 }
