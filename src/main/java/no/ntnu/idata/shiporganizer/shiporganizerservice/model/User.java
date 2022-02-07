@@ -31,6 +31,7 @@ public class User {
   @Column(name = "Password", nullable = false)
   private String password;
 
+  // TODO Should be stored in database
   @Transient
   private String token;
 

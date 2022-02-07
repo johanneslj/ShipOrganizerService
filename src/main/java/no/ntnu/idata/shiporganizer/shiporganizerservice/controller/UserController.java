@@ -54,16 +54,19 @@ public class UserController {
    */
   @PostMapping("/register-user")
   public ResponseEntity<String> registerUser(HttpEntity<String> entity) {
+    System.out.println(entity.getBody());
     try {
       JSONObject json = new JSONObject(entity.getBody());
       User user =
           new User(json.getString("fullname"), json.getString("email"), json.getString("password"));
 
+      System.out.println(user.getEmail() + user.getFullname() + user.getPassword());
       // TODO Implement with Spring Security for registration.
 
       // Get JSON array of departments and create list of departments.
       List<Department> departments = new ArrayList<Department>();
-      JSONArray jsonArray = new JSONArray(json.getJSONArray("departments"));
+      JSONArray jsonArray = json.getJSONArray("departments");
+      System.out.println(jsonArray);
 
       // Add departments to list.
       for (int i = 0; i < jsonArray.length(); i++) {
