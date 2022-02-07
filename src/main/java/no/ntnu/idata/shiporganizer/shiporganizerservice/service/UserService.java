@@ -25,6 +25,7 @@ public class UserService {
     StringBuilder departmentsString = new StringBuilder();
     for (Department department : departments) {
       departmentsString.append(department.getName());
+      departmentsString.append(",");
     }
 
     userRepository.updateUserDepartment(user.getEmail(), departmentsString.toString());
