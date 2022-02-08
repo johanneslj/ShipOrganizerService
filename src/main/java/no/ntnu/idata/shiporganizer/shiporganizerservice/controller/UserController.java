@@ -44,7 +44,7 @@ public class UserController {
    * @param entity HTTP Entity.
    * @return Response Entity.
    */
-  @DeleteMapping("delete-user")
+  @DeleteMapping("/delete-user")
   public ResponseEntity<String> deleteUser(HttpEntity<String> entity) {
     try {
       JSONObject json = new JSONObject(entity.getBody());
