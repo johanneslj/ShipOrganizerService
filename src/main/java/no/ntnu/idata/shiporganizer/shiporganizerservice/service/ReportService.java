@@ -12,6 +12,10 @@ import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Report;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.ReportRepository;
 import org.springframework.stereotype.Service;
 
+/**
+ * Report service is resposnible for handling the data regarding
+ * map markers.
+ */
 @Service
 public class ReportService {
     private ReportRepository reportRepository;
