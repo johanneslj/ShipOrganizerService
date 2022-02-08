@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,6 +49,7 @@ public class UserController {
   public ResponseEntity<String> deleteUser(HttpEntity<String> entity) {
     try {
       JSONObject json = new JSONObject(entity.getBody());
+      String token = entity.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
 
       // TODO Check if user is authorized to delete user.
       boolean isAuthorized = true;

@@ -1,8 +1,12 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.service;
 
+import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
+
 import com.microsoft.sqlserver.jdbc.StringUtils;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import no.ntnu.idata.shiporganizer.shiporganizerservice.config.JWTProperties;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.UserRepository;
@@ -12,10 +16,12 @@ import java.util.UUID;
 
 @Service
 public class LoginService {
-  final UserRepository userRepository;
+  final private UserRepository userRepository;
+  final private JWTProperties jwtProperties;
 
-  public LoginService(UserRepository userRepository) {
+  public LoginService(UserRepository userRepository, JWTProperties jwtProperties) {
     this.userRepository = userRepository;
+    this.jwtProperties = jwtProperties;
   }
 
   public String login(String email, String password) {
@@ -24,8 +30,10 @@ public class LoginService {
 
     if (foundUser.isPresent()) {
       // TODO Generate token in a better way to include date and check its unique.
-      String token = UUID.randomUUID().toString();
       User user = foundUser.get();
+
+      String token = buildJWT(user.getId(), user.getEmail(), user.getFullname());
+
       user.setToken(token);
       userRepository.save(user);
       return token;
@@ -34,20 +42,16 @@ public class LoginService {
     return StringUtils.EMPTY;
   }
 
-  public void register(User user, List<Department> departments) {
-    userRepository.addUser(user.getEmail(), user.getPassword(), user.getFullname());
-
-    StringBuilder departmentsString = new StringBuilder();
-    for (Department department : departments) {
-      departmentsString.append(department.getName());
-      departmentsString.append(",");
-    }
-
-    userRepository.updateUserDepartment(user.getEmail(), departmentsString.toString());
-  }
-
   public Optional<User> findByToken(String token) {
     return userRepository.findFirstByEmail(token); // TODO Change to token.
   }
 
+  private String buildJWT(int id, String email, String name) {
+    return com.auth0.jwt.JWT.create()
+        .withClaim("id", id)
+        .withClaim("email", email)
+        .withClaim("name", name)
+        .withExpiresAt(new Date(System.currentTimeMillis() + jwtProperties.getExpirationTime()))
+        .sign(HMAC512(jwtProperties.getSecretCode().getBytes()));
+  }
 }
