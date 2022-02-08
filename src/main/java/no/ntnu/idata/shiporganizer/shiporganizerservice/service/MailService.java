@@ -20,7 +20,7 @@ public class MailService {
         msg.setSubject("Testing from Spring Boot");
         msg.setText("Hello World \n Spring Boot Email");
 
-        javaMailSender.send(msg);
+        //javaMailSender.send(msg);
 
         return "ok";
     }
