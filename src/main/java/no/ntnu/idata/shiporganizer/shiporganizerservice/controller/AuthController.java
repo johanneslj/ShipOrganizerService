@@ -1,35 +1,45 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 
+import com.auth0.jwt.JWT;
 import com.microsoft.sqlserver.jdbc.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import no.ntnu.idata.shiporganizer.shiporganizerservice.config.JWTProperties;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.LoginService;
+import no.ntnu.idata.shiporganizer.shiporganizerservice.service.UserService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
 /**
  * Endpoint for user login services.
  */
 @RestController
 @RequestMapping(value = "/auth")
-public class LoginController {
-  final LoginService loginService;
+public class AuthController {
+  final private LoginService loginService;
+  final private UserService userService;
 
-  public LoginController(
-      LoginService loginService) {
+  // TODO Remove this field.
+  final private JWTProperties jwtProps;
+
+  public AuthController(LoginService loginService, UserService userService,
+                        JWTProperties jwtProps) {
     this.loginService = loginService;
+    this.userService = userService;
+
+    this.jwtProps = jwtProps;
   }
 
   /**
@@ -58,6 +68,10 @@ public class LoginController {
       if (StringUtils.isEmpty(token)) {
         return ResponseEntity.notFound().build();
       } else {
+        System.out.println(JWT.require(HMAC512(jwtProps.getSecretCode().getBytes()))
+            .build()
+            .verify(token)
+            .getClaim("email").asString());
         return ResponseEntity.ok(token);
       }
 
@@ -86,8 +100,16 @@ public class LoginController {
     System.out.println(entity.getBody());
     try {
       JSONObject json = new JSONObject(entity.getBody());
+      List<String> roles = new ArrayList<>();
+
+      JSONArray jsonRoles = json.getJSONArray("roles");
+      for (int i = 0; i < jsonRoles.length(); i++) {
+        roles.add(jsonRoles.getString(i));
+      }
+
       User user =
-          new User(json.getString("fullname"), json.getString("email"), json.getString("password"));
+          new User(json.getString("fullname"), json.getString("email"), json.getString("password"),
+              roles);
 
       System.out.println(user.getEmail() + user.getFullname() + user.getPassword());
       // TODO Implement with Spring Security for registration.
@@ -103,7 +125,7 @@ public class LoginController {
       }
 
       // Add user with departments to database using service.
-      loginService.register(user, departments);
+      userService.register(user, departments);
 
       // Registration successful.
       return ResponseEntity.ok("User successfully registered.");
@@ -111,5 +133,4 @@ public class LoginController {
       return ResponseEntity.badRequest().build();
     }
   }
-
 }

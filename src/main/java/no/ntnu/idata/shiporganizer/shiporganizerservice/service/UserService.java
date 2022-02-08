@@ -20,6 +20,18 @@ public class UserService {
     return userRepository.findAll();
   }
 
+  public void register(User user, List<Department> departments) {
+    userRepository.addUser(user.getEmail(), user.getPassword(), user.getFullname());
+
+    StringBuilder departmentsString = new StringBuilder();
+    for (Department department : departments) {
+      departmentsString.append(department.getName());
+      departmentsString.append(",");
+    }
+
+    userRepository.updateUserDepartment(user.getEmail(), departmentsString.toString());
+  }
+
   /**
    * Delete authorized user on request.
    *
