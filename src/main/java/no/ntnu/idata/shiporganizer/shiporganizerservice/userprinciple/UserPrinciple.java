@@ -1,0 +1,65 @@
+package no.ntnu.idata.shiporganizer.shiporganizerservice.userprinciple;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
+import no.ntnu.idata.shiporganizer.shiporganizerservice.service.UserService;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+/**
+ * Provides UserDetails for the user principle.
+ */
+public class UserPrinciple implements UserDetails {
+
+  private final User user;
+  private final UserService userService;
+
+  public UserPrinciple(User user, UserService userService) {
+    this.user = user;
+    this.userService = userService;
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    List<GrantedAuthority> authorities = new ArrayList<>();
+
+    // Gets the rights/authorities for each department the user is a member of.
+    userService.getDepartments(user).forEach(d ->
+        authorities.add(new SimpleGrantedAuthority(Integer.toString(d.getRights()))));
+
+    return authorities;
+  }
+
+  @Override
+  public String getPassword() {
+    return user.getPassword();
+  }
+
+  @Override
+  public String getUsername() {
+    return user.getEmail();
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return (user != null);
+  }
+}

@@ -55,10 +55,18 @@ public interface UserRepository extends JpaRepository<User, Integer> {
   void deleteUser(@Param(value = "username") String username);
 
   /**
+   * Finds first user by passed email.
+   *
+   * @param email Email of user to find.
+   * @return Found user.
+   */
+  Optional<User> findFirstByEmail(String email);
+
+  /**
    * Finds a user by their username/email and password. Used for login.
    * TODO implement with procedures?
    *
-   * @param email    Users's email
+   * @param email    User's email
    * @param password
    * @return Optional found user.
    */
@@ -71,9 +79,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
    * @return Optional found user.
    */
   //Optional<User> findUserByToken(String token);
-
-  // TODO Remove this method. Only for testing purposes.
-  Optional<User> findFirst();
-
-
 }

@@ -35,7 +35,7 @@ public class UserService {
    * @param user User to get departments of.
    * @return List if departments the user is a member of.
    */
-  List<Department> getDepartments(User user) {
+  public List<Department> getDepartments(User user) {
     List<Department> departments = new ArrayList<Department>();
     List<String> userDepartments = userRepository.getUserDepartments(user.getEmail());
 
