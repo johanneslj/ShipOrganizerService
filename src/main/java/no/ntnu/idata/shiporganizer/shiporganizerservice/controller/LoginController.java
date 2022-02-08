@@ -32,24 +32,32 @@ public class LoginController {
   /**
    * Provides user information on correct login.
    *
-   * @param email    User's email address.
-   * @param password User's password
-   * @return ResponseEntity containing user object, or empty 404 status on incorrect login/missing user.
+   * @param http HttpEntity of request.
+   * @return ResponseEntity containing user's token, or empty 404 status on incorrect login/missing user.
    */
   @PostMapping("/login")
-  ResponseEntity<String> login(@RequestParam("email") String email,
-                               @RequestParam("password") String password) {
-    // TODO Remove prints.
-    System.out.println(email);
-    System.out.println(password);
+  ResponseEntity<String> login(HttpEntity<String> http) {
+    try {
+      JSONObject json = new JSONObject(http.getBody());
 
-    String token = loginService.login(email, password);
+      String email = json.getString("email");
+      String password = json.getString("password");
 
-    // Returns found token if it exists.
-    if (StringUtils.isEmpty(token)) {
-      return ResponseEntity.notFound().build();
-    } else {
-      return ResponseEntity.ok(token);
+      // TODO Remove prints.
+      System.out.println(email);
+      System.out.println(password);
+
+      String token = loginService.login(email, password);
+
+      // Returns found token if it exists.
+      if (StringUtils.isEmpty(token)) {
+        return ResponseEntity.notFound().build();
+      } else {
+        return ResponseEntity.ok(token);
+      }
+
+    } catch (JSONException e) {
+      return ResponseEntity.badRequest().build();
     }
   }
 

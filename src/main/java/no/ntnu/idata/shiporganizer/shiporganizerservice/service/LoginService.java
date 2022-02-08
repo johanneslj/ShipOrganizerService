@@ -47,7 +47,7 @@ public class LoginService {
   }
 
   public Optional<User> findByToken(String token) {
-    return userRepository.findFirst();
+    return userRepository.findFirstByEmail(token); // TODO Change to token.
   }
 
 }

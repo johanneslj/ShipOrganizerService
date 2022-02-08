@@ -13,13 +13,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * Represents a user of the ship organizer service.
+ * Implements UserDetails for use with Spring Security authenticatio
  *
  * @author johanneslj
  * @version 0.2
  */
 @Entity
 @Table(name = "LoginTable")
-public class User implements UserDetails {
+public class User {
 
   @Id
   @Column(name = "PK_UserID")
@@ -37,22 +38,6 @@ public class User implements UserDetails {
   // TODO Should be stored in database
   @Transient
   private String token;
-
-  /*
-   * Used for UserDetails.
-   */
-
-  @Transient
-  private Boolean enabled;
-
-  @Transient
-  private Boolean accountNonExpired;
-
-  @Transient
-  private Boolean accountNonLocked;
-
-  @Transient
-  private boolean credentialsNonExpired;
 
   public User() {
   }
@@ -78,19 +63,6 @@ public class User implements UserDetails {
     this.password = password;
   }
 
-  public User(int id, String fullname, String email, String password, String token,
-              Boolean enabled, Boolean accountNonExpired, Boolean accountNonLocked,
-              boolean credentialsNonExpired) {
-    this.id = id;
-    this.fullname = fullname;
-    this.email = email;
-    this.password = password;
-    this.token = token;
-    this.enabled = enabled;
-    this.accountNonExpired = accountNonExpired;
-    this.accountNonLocked = accountNonLocked;
-    this.credentialsNonExpired = credentialsNonExpired;
-  }
 
   /*--------------------------------
   Getters and setters for all fields:
@@ -120,6 +92,10 @@ public class User implements UserDetails {
     this.email = email;
   }
 
+  public String getPassword() {
+    return this.password;
+  }
+
   public void setPassword(String password) {
     this.password = password;
   }
@@ -130,44 +106,6 @@ public class User implements UserDetails {
 
   public void setToken(String token) {
     this.token = token;
-  }
-
-  /*
-   * UserDetails implementation for use with Spring Security
-   */
-
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return null;
-  }
-
-  public String getPassword() {
-    return this.password;
-  }
-
-  @Override
-  public String getUsername() {
-    return this.email;
-  }
-
-  @Override
-  public boolean isAccountNonExpired() {
-    return this.accountNonExpired;
-  }
-
-  @Override
-  public boolean isAccountNonLocked() {
-    return this.accountNonLocked;
-  }
-
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return this.credentialsNonExpired;
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return this.enabled;
   }
 
   @Override
