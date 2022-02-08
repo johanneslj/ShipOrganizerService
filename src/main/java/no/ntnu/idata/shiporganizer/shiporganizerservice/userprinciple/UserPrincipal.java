@@ -12,12 +12,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 /**
  * Provides UserDetails for the user principle.
  */
-public class UserPrinciple implements UserDetails {
+public class UserPrincipal implements UserDetails {
 
   private final User user;
   private final UserService userService;
 
-  public UserPrinciple(User user, UserService userService) {
+  public UserPrincipal(User user, UserService userService) {
     this.user = user;
     this.userService = userService;
   }
