@@ -11,4 +11,7 @@ public interface ReportRepository extends JpaRepository<Report, Integer> {
 
     @Query(value = "EXEC SelectAll @CallTime = 'Map', @Department = 'Deck', @Username = '';", nativeQuery = true)
     List<String> getMapMarkers();
+
+    @Query(value = "EXEC SelectAll @CallTime = 'Map', @Department = 'Deck', @Username = '';", nativeQuery = true)
+    List<String> getMapMarkersOnName(String name);
 }
