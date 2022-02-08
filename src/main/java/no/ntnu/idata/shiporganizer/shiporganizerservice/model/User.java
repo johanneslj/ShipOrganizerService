@@ -1,10 +1,12 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.model;
 
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * Represents a user of the ship organizer service.
@@ -19,8 +21,6 @@ public class User {
   @Id
   @Column(name = "PK_UserID")
   private int id;
-  
-  private String token;
 
   @Column(name = "Fullname")
   private String fullname;
@@ -31,7 +31,17 @@ public class User {
   @Column(name = "Password", nullable = false)
   private String password;
 
+  // TODO Should be stored in database
+  @Transient
+  private String token;
+
   public User() {
+  }
+
+  public User(String fullname, String email, String password) {
+    this.fullname = fullname;
+    this.email = email;
+    this.password = password;
   }
 
   public User(int id, String fullname, String email, String password) {
@@ -41,9 +51,17 @@ public class User {
     this.password = password;
   }
 
-  // TODO Update departments to actual department.
-  // Possible to store department columns as a list?
+  public User(int id, String token, String fullname, String email, String password) {
+    this.id = id;
+    this.token = token;
+    this.fullname = fullname;
+    this.email = email;
+    this.password = password;
+  }
 
+  /*--------------------------------
+  Getters and setters for all fields:
+  ----------------------------------*/
 
   public int getId() {
     return id;
@@ -75,5 +93,13 @@ public class User {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
   }
 }
