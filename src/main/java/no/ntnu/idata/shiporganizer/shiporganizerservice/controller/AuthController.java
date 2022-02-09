@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.microsoft.sqlserver.jdbc.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.config.JWTProperties;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,23 +64,25 @@ public class AuthController {
       System.out.println(email);
       System.out.println(password);
 
-      String token = loginService.login(email, password);
+      Optional<User> userOptional = loginService.login(email, password);
+      if (userOptional.isPresent()) {
+        User user = userOptional.get();
 
-      // Returns found token if it exists.
-      if (StringUtils.isEmpty(token)) {
-        return ResponseEntity.notFound().build();
-      } else {
+        System.out.println(userService.isUserAdmin(user));
+
         System.out.println(JWT.require(HMAC512(jwtProps.getSecretCode().getBytes()))
             .build()
-            .verify(token)
+            .verify(user.getToken())
             .getClaim("email").asString());
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(user.getToken());
+      } else {
+        return ResponseEntity.notFound().build();
       }
-
     } catch (JSONException e) {
       return ResponseEntity.badRequest().build();
     }
   }
+
 
   /**
    * Registers a new user with set departments.
@@ -100,16 +104,9 @@ public class AuthController {
     System.out.println(entity.getBody());
     try {
       JSONObject json = new JSONObject(entity.getBody());
-      List<String> roles = new ArrayList<>();
-
-      JSONArray jsonRoles = json.getJSONArray("roles");
-      for (int i = 0; i < jsonRoles.length(); i++) {
-        roles.add(jsonRoles.getString(i));
-      }
 
       User user =
-          new User(json.getString("fullname"), json.getString("email"), json.getString("password"),
-              roles);
+          new User(json.getString("fullname"), json.getString("email"), json.getString("password"));
 
       System.out.println(user.getEmail() + user.getFullname() + user.getPassword());
       // TODO Implement with Spring Security for registration.

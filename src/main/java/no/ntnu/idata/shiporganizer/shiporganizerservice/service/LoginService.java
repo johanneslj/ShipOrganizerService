@@ -24,7 +24,7 @@ public class LoginService {
     this.jwtProperties = jwtProperties;
   }
 
-  public String login(String email, String password) {
+  public Optional<User> login(String email, String password) {
     // TODO More security features here?
     Optional<User> foundUser = userRepository.findFirstUserByEmailAndPassword(email, password);
 
@@ -36,14 +36,14 @@ public class LoginService {
 
       user.setToken(token);
       userRepository.save(user);
-      return token;
+      return Optional.of(user);
     }
 
-    return StringUtils.EMPTY;
+    return Optional.empty();
   }
 
   public Optional<User> findByToken(String token) {
-    return userRepository.findFirstByEmail(token); // TODO Change to token.
+    return userRepository.findFirstUserByToken(token);
   }
 
   private String buildJWT(int id, String email, String name) {

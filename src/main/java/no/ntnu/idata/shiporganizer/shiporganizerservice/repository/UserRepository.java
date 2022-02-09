@@ -3,6 +3,7 @@ package no.ntnu.idata.shiporganizer.shiporganizerservice.repository;
 import java.util.List;
 import java.util.Optional;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
+import no.ntnu.idata.shiporganizer.shiporganizerservice.model.UserDepartment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,8 +21,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
    * @param username Username of user to find departments for.
    * @return List of strings, where username and department name is seperated by comma.
    */
-  @Query(value = "EXEC SelectAll @Calltime = 'Users', @Department = '', @Username = :username;", nativeQuery = true)
-  List<String> getUserDepartments(@Param(value = "username") String username);
+  //@Query(value = "EXEC SelectAll @Calltime = 'Users', @Department = '', @Username = :username;", nativeQuery = true)
+  //List<String> getUserDepartments(@Param(value = "username") String username);
+
+  // List<UserDepartment> getUserDepartments(User user);
 
   /**
    * Adds new user with specified arguments to database.
@@ -51,7 +54,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
    *
    * @param username Username of user to delete.
    */
-  @Query(value = "EXEC HandleUser @Calltime = 'Delete', @Username = :username;", nativeQuery = true)
+  @Query(value = "EXEC HandleUser @Calltime = 'Delete', @Username = :username, @Password = '', @Fullname = '', @Department = '';", nativeQuery = true)
   void deleteUser(@Param(value = "username") String username);
 
   /**
@@ -63,11 +66,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
   Optional<User> findFirstByEmail(String email);
 
   /**
-   * Finds a user by their username/email and password. Used for login.
-   * TODO implement with procedures?
+   * Finds a user by their username/email and password.
    *
    * @param email    User's email
-   * @param password
+   * @param password User's password.
    * @return Optional found user.
    */
   Optional<User> findFirstUserByEmailAndPassword(String email, String password);
@@ -78,5 +80,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
    * @param token User's token.
    * @return Optional found user.
    */
-  //Optional<User> findUserByToken(String token);
+  Optional<User> findFirstUserByToken(String token);
+
+  //void updateTokenByEmail(String token, String email);
 }

@@ -35,21 +35,16 @@ public class User {
   @Column(name = "Password", nullable = false)
   private String password;
 
-  // TODO Should be stored in database
-  @Transient
+  @Column(name = "Token")
   private String token;
-
-  @Transient
-  private List<String> roles;
 
   public User() {
   }
 
-  public User(String fullname, String email, String password, List<String> roles) {
+  public User(String fullname, String email, String password) {
     this.fullname = fullname;
     this.email = email;
     this.password = password;
-    this.roles = roles;
   }
 
   public User(int id, String fullname, String email, String password) {
@@ -65,16 +60,6 @@ public class User {
     this.fullname = fullname;
     this.email = email;
     this.password = password;
-  }
-
-  public User(int id, String fullname, String email, String password, String token,
-              List<String> roles) {
-    this.id = id;
-    this.fullname = fullname;
-    this.email = email;
-    this.password = password;
-    this.token = token;
-    this.roles = roles;
   }
 
   /*--------------------------------
@@ -121,14 +106,6 @@ public class User {
     this.token = token;
   }
 
-  public List<String> getRoles() {
-    return roles;
-  }
-
-  public void setRoles(List<String> roles) {
-    this.roles = roles;
-  }
-
   @Override
   public String toString() {
     return "User{" +
@@ -137,7 +114,6 @@ public class User {
         ", email='" + email + '\'' +
         ", password='" + password + '\'' +
         ", token='" + token + '\'' +
-        ", roles=" + roles +
         '}';
   }
 }
