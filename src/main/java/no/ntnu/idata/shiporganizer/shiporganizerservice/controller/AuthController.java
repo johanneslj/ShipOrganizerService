@@ -15,8 +15,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,16 +34,19 @@ import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 public class AuthController {
   final private LoginService loginService;
   final private UserService userService;
+  final private PasswordEncoder passwordEncoder;
 
   // TODO Remove this field.
   final private JWTProperties jwtProps;
 
-  public AuthController(LoginService loginService, UserService userService,
-                        JWTProperties jwtProps) {
+  public AuthController(LoginService loginService,
+                        UserService userService,
+                        JWTProperties jwtProps,
+                        PasswordEncoder passwordEncoder) {
     this.loginService = loginService;
     this.userService = userService;
-
     this.jwtProps = jwtProps;
+    this.passwordEncoder = passwordEncoder;
   }
 
   /**
@@ -105,8 +110,17 @@ public class AuthController {
     try {
       JSONObject json = new JSONObject(entity.getBody());
 
-      User user =
-          new User(json.getString("fullname"), json.getString("email"), json.getString("password"));
+      String name = json.getString("fullname");
+      String email = json.getString("email");
+      String password = json.getString("password");
+
+      if (userService.doesEmailExist(email)) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+      }
+
+      // TODO Check password with regex?
+
+      User user = new User(name, email, passwordEncoder.encode(password));
 
       System.out.println(user.getEmail() + user.getFullname() + user.getPassword());
       // TODO Implement with Spring Security for registration.

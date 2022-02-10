@@ -38,6 +38,10 @@ public class UserService {
     return userRepository.findFirstUserByToken(token);
   }
 
+  public boolean doesEmailExist(String email) {
+    return userRepository.findFirstByEmail(email).isPresent();
+  }
+
   /**
    * Registers a new user with access to specified departments.
    *
