@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
@@ -33,21 +34,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
    * @param password Password (HASH) of new user.
    * @param fullname Full name of new user.
    */
+  @Modifying
+  @Transactional
   @Query(value = "EXEC HandleUser @Calltime = 'Insert', @Username = :username, @Password = :password, @Fullname = :fullname, @Department = '';", nativeQuery = true)
   void addUser(@Param(value = "username") String email,
                @Param(value = "password") String password,
                @Param(value = "fullname") String fullname);
 
-  /**
-   * Updates departments of user to new specified departments.
-   *
-   * @param email       Email/Username of user to update departments for.
-   * @param departments String of departments as comma-seperated values without space, i.e. "bridge,deck"
-   */
-  @Query(value = "EXEC HandleUser @Calltime = 'UpdateDepartment', @Username = :username, @Password = '', @Fullname = '', @Department = :departments;", nativeQuery = true)
-  @Modifying
-  void updateUserDepartment(@Param(value = "username") String email,
-                            @Param(value = "departments") String departments);
 
   /**
    * Deletes user with specified username from database.

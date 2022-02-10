@@ -57,7 +57,10 @@ public class UserService {
       departmentsString.append(",");
     }
 
-    userRepository.updateUserDepartment(user.getEmail(), departmentsString.toString());
+    System.out.println(departmentsString);
+    System.out.println(user.getEmail());
+
+    userDepartmentRepository.updateUserDepartment(user.getEmail(), departmentsString.toString());
   }
 
   /**
