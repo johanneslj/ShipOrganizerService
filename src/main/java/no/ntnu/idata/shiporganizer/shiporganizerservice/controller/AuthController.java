@@ -88,7 +88,6 @@ public class AuthController {
     }
   }
 
-
   /**
    * Registers a new user with set departments.
    * <p>
