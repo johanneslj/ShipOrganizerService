@@ -31,9 +31,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .csrf().disable()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and().authorizeRequests()
+
+        // Permit login and registration
         .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
         .antMatchers(HttpMethod.POST, "/auth/register").permitAll()
-        .antMatchers(HttpMethod.DELETE, "/api/user/delete-user").authenticated()
+        .antMatchers(HttpMethod.DELETE, "/api/user/delete-user").permitAll()
         .anyRequest().authenticated()
         .and()
         .logout()
