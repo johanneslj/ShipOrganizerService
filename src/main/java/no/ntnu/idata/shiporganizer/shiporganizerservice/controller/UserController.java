@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * REST controller for user actions.
  */
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/api/user")
 public class UserController {
 
   private final UserService userService;
@@ -39,60 +40,16 @@ public class UserController {
   }
 
   /**
-   * Registers a new user with set departments.
-   * <p>
-   * Request body needs to be JSONObject in this format:
-   * {
-   * "fullname": "String with name",
-   * "email": "user@email.com",
-   * "password": "password",
-   * "departments": ["Department1", "Department2", ...]
-   * }
-   *
-   * @param entity HttpEntity of request
-   * @return ResponseEntity
-   */
-  @PostMapping("/register-user")
-  public ResponseEntity<String> registerUser(HttpEntity<String> entity) {
-    System.out.println(entity.getBody());
-    try {
-      JSONObject json = new JSONObject(entity.getBody());
-      User user =
-          new User(json.getString("fullname"), json.getString("email"), json.getString("password"));
-
-      System.out.println(user.getEmail() + user.getFullname() + user.getPassword());
-      // TODO Implement with Spring Security for registration.
-
-      // Get JSON array of departments and create list of departments.
-      List<Department> departments = new ArrayList<Department>();
-      JSONArray jsonArray = json.getJSONArray("departments");
-      System.out.println(jsonArray);
-
-      // Add departments to list.
-      for (int i = 0; i < jsonArray.length(); i++) {
-        departments.add(new Department(jsonArray.getString(i)));
-      }
-
-      // Add user with departments to database using service.
-      userService.addNewUserWithDepartments(user, departments);
-
-      // Registration successful.
-      return ResponseEntity.ok("User successfully registered.");
-    } catch (JSONException e) {
-      return ResponseEntity.badRequest().build();
-    }
-  }
-
-  /**
    * Lets a user delete themself, or an admin delete any user.
    *
    * @param entity HTTP Entity.
    * @return Response Entity.
    */
-  @DeleteMapping("delete-user")
+  @DeleteMapping("/delete-user")
   public ResponseEntity<String> deleteUser(HttpEntity<String> entity) {
     try {
       JSONObject json = new JSONObject(entity.getBody());
+      String token = entity.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
 
       // TODO Check if user is authorized to delete user.
       boolean isAuthorized = true;
