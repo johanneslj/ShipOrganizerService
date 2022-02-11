@@ -1,6 +1,11 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.auth;
 
+import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
+
+import com.auth0.jwt.JWT;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.Optional;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -50,23 +55,25 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     // Pass on the filtering
     chain.doFilter(request, response);
-
   }
 
   private Authentication getUsernamePasswordAuthentication(HttpServletRequest request) {
+    // Get token string from header.
     String token = request.getHeader(jwtProperties.getHeaderString())
         .replace("Bearer ", "").trim();
-    System.out.println(token);
-    // validate token
+
+    // Get user optional by token from user service.
     Optional<User> user = userService.getByToken(token);
 
-    // Look up username token in database
-    // If it is found, get user details and create a spring auth token username, pass roles etc..
+    // Verify token is not expired.
+    if (JWT.require(HMAC512(jwtProperties.getSecretCode().getBytes())).build().verify(token)
+        .getExpiresAt().before(new Date())) {
+      return null;
+    }
 
+    // If user with token exists, return authorities.
     if (user.isPresent()) {
-      System.out.println(user.get());
       UserPrincipal principal = new UserPrincipal(user.get(), userService);
-      System.out.println(principal.getAuthorities());
       return new UsernamePasswordAuthenticationToken(principal, null,
           principal.getAuthorities());
     }
