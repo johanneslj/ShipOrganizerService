@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 /**
- * The interface Order repository.
+ * The interface Order repository. Interface used for the connection to the database.
  */
 public interface OrderRepository extends JpaRepository<Orders,Integer> {
 
