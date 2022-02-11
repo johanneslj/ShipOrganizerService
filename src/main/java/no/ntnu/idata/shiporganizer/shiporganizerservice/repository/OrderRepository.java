@@ -20,4 +20,14 @@ public interface OrderRepository extends JpaRepository<Orders,Integer> {
 	 */
 	@Query(value = "EXEC HandleOrders @Calltime='Pending' , @Department= :dep , @Imagename='';",nativeQuery = true)
 	List<String> getPendingOrders(@Param(value = "dep") String dep);
+
+	/**
+	 * Gets confirmed orders.
+	 *
+	 * @param dep the user selected department
+	 * @return List of confirmed orders
+	 */
+	@Query(value = "EXEC HandleOrders @Calltime='Confirmed' , @Department= :dep , @Imagename='';",nativeQuery = true)
+	List<String> getConfirmedOrders(@Param(value = "dep") String dep);
+
 }
