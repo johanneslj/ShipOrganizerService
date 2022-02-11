@@ -38,6 +38,10 @@ public class UserService {
     return userRepository.findFirstUserByToken(token);
   }
 
+  public Optional<User> getByEmail(String email) {
+    return userRepository.findFirstByEmail(email);
+  }
+
   public boolean doesEmailExist(String email) {
     return userRepository.findFirstByEmail(email).isPresent();
   }
