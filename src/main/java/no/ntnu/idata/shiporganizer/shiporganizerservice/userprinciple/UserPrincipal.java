@@ -17,6 +17,9 @@ public class UserPrincipal implements UserDetails {
   private final User user;
   private final UserService userService;
 
+  private final int USER = 0;
+  private final int ADMIN = 1;
+
   public UserPrincipal(User user, UserService userService) {
     this.user = user;
     this.userService = userService;
@@ -27,8 +30,17 @@ public class UserPrincipal implements UserDetails {
     List<GrantedAuthority> authorities = new ArrayList<>();
 
     // Gets the rights/authorities for each department the user is a member of.
-    userService.getDepartments(user).forEach(d ->
-        authorities.add(new SimpleGrantedAuthority(Integer.toString(d.getRights()))));
+    userService.getDepartments(user).forEach(d -> {
+      int rights = d.getRights();
+      switch (rights) {
+        case USER:
+          authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+          break;
+        case ADMIN:
+          authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+          break;
+      }
+    });
 
     return authorities;
   }
@@ -60,6 +72,6 @@ public class UserPrincipal implements UserDetails {
 
   @Override
   public boolean isEnabled() {
-    return (user != null);
+    return userService.getByEmail(user.getEmail()).isPresent();
   }
 }
