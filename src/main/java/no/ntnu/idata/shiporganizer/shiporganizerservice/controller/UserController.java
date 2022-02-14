@@ -1,11 +1,10 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
+import java.util.Optional;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.UserService;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -14,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,19 +47,39 @@ public class UserController {
   public ResponseEntity<String> deleteUser(HttpEntity<String> entity) {
     try {
       JSONObject json = new JSONObject(entity.getBody());
-      String token = entity.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
+      String usernameToDelete = json.getString("username");
 
-      // TODO Check if user is authorized to delete user.
-      boolean isAuthorized = true;
+      List<String> authorizationHeader = entity.getHeaders().get(HttpHeaders.AUTHORIZATION);
+      String token = "";
 
+      // Get the bearer token if it exists.
+      if (authorizationHeader != null) {
+        Iterator<String> iterator = authorizationHeader.iterator();
 
-      if (isAuthorized) {
-        userService.deleteUser(json.getString("username"));
+        while (iterator.hasNext() && token.length() < 1) {
+          String authHeader = iterator.next();
 
-        return ResponseEntity.ok("User deleted.");
-      } else {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+          if (authHeader.startsWith("Bearer ")) {
+            token = authHeader.split(" ")[1];
+          }
+        }
+
+        Optional<User> userOptional = userService.getByToken(token);
+
+        // Check if requesting user exists.
+        if (userOptional.isPresent()) {
+          // Check if requesting user is admin or is deleting self.
+          if (userService.isUserAdmin(userOptional.get())
+              || userOptional.get().getEmail().equals(usernameToDelete)) {
+
+            userService.deleteUser(json.getString("username"));
+
+            return ResponseEntity.ok("User deleted.");
+          }
+        }
       }
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
     } catch (JSONException e) {
       return ResponseEntity.badRequest().build();
     }
