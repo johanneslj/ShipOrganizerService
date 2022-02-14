@@ -2,6 +2,7 @@ package no.ntnu.idata.shiporganizer.shiporganizerservice.service;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
+import com.auth0.jwt.JWT;
 import java.util.Date;
 import java.util.Optional;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.config.JWTProperties;
@@ -70,7 +71,7 @@ public class LoginService {
    * @return String containing the JWT token.
    */
   private String buildJWT(int id, String email, String name) {
-    return com.auth0.jwt.JWT.create()
+    return JWT.create()
         .withClaim("id", id)
         .withClaim("email", email)
         .withClaim("name", name)

@@ -1,5 +1,7 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.config;
 
+import no.ntnu.idata.shiporganizer.shiporganizerservice.auth.JwtAuthenticationFilter;
+import no.ntnu.idata.shiporganizer.shiporganizerservice.service.UserService;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.userprinciple.UserPrincipalService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,11 +20,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   private final PasswordEncoder passwordEncoder;
   private final UserPrincipalService userPrincipalService;
+  private final UserService userService;
+  private final JWTProperties jwtProperties;
 
   public SecurityConfig(PasswordEncoder passwordEncoder,
-                        UserPrincipalService userPrincipalService) {
+                        UserPrincipalService userPrincipalService,
+                        UserService userService,
+                        JWTProperties jwtProperties) {
     this.passwordEncoder = passwordEncoder;
     this.userPrincipalService = userPrincipalService;
+    this.userService = userService;
+    this.jwtProperties = jwtProperties;
   }
 
   @Override
@@ -30,16 +38,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http
         .csrf().disable()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and().authorizeRequests()
+        .and()
+        .addFilter(new JwtAuthenticationFilter(authenticationManager(), userService, jwtProperties))
+        .authorizeRequests()
 
         // Permit login and registration
         .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
         .antMatchers(HttpMethod.POST, "/auth/register").permitAll()
-        .antMatchers(HttpMethod.DELETE, "/api/user/delete-user").permitAll()
+        .antMatchers(HttpMethod.DELETE, "/api/user/delete-user").hasAnyRole("USER", "ADMIN")
+        .antMatchers(HttpMethod.GET, "/api/user/all-users").hasRole("ADMIN")
         .anyRequest().authenticated()
-        .and()
-        .logout()
-        .permitAll();
+        .and().httpBasic().disable();
   }
 
   @Override
