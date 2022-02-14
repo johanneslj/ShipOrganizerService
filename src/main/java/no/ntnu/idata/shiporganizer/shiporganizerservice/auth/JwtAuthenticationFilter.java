@@ -4,7 +4,6 @@ import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
 import com.auth0.jwt.JWT;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Optional;
 import javax.servlet.FilterChain;
