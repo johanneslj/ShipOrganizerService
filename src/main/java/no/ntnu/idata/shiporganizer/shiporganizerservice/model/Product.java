@@ -1,10 +1,7 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.model;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * JPA Entity model for product of the ship organizer service.
@@ -26,6 +23,28 @@ public class Product {
 
 	@Column(name = "EAN")
 	private String barcode;
+
+	private String stock;
+
+	public Product(String productname,String productnumber, String barcode, String stock) {
+		this.productnumber = productnumber;
+		this.productname = productname;
+		this.barcode = barcode;
+		this.stock = stock;
+	}
+
+	public Product() {
+
+	}
+
+	/**
+	 * Gets stock.
+	 *
+	 * @return the stock
+	 */
+	public String getStock() {
+		return stock;
+	}
 
 	/**
 	 * Gets product number.
