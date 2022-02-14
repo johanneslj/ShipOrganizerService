@@ -2,11 +2,10 @@ package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Orders;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.OrderService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,6 +30,19 @@ public class OrderController {
 	 */
 	public OrderController(OrderService orderService) {
 		this.orderService = orderService;
+	}
+
+	/**
+	 * Inserts new order.
+	 *
+	 * @return 200 OK or 204 No content
+	 */
+	@PostMapping (path = "/new")
+	public ResponseEntity<String> insertNewOrder(@RequestBody String requestBody) {
+		if(orderService.insertNewOrder(requestBody).equals("Success")){
+			return ResponseEntity.ok().build();
+		}
+		return ResponseEntity.noContent().build();
 	}
 
 	/**

@@ -59,5 +59,22 @@ public class OrderService {
 		}
 		return confirmedOrders;
 	}
+	/**
+	 * Insert new order for confirmation
+	 *
+	 * @param requestBody the request body containing users department and image-name
+	 * @return Success or empty depending on if the query completed or not
+	 */
+	public String insertNewOrder(String requestBody){
+		String[] bits = requestBody.split(",");
+		String department = bits[0];
+		String imagename = bits[1];
+		//TODO Send image to image server
+		int result = orderRepository.insertNewOrder(department,imagename);
+		if(result == 1){
+			return "Success";
+		}
+		return "";
+	}
 
 }
