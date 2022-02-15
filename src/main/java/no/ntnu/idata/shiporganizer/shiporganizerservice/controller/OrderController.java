@@ -46,14 +46,26 @@ public class OrderController {
 	}
 
 	/**
+	 * Updates order from pending to confirmed
+	 *
+	 * @return 200 OK or 204 No content
+	 */
+	@PostMapping (path = "/update")
+	public ResponseEntity<String> updateOrder(@RequestBody String requestBody) {
+		if(orderService.updateOrder(requestBody).equals("Success")){
+			return ResponseEntity.ok().build();
+		}
+		return ResponseEntity.noContent().build();
+	}
+
+	/**
 	 * Gets pending orders.
 	 *
 	 * @return the pending orders
 	 */
 	@GetMapping(path = "/pending")
-	@ResponseBody
-	public List<Orders> getPendingOrders() {
-		return orderService.getPendingOrders("");
+	public List<Orders> getPendingOrders(@RequestBody String requestBody) {
+		return orderService.getPendingOrders(requestBody);
 	}
 
 	/**
@@ -63,8 +75,8 @@ public class OrderController {
 	 */
 	@GetMapping(path = "/confirmed")
 	@ResponseBody
-	public List<Orders> getConfirmedOrders() {
-		return orderService.getConfirmedOrders("Deck");
+	public List<Orders> getConfirmedOrders(@RequestBody String requestBody) {
+		return orderService.getConfirmedOrders(requestBody);
 	}
 
 

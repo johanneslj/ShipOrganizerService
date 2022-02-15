@@ -40,4 +40,16 @@ public interface OrderRepository extends JpaRepository<Orders,Integer> {
 	@Query(value = "EXEC HandleOrders @Calltime='New' , @Department= :dep , @Imagename=:imagename;",nativeQuery = true)
 	int insertNewOrder(@Param(value = "dep") String dep , @Param(value = "imagename") String imagename);
 
+	/**
+	 * Updates order from pending to confirmed
+	 *
+	 * @param dep the user selected department
+	 * @param imagename The image name for the bill
+	 * @return int 1 if the query is completed
+	 */
+	@Query(value = "EXEC HandleOrders @Calltime='Update' , @Department= :dep , @Imagename=:imagename;",nativeQuery = true)
+	int updateOrder(@Param(value = "dep") String dep , @Param(value = "imagename") String imagename);
+
+
+
 }
