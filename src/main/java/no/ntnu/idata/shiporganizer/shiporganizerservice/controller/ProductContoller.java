@@ -21,7 +21,7 @@ import java.util.List;
 @Transactional
 public class ProductContoller {
 
-	private ProductService productService;
+	private final ProductService productService;
 
 	/**
 	 * Instantiates a new Product contoller.
