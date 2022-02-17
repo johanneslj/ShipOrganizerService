@@ -7,7 +7,7 @@ import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * The interface Department repository.
+ * Repository for the departments. This interface represents the connection to database
  */
 public interface DepartmentRepository extends JpaRepository<Department, Integer> {
 
