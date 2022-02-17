@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 /**
- * The type Department controller.
+ * The type Department controller. Handles all the direct api calls and sends the variables to the repository
+ * for the correct handling
  */
 @Controller
 @RequestMapping(value ="/department")
