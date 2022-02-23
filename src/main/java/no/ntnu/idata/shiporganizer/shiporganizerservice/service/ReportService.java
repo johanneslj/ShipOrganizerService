@@ -13,7 +13,7 @@ import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.ReportReposit
 import org.springframework.stereotype.Service;
 
 /**
- * Report service is resposnible for handling the data regarding
+ * Report service is responsible for handling the data regarding
  * map markers.
  */
 @Service
@@ -24,21 +24,57 @@ public class ReportService {
         this.reportRepository = reportRepository;
     }
 
-    public Map<String, List<Report>>  getMapMarkers() {
+    /**
+     * Gets the reports from the repository and creates report objects
+     * each report is added to a list which is then sorted to group the reports
+     * together based on their relative closeness.
+     *
+     * @return a sorted Map with LatLng as key and a List of reports as values
+     */
+    public Map<String, List<Report>> getMapMarkers() {
         List<String> stringReports = reportRepository.getMapMarkers();
+
+        return sortReportsByIntoGrids(convertDataToReports(stringReports));
+    }
+
+    /**
+     * Gets reports from the repository based on the name of the equipment used
+     * each report is added to a list which is then sorted to group the reports
+     * together based on their relative closeness.
+     *
+     * @param name the name of equipment which is to be shown
+     * @return a sorted Map with LatLng as key and a List of reports as values
+     */
+    public Map<String, List<Report>> getMapMarkersOnName(String name) {
+        List<String> stringReports = reportRepository.getMapMarkersOnName(name);
+        return sortReportsByIntoGrids(convertDataToReports(stringReports));
+    }
+
+    /**
+     * Takes the list of strings recieved from the database and converts it into reports
+     *
+     * @param stringReports List of reports in string form
+     * @return List of Reports
+     */
+    private List<Report> convertDataToReports(List<String> stringReports) {
         List<Report> markers = new ArrayList<>();
 
         stringReports.forEach(reportString -> {
-            System.out.println(reportString);
             List<String> reportBits = Arrays.asList(reportString.split(","));
-            Report report = new Report(reportBits.get(1), Integer.parseInt(reportBits.get(2)), Float.parseFloat(reportBits.get(3)), Float.parseFloat(reportBits.get(4)), getDateFromString(reportBits.get(5)), reportBits.get(6));
+            Report report = new Report(reportBits.get(1),
+                Integer.parseInt(reportBits.get(2)),
+                Float.parseFloat(reportBits.get(3)),
+                Float.parseFloat(reportBits.get(4)),
+                getDateFromString(reportBits.get(5)),
+                reportBits.get(6));
             markers.add(report);
         });
-        return sortReportsByIntoGrids(markers);
+        return markers;
     }
 
     /**
      * Gets the date from inside a string
+     *
      * @param dateString the string to convert to a Date
      * @return a date, generated from the String
      */
@@ -55,9 +91,10 @@ public class ReportService {
 
     /**
      * Sorts the list of markers from the database into a grid based on their coordinates
-     *
+     * <p>
      * This method rounds the lat lng coordinates to 3 decimal places and then creates
      * a string composed of both which is used as a key in the map of reports
+     *
      * @param markers the list of reports to sort
      * @return a sorted map of reports
      */
@@ -91,7 +128,8 @@ public class ReportService {
 
     /**
      * Rounds a float to a given amount of decimals
-     * @param floatToRound the float which will be rounded
+     *
+     * @param floatToRound    the float which will be rounded
      * @param howManyDecimals how many decimals to round the float to
      * @return the rounded float
      */
