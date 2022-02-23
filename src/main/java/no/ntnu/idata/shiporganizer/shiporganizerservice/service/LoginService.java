@@ -70,7 +70,7 @@ public class LoginService {
    * @param name  User's full name.
    * @return String containing the JWT token.
    */
-  private String buildJWT(int id, String email, String name) {
+  public String buildJWT(int id, String email, String name) {
     return JWT.create()
         .withClaim("id", id)
         .withClaim("email", email)

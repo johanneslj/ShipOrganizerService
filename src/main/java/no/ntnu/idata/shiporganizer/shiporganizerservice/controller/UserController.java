@@ -88,6 +88,21 @@ public class UserController {
   }
 
   /**
+   * Makes the server send a verification code to given email to set new password.
+   *
+   * @param email User's email address.
+   * @return Response Entity 200 OK on success.
+   */
+  @GetMapping("/send-verification-code")
+  public ResponseEntity<String> sendVerificationCode(@Param("email") String email) {
+    if (userService.sendNewPasswordEmail(email)) {
+      return ResponseEntity.ok("Verification code sent.");
+    } else {
+      return ResponseEntity.badRequest().build();
+    }
+  }
+
+  /**
    * Sets a new password for the user using the received verification code.
    *
    * @param http HTTP entity.
