@@ -32,7 +32,7 @@ public class User {
   @Column(name = "Username", nullable = false)
   private String email;
 
-  @Column(name = "Password", nullable = false)
+  @Column(name = "Password")
   private String password;
 
   @Column(name = "Token")
@@ -60,6 +60,11 @@ public class User {
     this.fullname = fullname;
     this.email = email;
     this.password = password;
+  }
+
+  public User(String fullname, String email) {
+    this.fullname = fullname;
+    this.email = email;
   }
 
   /*--------------------------------
