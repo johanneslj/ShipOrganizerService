@@ -7,6 +7,7 @@ import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Report;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.ReportService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,5 +27,10 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getMapMarkers());
     }
 
+    @GetMapping("/reports-with-name={name}")
+    public ResponseEntity<Map<String, List<Report>>> getReportsWithName(@PathVariable(value = "name") String name) {
+        System.out.println(name);
+        return ResponseEntity.ok(reportService.getMapMarkersOnName(name));
+    }
 
 }
