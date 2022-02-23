@@ -9,6 +9,7 @@ import no.ntnu.idata.shiporganizer.shiporganizerservice.model.UserDepartment;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.DepartmentRepository;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.UserDepartmentRepository;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,12 +17,19 @@ public class UserService {
   final private UserRepository userRepository;
   final private DepartmentRepository departmentRepository;
   final private UserDepartmentRepository userDepartmentRepository;
+  final private MailService mailService;
+  final private PasswordEncoder passwordEncoder;
 
-  public UserService(UserRepository userRepository, DepartmentRepository departmentRepository,
-                     UserDepartmentRepository userDepartmentRepository) {
+  public UserService(UserRepository userRepository,
+                     DepartmentRepository departmentRepository,
+                     UserDepartmentRepository userDepartmentRepository,
+                     MailService mailService,
+                     PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
     this.departmentRepository = departmentRepository;
     this.userDepartmentRepository = userDepartmentRepository;
+    this.mailService = mailService;
+    this.passwordEncoder = passwordEncoder;
   }
 
   public List<User> getAllUsers() {
@@ -53,7 +61,7 @@ public class UserService {
    * @param departments List of departments the user gets access to.
    */
   public void register(User user, List<Department> departments) {
-    userRepository.addUser(user.getEmail(), user.getPassword(), user.getFullname());
+    userRepository.addUser(user.getEmail(), "", user.getFullname());
 
     StringBuilder departmentsString = new StringBuilder();
     for (Department department : departments) {
@@ -61,10 +69,12 @@ public class UserService {
       departmentsString.append(",");
     }
 
-    System.out.println(departmentsString);
-    System.out.println(user.getEmail());
-
     userDepartmentRepository.updateUserDepartment(user.getEmail(), departmentsString.toString());
+    mailService.sendRegisteredEmail(user.getEmail());
+
+    // TODO Remove this?
+    // Prints the registered user, if suer is not found in the repository a new empty user is printed.
+    System.out.println("Registered: " + getByEmail(user.getEmail()).orElseGet(User::new));
   }
 
 
@@ -77,8 +87,65 @@ public class UserService {
     }
 
     User user = userOptional.get();
+    String verificationCode = user.getToken().substring(user.getToken().length() - 6);
 
-    
+    mailService.sendNewPasswordVerificationCode(user.getEmail(), verificationCode);
+
+    return true;
+  }
+
+  /**
+   * Use the received verification code to set a new password for the user.
+   *
+   * @param email            Email of user.
+   * @param verificationCode Received verification code for user.
+   * @param password         New password to set for user.
+   * @return True on success.
+   */
+  public boolean setNewPasswordWithVerificationCode(String email, String verificationCode,
+                                                    String password) {
+    Optional<User> userOptional = userRepository.findFirstByEmail(email);
+
+    if (!userOptional.isPresent()) {
+      return false;
+    }
+
+    User user = userOptional.get();
+
+    if (!checkValidVerificationCode(email, verificationCode)) {
+      return false;
+    }
+
+    // Encrypt new password and save user.
+    user.setPassword(passwordEncoder.encode(password));
+    userRepository.save(user);
+
+    return true;
+  }
+
+  /**
+   * Checks if the verification code is valid for given email address.
+   *
+   * @param email            User's email address.
+   * @param verificationCode Verification code received by email.
+   * @return True if valid.
+   */
+  public boolean checkValidVerificationCode(String email, String verificationCode) {
+    Optional<User> userOptional = userRepository.findFirstByEmail(email);
+
+    // If user/email does not exist, we cannot set a new password.
+    if (!userOptional.isPresent()) {
+      return false;
+    }
+
+    User user = userOptional.get();
+
+    // Check that verification code is correct. Verification code is last 6 characters in token.
+    if (!user.getToken().substring(user.getToken().length() - 6).equals(verificationCode)) {
+      return false;
+    }
+
+    return true;
   }
 
   /**

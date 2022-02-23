@@ -34,19 +34,16 @@ import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 public class AuthController {
   final private LoginService loginService;
   final private UserService userService;
-  final private PasswordEncoder passwordEncoder;
 
   // TODO Remove this field.
   final private JWTProperties jwtProps;
 
   public AuthController(LoginService loginService,
                         UserService userService,
-                        JWTProperties jwtProps,
-                        PasswordEncoder passwordEncoder) {
+                        JWTProperties jwtProps) {
     this.loginService = loginService;
     this.userService = userService;
     this.jwtProps = jwtProps;
-    this.passwordEncoder = passwordEncoder;
   }
 
   /**
@@ -136,6 +133,7 @@ public class AuthController {
 
       // Add user with departments to database using service.
       userService.register(user, departments);
+
 
       // Registration successful.
       return ResponseEntity.ok("User successfully registered.");
