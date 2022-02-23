@@ -67,6 +67,20 @@ public class UserService {
     userDepartmentRepository.updateUserDepartment(user.getEmail(), departmentsString.toString());
   }
 
+
+  public boolean sendNewPasswordEmail(String email) {
+    Optional<User> userOptional = userRepository.findFirstByEmail(email);
+
+    // If user/email does not exist, we cannot set a new password.
+    if (!userOptional.isPresent()) {
+      return false;
+    }
+
+    User user = userOptional.get();
+
+    
+  }
+
   /**
    * Delete authorized user on request.
    *

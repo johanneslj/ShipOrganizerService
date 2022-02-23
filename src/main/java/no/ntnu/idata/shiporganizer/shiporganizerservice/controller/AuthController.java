@@ -119,7 +119,7 @@ public class AuthController {
 
       // TODO Check password with regex?
 
-      User user = new User(name, email, passwordEncoder.encode(password));
+      User user = new User(name, email);
 
       System.out.println(user.getEmail() + user.getFullname() + user.getPassword());
       // TODO Implement with Spring Security for registration.
