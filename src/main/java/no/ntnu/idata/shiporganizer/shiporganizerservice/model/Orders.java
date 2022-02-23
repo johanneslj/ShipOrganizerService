@@ -26,6 +26,27 @@ public class Orders {
 	@Column(name = "Status")
 	private int status;
 
+	private String DepartmentName;
+
+
+
+	/**
+	 * Instantiates a new Orders.
+	 */
+	public Orders() {
+	}
+
+	/**
+	 * Instantiates a new Orders.
+	 *
+	 * @param imagename      the imagename
+	 * @param departmentName the department name
+	 */
+	public Orders(String imagename, String departmentName) {
+		this.imagename = imagename;
+		this.DepartmentName = departmentName;
+	}
+
 	/**
 	 * Gets imagename.
 	 *
@@ -51,5 +72,14 @@ public class Orders {
 	 */
 	public int getStatus() {
 		return status;
+	}
+
+	/**
+	 * Gets department name.
+	 *
+	 * @return the department name
+	 */
+	public String getDepartmentName() {
+		return DepartmentName;
 	}
 }
