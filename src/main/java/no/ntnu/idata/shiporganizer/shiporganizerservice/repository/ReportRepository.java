@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Integer> {
 
-    @Query(value = "EXEC SelectAll @CallTime = 'Map', @Department = 'Deck', @Username = '';", nativeQuery = true)
+    @Query(value = "EXEC SelectAll @CallTime = 'Map', @Department = 'Deck', @Username = '', @ProductName = '';", nativeQuery = true)
     List<String> getMapMarkers();
 }

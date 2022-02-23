@@ -13,7 +13,7 @@ import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.ReportReposit
 import org.springframework.stereotype.Service;
 
 /**
- * Report service is resposnible for handling the data regarding
+ * Report service is responsible for handling the data regarding
  * map markers.
  */
 @Service
