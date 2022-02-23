@@ -19,17 +19,20 @@ public class UserService {
   final private UserDepartmentRepository userDepartmentRepository;
   final private MailService mailService;
   final private PasswordEncoder passwordEncoder;
+  final private LoginService loginService;
 
   public UserService(UserRepository userRepository,
                      DepartmentRepository departmentRepository,
                      UserDepartmentRepository userDepartmentRepository,
                      MailService mailService,
-                     PasswordEncoder passwordEncoder) {
+                     PasswordEncoder passwordEncoder,
+                     LoginService loginService) {
     this.userRepository = userRepository;
     this.departmentRepository = departmentRepository;
     this.userDepartmentRepository = userDepartmentRepository;
     this.mailService = mailService;
     this.passwordEncoder = passwordEncoder;
+    this.loginService = loginService;
   }
 
   public List<User> getAllUsers() {
@@ -60,7 +63,7 @@ public class UserService {
    * @param user        User to register.
    * @param departments List of departments the user gets access to.
    */
-  public void register(User user, List<Department> departments) {
+  public boolean register(User user, List<Department> departments) {
     userRepository.addUser(user.getEmail(), "", user.getFullname());
 
     StringBuilder departmentsString = new StringBuilder();
@@ -75,6 +78,9 @@ public class UserService {
     // TODO Remove this?
     // Prints the registered user, if suer is not found in the repository a new empty user is printed.
     System.out.println("Registered: " + getByEmail(user.getEmail()).orElseGet(User::new));
+
+    // Sets new token for user and returns true on success.
+    return setTokenForNewUser(user.getEmail());
   }
 
 
@@ -194,5 +200,25 @@ public class UserService {
       System.out.println(department);
     }
     return departments;
+  }
+
+  /**
+   * Sets a new token for the user.
+   *
+   * @param email Email of the user.
+   * @return True on success.
+   */
+  private boolean setTokenForNewUser(String email) {
+    Optional<User> userOptional = getByEmail(email);
+
+    if (!userOptional.isPresent()) {
+      return false;
+    }
+
+    User user = userOptional.get();
+    user.setToken(loginService.buildJWT(user.getId(), user.getEmail(), user.getFullname()));
+    userRepository.save(user);
+
+    return true;
   }
 }

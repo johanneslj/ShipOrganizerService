@@ -108,7 +108,6 @@ public class AuthController {
 
       String name = json.getString("fullname");
       String email = json.getString("email");
-      String password = json.getString("password");
 
       if (userService.doesEmailExist(email)) {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -118,11 +117,11 @@ public class AuthController {
 
       User user = new User(name, email);
 
-      System.out.println(user.getEmail() + user.getFullname() + user.getPassword());
+      System.out.println(user);
       // TODO Implement with Spring Security for registration.
 
       // Get JSON array of departments and create list of departments.
-      List<Department> departments = new ArrayList<Department>();
+      List<Department> departments = new ArrayList<>();
       JSONArray jsonArray = json.getJSONArray("departments");
       System.out.println(jsonArray);
 
@@ -132,8 +131,10 @@ public class AuthController {
       }
 
       // Add user with departments to database using service.
-      userService.register(user, departments);
-
+      // Returns bad request on error.
+      if (!userService.register(user, departments)) {
+        return ResponseEntity.badRequest().build();
+      }
 
       // Registration successful.
       return ResponseEntity.ok("User successfully registered.");
