@@ -25,15 +25,15 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	 * @param dep Users selected department
 	 * @return String list from the database
 	 */
-	@Query(value = "EXEC SelectAll @Calltime='Inventory' , @Department= :dep , @Username='';",nativeQuery = true)
-	List<String> getProductInventory(@Param(value = "dep") String dep);
+	@Query(value = "EXEC SelectAll @Calltime='Inventory' , @Department= :dep , @Username='', @ProductName='';",nativeQuery = true)
+	List<Product> getProductInventory(@Param(value = "dep") String dep);
 	/**
 	 * Gets all the products from the database with the difference in stock and desired stock
 	 * @param dep Users selected department
 	 * @return String list from the database
 	 */
-	@Query(value = "EXEC SelectAll @Calltime='Preferred' , @Department= :dep , @Username='';",nativeQuery = true)
-	List<String> getProductPreferredInventory(@Param(value = "dep") String dep);
+	@Query(value = "EXEC SelectAll @Calltime='Recommended' , @Department= :dep , @Username='', @ProductName='';",nativeQuery = true)
+	List<Product> getProductRecommendedInventory(@Param(value = "dep") String dep);
 
 
 	/**

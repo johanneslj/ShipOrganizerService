@@ -33,13 +33,7 @@ public class ProductService {
 	 * @return the product inventory
 	 */
 	public List<Product> getProductInventory(String dep) {
-		List<Product> products = new ArrayList<>();
-		List<String> bits = productRepository.getProductInventory(dep);
-
-		for (String ting : bits) {
-			String[] data = ting.split(",");
-			products.add(new Product(data[0], data[1], data[2], data[3]));
-		}
+		List<Product> products = productRepository.getProductInventory(dep);
 		return products;
 	}
 
@@ -49,30 +43,23 @@ public class ProductService {
 	 * @param dep the users department
 	 * @return the product preferred inventory
 	 */
-	public List<Product> getProductPreferredInventory(String dep) {
-		List<Product> products = new ArrayList<>();
-		List<String> bits = productRepository.getProductPreferredInventory(dep);
-
-		for (String ting : bits) {
-			String[] data = ting.split(",");
-			products.add(new Product(data[0], data[1], data[2], data[3]));
-		}
+	public List<Product> getProductRecommendedInventory(String dep) {
+		List<Product> products = productRepository.getProductRecommendedInventory(dep);
 		return products;
 	}
 
+
 	/**
-	 * Sets the new stock for a specific product
+	 * Increases or decreases the stock for a specific product.
 	 *
-	 * @param requestBody All required parameters
-	 * @return Success or empty depending on if the query completed or not
+	 * @param productNo the product number
+	 * @param username  the username
+	 * @param quantity  the quantity
+	 * @param longitude the longitude
+	 * @param latitude  the latitude
+	 * @return Successful if update is successful
 	 */
-	public String setNewStock(String requestBody) {
-		String[] data = requestBody.split(",");
-		String productNo = data[0].split(":")[1];
-		String username = data[1].split(":")[1];
-		int quantity = Integer.parseInt(data[2].split(":")[1]);
-		float longitude =Float.parseFloat(data[3].split(":")[1]);
-		float latitude = Float.parseFloat(data[4].split(":")[1]);
+	public String setNewStock(String productNo,String username, int quantity, float longitude,float latitude) {
 		int result = productRepository.setNewStock(productNo, username, quantity, longitude, latitude);
 		if(result == 1){
 			return "Success";
