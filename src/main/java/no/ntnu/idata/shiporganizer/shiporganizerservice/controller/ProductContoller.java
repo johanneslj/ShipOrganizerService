@@ -1,16 +1,16 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 
-import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Product;
-import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.ProductRepository;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.query.Procedure;
+import org.json.JSONObject;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static java.lang.Float.parseFloat;
 
 
 /**
@@ -48,24 +48,40 @@ public class ProductContoller {
 	 *
 	 * @return the preferred inventory
 	 */
-	@GetMapping(path = "/PreferredInventory")
+	@GetMapping(path = "/RecommendedInventory")
 	@ResponseBody
-	public List<Product> getPreferredInventory() {
-		return productService.getProductPreferredInventory("");
+	public List<Product> getRecommendedInventory() {
+		return productService.getProductRecommendedInventory("");
 	}
 
 	/**
 	 * Set new stock
 	 *
-	 * @param requestBody the request body
+	 * @param http the request body
 	 * @return 200 OK or 204 No content
 	 */
 	@PostMapping(path = "/setNewStock")
-	public ResponseEntity setNewStock(@RequestBody String requestBody){
-		if(productService.setNewStock(requestBody).equals("Success")){
+	public ResponseEntity setNewStock(HttpEntity<String> http){
+		String Success = "";
+		try{
+			JSONObject json = new JSONObject(http.getBody());
+
+			String productNumber = json.optString("productnumber");
+			String username = json.getString("username");
+			int quantity = json.optInt("quantity");
+			float latitude = parseFloat(json.optString("latitude"));
+			float longitude = parseFloat(json.optString("longitude"));
+
+			Success = productService.setNewStock(productNumber,username,quantity,latitude,longitude);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(Success.equals("Success")){
 			return ResponseEntity.ok().build();
 		}
 		return ResponseEntity.noContent().build();
 	}
+
+
 
 }
