@@ -44,11 +44,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Permit login and registration
         .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
-        .antMatchers(HttpMethod.POST, "/auth/register").permitAll()
+        .antMatchers(HttpMethod.POST, "/auth/register").permitAll() // TODO Change to only admin
+
+        // Permit password change
         .antMatchers(HttpMethod.GET, "/api/user/send-verification-code").permitAll()
         .antMatchers(HttpMethod.POST, "/api/user/set-password").permitAll()
+
+        // USER API
         .antMatchers(HttpMethod.DELETE, "/api/user/delete-user").hasAnyRole("USER", "ADMIN")
         .antMatchers(HttpMethod.GET, "/api/user/all-users").hasRole("ADMIN")
+        .antMatchers(HttpMethod.GET, "/api/user/check-role").hasAnyRole("USER", "ADMIN")
+
         .anyRequest().authenticated()
         .and().httpBasic().disable();
   }
