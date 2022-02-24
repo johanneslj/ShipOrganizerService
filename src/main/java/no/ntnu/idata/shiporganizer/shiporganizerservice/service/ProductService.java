@@ -33,13 +33,7 @@ public class ProductService {
 	 * @return the product inventory
 	 */
 	public List<Product> getProductInventory(String dep) {
-		List<Product> products = new ArrayList<>();
-		List<String> bits = productRepository.getProductInventory(dep);
-
-		for (String ting : bits) {
-			String[] data = ting.split(",");
-			products.add(new Product(data[0], data[1], data[2], data[3]));
-		}
+		List<Product> products = productRepository.getProductInventory(dep);
 		return products;
 	}
 
@@ -49,14 +43,13 @@ public class ProductService {
 	 * @param dep the users department
 	 * @return the product preferred inventory
 	 */
-	public List<Product> getProductPreferredInventory(String dep) {
-		List<Product> products = new ArrayList<>();
-		List<String> bits = productRepository.getProductPreferredInventory(dep);
+	public List<Product> getProductRecommendedInventory(String dep) {
+		List<Product> products = productRepository.getProductRecommendedInventory(dep);
 
-		for (String ting : bits) {
+		/*for (String ting : bits) {
 			String[] data = ting.split(",");
 			products.add(new Product(data[0], data[1], data[2], data[3]));
-		}
+		}*/
 		return products;
 	}
 
@@ -71,7 +64,7 @@ public class ProductService {
 		String productNo = data[0].split(":")[1];
 		String username = data[1].split(":")[1];
 		int quantity = Integer.parseInt(data[2].split(":")[1]);
-		float longitude =Float.parseFloat(data[3].split(":")[1]);
+		float longitude = Float.parseFloat(data[3].split(":")[1]);
 		float latitude = Float.parseFloat(data[4].split(":")[1]);
 		int result = productRepository.setNewStock(productNo, username, quantity, longitude, latitude);
 		if(result == 1){
