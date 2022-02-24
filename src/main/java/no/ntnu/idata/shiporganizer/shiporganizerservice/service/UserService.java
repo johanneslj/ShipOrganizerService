@@ -168,10 +168,18 @@ public class UserService {
    * <p>
    * A user is an admin if they have access to a department with admin rights (1).
    *
-   * @param user User to check admin rights of.
+   * @param token Token of user to check admin rights of.
    * @return True if user is admin.
    */
-  public boolean isUserAdmin(User user) {
+  public boolean isUserAdmin(String token) {
+    Optional<User> userOptional = getByToken(token);
+
+    if (!userOptional.isPresent()) {
+      return false;
+    }
+
+    User user = userOptional.get();
+
     List<Department> departments = getDepartments(user);
 
     for (Department department : departments) {

@@ -51,37 +51,22 @@ public class UserController {
       JSONObject json = new JSONObject(entity.getBody());
       String usernameToDelete = json.getString("username");
 
-      List<String> authorizationHeader = entity.getHeaders().get(HttpHeaders.AUTHORIZATION);
-      String token = "";
+      String token = getBearerToken(entity);
 
-      // Get the bearer token if it exists.
-      if (authorizationHeader != null) {
-        Iterator<String> iterator = authorizationHeader.iterator();
+      Optional<User> userOptional = userService.getByToken(token);
 
-        while (iterator.hasNext() && token.length() < 1) {
-          String authHeader = iterator.next();
+      // Check if requesting user exists.
+      if (userOptional.isPresent()) {
+        // Check if requesting user is admin or is deleting self.
+        if (userService.isUserAdmin(token)
+            || userOptional.get().getEmail().equals(usernameToDelete)) {
 
-          if (authHeader.startsWith("Bearer ")) {
-            token = authHeader.split(" ")[1];
-          }
-        }
+          userService.deleteUser(json.getString("username"));
 
-        Optional<User> userOptional = userService.getByToken(token);
-
-        // Check if requesting user exists.
-        if (userOptional.isPresent()) {
-          // Check if requesting user is admin or is deleting self.
-          if (userService.isUserAdmin(userOptional.get())
-              || userOptional.get().getEmail().equals(usernameToDelete)) {
-
-            userService.deleteUser(json.getString("username"));
-
-            return ResponseEntity.ok("User deleted.");
-          }
+          return ResponseEntity.ok("User deleted.");
         }
       }
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
     } catch (JSONException e) {
       return ResponseEntity.badRequest().build();
     }
@@ -144,5 +129,48 @@ public class UserController {
     } else {
       return ResponseEntity.badRequest().build();
     }
+  }
+
+  /**
+   * Returns the role of the user. ADMIN or USER.
+   * <p>
+   * Security configuration is so that only authorized users, or admins can access this endpoint.
+   *
+   * @param http Http Entity.
+   * @return 200 OK with role in body.
+   */
+  @GetMapping("/check-role")
+  public ResponseEntity<String> checkRole(HttpEntity<String> http) {
+    String token = getBearerToken(http);
+
+    if (userService.isUserAdmin(token)) {
+      return ResponseEntity.ok("ADMIN");
+    }
+    return ResponseEntity.ok("USER");
+  }
+
+  /**
+   * Gets the Bearer token from the HTTP headers if it exists.
+   *
+   * @param http HTTP Entity to get bearer from.
+   * @return Token, or empty string if not found
+   */
+  private String getBearerToken(HttpEntity<String> http) {
+    List<String> authorizationHeader = http.getHeaders().get(HttpHeaders.AUTHORIZATION);
+    String token = "";
+
+    // Get the bearer token if it exists.
+    if (authorizationHeader != null) {
+      Iterator<String> iterator = authorizationHeader.iterator();
+
+      while (iterator.hasNext() && token.length() < 1) {
+        String authHeader = iterator.next();
+
+        if (authHeader.startsWith("Bearer ")) {
+          token = authHeader.split(" ")[1];
+        }
+      }
+    }
+    return token;
   }
 }
