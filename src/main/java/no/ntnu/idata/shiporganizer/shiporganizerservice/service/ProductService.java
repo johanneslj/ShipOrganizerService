@@ -45,19 +45,19 @@ public class ProductService {
 	 */
 	public List<Product> getProductRecommendedInventory(String dep) {
 		List<Product> products = productRepository.getProductRecommendedInventory(dep);
-
-		/*for (String ting : bits) {
-			String[] data = ting.split(",");
-			products.add(new Product(data[0], data[1], data[2], data[3]));
-		}*/
 		return products;
 	}
 
+
 	/**
-	 * Sets the new stock for a specific product
+	 * Increases or decreases the stock for a specific product.
 	 *
-	 * @param requestBody All required parameters
-	 * @return Success or empty depending on if the query completed or not
+	 * @param productNo the product number
+	 * @param username  the username
+	 * @param quantity  the quantity
+	 * @param longitude the longitude
+	 * @param latitude  the latitude
+	 * @return Successful if update is successful
 	 */
 	public String setNewStock(String productNo,String username, int quantity, float longitude,float latitude) {
 		int result = productRepository.setNewStock(productNo, username, quantity, longitude, latitude);
