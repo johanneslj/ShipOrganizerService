@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "Product")
 public class Product {
+
 	@Id
 	@Column(name = "PK_ProdID", nullable = false)
 	private int id;
