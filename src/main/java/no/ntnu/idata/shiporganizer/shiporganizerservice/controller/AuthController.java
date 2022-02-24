@@ -70,8 +70,6 @@ public class AuthController {
       if (userOptional.isPresent()) {
         User user = userOptional.get();
 
-        System.out.println(userService.isUserAdmin(user));
-
         System.out.println(JWT.require(HMAC512(jwtProps.getSecretCode().getBytes()))
             .build()
             .verify(user.getToken())
