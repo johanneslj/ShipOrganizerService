@@ -42,15 +42,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.addFilter(new JwtAuthenticationFilter(authenticationManager(), userService, jwtProperties))
 				.authorizeRequests()
 
-				// Permit login and registration
-				.antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
-				.antMatchers(HttpMethod.POST, "/auth/login").permitAll()
-				.antMatchers(HttpMethod.POST, "/auth/register").permitAll()
-				.antMatchers(HttpMethod.DELETE, "/api/user/delete-user").hasAnyRole("USER", "ADMIN")
-				.antMatchers(HttpMethod.GET, "/api/user/all-users").hasRole("ADMIN")
-				.anyRequest().authenticated()
-				.and().httpBasic().disable();
-	}
+
+        // Permit login and registration
+        .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
+        .antMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
+
+        // Permit password change
+        .antMatchers(HttpMethod.GET, "/api/user/send-verification-code").permitAll()
+        .antMatchers(HttpMethod.POST, "/api/user/set-password").permitAll()
+
+        // USER API
+        .antMatchers(HttpMethod.DELETE, "/api/user/delete-user").hasAnyRole("USER", "ADMIN")
+        .antMatchers(HttpMethod.GET, "/api/user/all-users").hasRole("ADMIN")
+        .antMatchers(HttpMethod.GET, "/api/user/check-role").hasAnyRole("USER", "ADMIN")
+        .antMatchers(HttpMethod.GET, "/api/user/name").hasAnyRole("USER", "ADMIN")
+        .antMatchers(HttpMethod.GET, "/api/user/departments").hasAnyRole("USER", "ADMIN")
+  
+  			.antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
+
+        .anyRequest().authenticated()
+        .and().httpBasic().disable();
+  }
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder authBuilder) {
