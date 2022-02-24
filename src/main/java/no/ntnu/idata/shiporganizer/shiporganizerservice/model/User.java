@@ -1,5 +1,6 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.model;
 
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,9 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * Represents a user of the ship organizer service.
+ * Implements UserDetails for use with Spring Security authenticatio
  *
  * @author johanneslj
  * @version 0.2
@@ -31,8 +35,7 @@ public class User {
   @Column(name = "Password", nullable = false)
   private String password;
 
-  // TODO Should be stored in database
-  @Transient
+  @Column(name = "Token")
   private String token;
 
   public User() {
@@ -88,7 +91,7 @@ public class User {
   }
 
   public String getPassword() {
-    return password;
+    return this.password;
   }
 
   public void setPassword(String password) {
@@ -101,5 +104,16 @@ public class User {
 
   public void setToken(String token) {
     this.token = token;
+  }
+
+  @Override
+  public String toString() {
+    return "User{" +
+        "id=" + id +
+        ", fullname='" + fullname + '\'' +
+        ", email='" + email + '\'' +
+        ", password='" + password + '\'' +
+        ", token='" + token + '\'' +
+        '}';
   }
 }
