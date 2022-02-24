@@ -80,7 +80,7 @@ public class UserService {
     System.out.println("Registered: " + getByEmail(user.getEmail()).orElseGet(User::new));
 
     // Sets new token for user and returns true on success.
-    return setTokenForNewUser(user.getEmail());
+    return setNewTokenForUser(user.getEmail());
   }
 
 
@@ -93,6 +93,10 @@ public class UserService {
     }
 
     User user = userOptional.get();
+
+    // Set new token each time verification code is requested.
+    setNewTokenForUser(user.getEmail());
+
     String verificationCode = user.getToken().substring(user.getToken().length() - 6);
 
     mailService.sendNewPasswordVerificationCode(user.getEmail(), verificationCode);
@@ -216,7 +220,7 @@ public class UserService {
    * @param email Email of the user.
    * @return True on success.
    */
-  private boolean setTokenForNewUser(String email) {
+  private boolean setNewTokenForUser(String email) {
     Optional<User> userOptional = getByEmail(email);
 
     if (!userOptional.isPresent()) {
