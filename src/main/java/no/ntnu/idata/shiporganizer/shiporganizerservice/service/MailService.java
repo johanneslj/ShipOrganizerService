@@ -24,4 +24,25 @@ public class MailService {
 
         return "ok";
     }
+
+    public void sendNewPasswordVerificationCode(String email, String code) {
+        SimpleMailMessage msg = new SimpleMailMessage();
+
+        msg.setTo(email);
+        msg.setSubject("Ship Organizer: Verification Code");
+        msg.setText("Here is your verification code: " + code);
+
+        javaMailSender.send(msg);
+    }
+
+    public void sendRegisteredEmail(String email) {
+        SimpleMailMessage msg = new SimpleMailMessage();
+
+        msg.setTo(email);
+        msg.setSubject("Ship Organizer: You have been registered!");
+        msg.setText("Your email has now been registered for the Ship Organizer app.\n" +
+            "You can now set a new password to complete the registration.");
+
+        javaMailSender.send(msg);
+    }
 }
