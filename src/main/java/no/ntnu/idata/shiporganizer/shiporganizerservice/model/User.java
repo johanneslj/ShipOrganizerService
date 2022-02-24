@@ -1,19 +1,14 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.model;
 
-import java.util.Collection;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * Represents a user of the ship organizer service.
- * Implements UserDetails for use with Spring Security authenticatio
+ * Implements UserDetails for use with Spring Security authentication.
  *
  * @author johanneslj
  * @version 0.2
