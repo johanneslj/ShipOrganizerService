@@ -3,6 +3,7 @@ package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.UserService;
 import org.json.JSONException;
@@ -37,6 +38,34 @@ public class UserController {
   @GetMapping("/all-users")
   public ResponseEntity<List<User>> getAllUsers() {
     return ResponseEntity.ok(userService.getAllUsers());
+  }
+
+  /**
+   * Gets the name of the user who owns the token.
+   *
+   * @param http Http Entity containing user's bearer token in header.
+   * @return 200 OK with name in body.
+   */
+  @GetMapping("/name")
+  public ResponseEntity<String> getName(HttpEntity<String> http) {
+    String token = getBearerToken(http);
+
+    // Gets name if user exists, else string is empty.
+    String name = userService.getByToken(token).orElseGet(() -> new User("", "")).getFullname();
+
+    return ResponseEntity.ok(name);
+  }
+
+  /**
+   * Gets the departments of the user who owns the token.
+   *
+   * @param entity HTTP entity containing user's token.
+   * @return 200 OK with departments as JSON array in body
+   */
+  @GetMapping("/departments")
+  public ResponseEntity<List<Department>> getDepartments(HttpEntity<String> entity) {
+    User user = userService.getByToken(getBearerToken(entity)).orElseGet(User::new);
+    return ResponseEntity.ok(userService.getDepartments(user));
   }
 
   /**

@@ -3,6 +3,7 @@ package no.ntnu.idata.shiporganizer.shiporganizerservice.auth;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
@@ -64,9 +65,14 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     // Get user optional by token from user service.
     Optional<User> user = userService.getByToken(token);
 
-    // Verify token is not expired.
-    if (JWT.require(HMAC512(jwtProperties.getSecretCode().getBytes())).build().verify(token)
-        .getExpiresAt().before(new Date())) {
+    try {
+      // Verify token is not expired.
+      if (JWT.require(HMAC512(jwtProperties.getSecretCode().getBytes())).build().verify(token)
+          .getExpiresAt().before(new Date())) {
+        return null;
+      }
+    } catch (JWTVerificationException e) {
+      System.err.println("Tried authentication with invalid token format: " + token);
       return null;
     }
 

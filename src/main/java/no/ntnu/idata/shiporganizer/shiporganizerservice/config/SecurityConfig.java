@@ -44,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Permit login and registration
         .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
-        .antMatchers(HttpMethod.POST, "/auth/register").permitAll() // TODO Change to only admin
+        .antMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
 
         // Permit password change
         .antMatchers(HttpMethod.GET, "/api/user/send-verification-code").permitAll()
@@ -54,6 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers(HttpMethod.DELETE, "/api/user/delete-user").hasAnyRole("USER", "ADMIN")
         .antMatchers(HttpMethod.GET, "/api/user/all-users").hasRole("ADMIN")
         .antMatchers(HttpMethod.GET, "/api/user/check-role").hasAnyRole("USER", "ADMIN")
+        .antMatchers(HttpMethod.GET, "/api/user/name").hasAnyRole("USER", "ADMIN")
+        .antMatchers(HttpMethod.GET, "/api/user/departments").hasAnyRole("USER", "ADMIN")
+
 
         .anyRequest().authenticated()
         .and().httpBasic().disable();
