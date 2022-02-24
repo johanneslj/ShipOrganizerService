@@ -2,11 +2,15 @@ package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Product;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.ProductService;
+import org.json.JSONObject;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static java.lang.Float.parseFloat;
 
 
 /**
@@ -53,12 +57,26 @@ public class ProductContoller {
 	/**
 	 * Set new stock
 	 *
-	 * @param requestBody the request body
+	 * @param http the request body
 	 * @return 200 OK or 204 No content
 	 */
 	@PostMapping(path = "/setNewStock")
-	public ResponseEntity setNewStock(@RequestBody String requestBody){
-		if(productService.setNewStock(requestBody).equals("Success")){
+	public ResponseEntity setNewStock(HttpEntity<String> http){
+		String Success = "";
+		try{
+			JSONObject json = new JSONObject(http.getBody());
+
+			String productNumber = json.optString("productnumber");
+			String username = json.getString("username");
+			int quantity = json.optInt("quantity");
+			float latitude = parseFloat(json.optString("latitude"));
+			float longitude = parseFloat(json.optString("longitude"));
+
+			Success = productService.setNewStock(productNumber,username,quantity,latitude,longitude);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if(Success.equals("Success")){
 			return ResponseEntity.ok().build();
 		}
 		return ResponseEntity.noContent().build();
