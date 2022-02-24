@@ -72,6 +72,11 @@ public class UserPrincipal implements UserDetails {
 
   @Override
   public boolean isEnabled() {
-    return userService.getByEmail(user.getEmail()).isPresent();
+    // If mail does not exist an empty user object is created.
+    User user = userService.getByEmail(this.user.getEmail()).orElseGet(User::new);
+
+    // Checks that the password is set and not empty.
+    // Password is empty when admin has registered the user and the user has not yet set a password.
+    return user.getPassword().length() > 0;
   }
 }
