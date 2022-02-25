@@ -64,8 +64,8 @@ public class OrderController {
 	 * @return the pending orders
 	 */
 	@GetMapping(path = "/pending")
-	public List<Orders> getPendingOrders(@RequestBody String requestBody) {
-		return orderService.getPendingOrders(requestBody);
+	public ResponseEntity<List<Orders>> getPendingOrders() {
+		return ResponseEntity.ok(orderService.getPendingOrders(""));
 	}
 
 	/**
