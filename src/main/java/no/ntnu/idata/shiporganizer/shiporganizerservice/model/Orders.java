@@ -20,12 +20,6 @@ public class Orders {
 	@Column(name = "Imagename")
 	private String imagename;
 
-	@Column(name = "FK_DepartmentID")
-	private int departmentID;
-
-	@Column(name = "Status")
-	private int status;
-
 	private String DepartmentName;
 
 
@@ -54,24 +48,6 @@ public class Orders {
 	 */
 	public String getImagename() {
 		return imagename;
-	}
-
-	/**
-	 * Gets department id.
-	 *
-	 * @return the department id
-	 */
-	public int getDepartmentID() {
-		return departmentID;
-	}
-
-	/**
-	 * Gets status.
-	 *
-	 * @return the status
-	 */
-	public int getStatus() {
-		return status;
 	}
 
 	/**
