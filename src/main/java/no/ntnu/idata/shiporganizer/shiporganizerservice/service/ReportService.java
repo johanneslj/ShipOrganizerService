@@ -62,11 +62,14 @@ public class ReportService {
         stringReports.forEach(reportString -> {
             List<String> reportBits = Arrays.asList(reportString.split(","));
             Report report = new Report(reportBits.get(1),
-                Integer.parseInt(reportBits.get(2)),
+                Math.abs(Integer.parseInt(reportBits.get(2))),
                 Float.parseFloat(reportBits.get(3)),
                 Float.parseFloat(reportBits.get(4)),
                 getDateFromString(reportBits.get(5)),
                 reportBits.get(6));
+            if(report.getFullName() == null || report.getFullName().equals("null")) {
+                report.setFullName("No name registered");
+            }
             markers.add(report);
         });
         return markers;
