@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -98,10 +99,18 @@ public class OrderController {
 	 *
 	 * @return the confirmed orders
 	 */
-	@GetMapping(path = "/user/pending")
-	@ResponseBody
-	public ResponseEntity<List<Orders>> getUserPendingOrders() {
-		return ResponseEntity.ok(orderService.getPendingOrders("Deck"));
+	@PostMapping(path = "/user/pending")
+	public ResponseEntity<List<Orders>> getUserPendingOrders(HttpEntity<String> http) {
+		List<Orders> pendingOrders = new ArrayList<>();
+		try{
+			JSONObject json = new JSONObject(http.getBody());
+			String department = json.getString("department");
+			pendingOrders = orderService.getPendingOrders(department);
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(pendingOrders);
 	}
 
 	/**
