@@ -65,12 +65,9 @@ public class OrderService {
 	 * @param requestBody the request body containing users department and image-name
 	 * @return Success or empty depending on if the query completed or not
 	 */
-	public String insertNewOrder(String requestBody){
-		String[] bits = requestBody.split(",");
-		String department = bits[0];
-		String imagename = bits[1];
+	public String insertNewOrder(String department,String imageName){
 		//TODO Send image to image server
-		int result = orderRepository.insertNewOrder(department,imagename);
+		int result = orderRepository.insertNewOrder(department,imageName);
 		if(result == 1){
 			return "Success";
 		}
@@ -78,17 +75,15 @@ public class OrderService {
 	}
 
 	/**
-	 * Updates order from pending to confirmed
+	 * Updates order from pending to confirm
 	 *
-	 * @param requestBody the request body containing users department and image-name
+	 * @param department the department of the user.
+	 * @param imageName File name of the selected image.
 	 * @return Success or empty depending on if the query completed or not
 	 */
-	public String updateOrder(String requestBody){
-		String[] bits = requestBody.split(",");
-		String department = bits[0];
-		String imagename = bits[1];
+	public String updateOrder(String department, String imageName){
 		//TODO Send image to image server
-		int result = orderRepository.updateOrder(department,imagename);
+		int result = orderRepository.updateOrder(department,imageName);
 		if(result == 1){
 			return "Success";
 		}
