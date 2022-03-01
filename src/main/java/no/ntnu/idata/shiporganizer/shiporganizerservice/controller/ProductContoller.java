@@ -2,12 +2,14 @@ package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Product;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.ProductService;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Float.parseFloat;
@@ -37,10 +39,18 @@ public class ProductContoller {
 	 *
 	 * @return the inventory
 	 */
-	@GetMapping(path = "/inventory")
-	@ResponseBody
-	public List<Product> getInventory() {
-		return productService.getProductInventory("");
+	@PostMapping(path = "/inventory")
+	public List<Product> getInventory(HttpEntity<String> http) {
+		List<Product> products = new ArrayList<>();
+		try {
+			JSONObject json = new JSONObject(http.getBody());
+			String department = json.getString("department");
+			products = productService.getProductInventory(department);
+
+		}catch (JSONException e){
+
+		}
+		return products;
 	}
 
 	/**
@@ -48,10 +58,18 @@ public class ProductContoller {
 	 *
 	 * @return the preferred inventory
 	 */
-	@GetMapping(path = "/RecommendedInventory")
-	@ResponseBody
-	public List<Product> getRecommendedInventory() {
-		return productService.getProductRecommendedInventory("");
+	@PostMapping(path = "/RecommendedInventory")
+	public List<Product> getRecommendedInventory(HttpEntity<String> http) {
+		List<Product> products = new ArrayList<>();
+		try {
+			JSONObject json = new JSONObject(http.getBody());
+			String department = json.getString("department");
+			products = productService.getProductRecommendedInventory(department);
+
+		}catch (JSONException e){
+
+		}
+		return products;
 	}
 
 	/**
