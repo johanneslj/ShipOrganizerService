@@ -72,7 +72,7 @@ public class ProductContoller {
 			float latitude = parseFloat(json.optString("latitude"));
 			float longitude = parseFloat(json.optString("longitude"));
 
-			Success = productService.setNewStock(productNumber,username,quantity,latitude,longitude);
+			Success = productService.setNewStock(productNumber,username,quantity,longitude,latitude);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

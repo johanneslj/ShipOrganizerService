@@ -2,11 +2,15 @@ package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Orders;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.OrderService;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,8 +42,19 @@ public class OrderController {
 	 * @return 200 OK or 204 No content
 	 */
 	@PostMapping (path = "/new")
-	public ResponseEntity<String> insertNewOrder(@RequestBody String requestBody) {
-		if(orderService.insertNewOrder(requestBody).equals("Success")){
+	public ResponseEntity<String> insertNewOrder(HttpEntity<String> http) {
+		String success = "";
+		try{
+			JSONObject json = new JSONObject(http.getBody());
+
+			String imagename = json.optString("imageName");
+			String department = json.getString("department");
+			success = orderService.insertNewOrder(department,imagename);
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+		if(success.equals("Success")){
 			return ResponseEntity.ok().build();
 		}
 		return ResponseEntity.noContent().build();
@@ -51,8 +66,19 @@ public class OrderController {
 	 * @return 200 OK or 204 No content
 	 */
 	@PostMapping (path = "/update")
-	public ResponseEntity<String> updateOrder(@RequestBody String requestBody) {
-		if(orderService.updateOrder(requestBody).equals("Success")){
+	public ResponseEntity<String> updateOrder(HttpEntity<String> http){
+		String success = "";
+		try{
+			JSONObject json = new JSONObject(http.getBody());
+
+			String imagename = json.optString("imageName");
+			String department = json.getString("department");
+			success = orderService.updateOrder(department,imagename);
+		} 
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+		if(success.equals("Success")){
 			return ResponseEntity.ok().build();
 		}
 		return ResponseEntity.noContent().build();
@@ -63,9 +89,28 @@ public class OrderController {
 	 *
 	 * @return the pending orders
 	 */
-	@GetMapping(path = "/pending")
-	public List<Orders> getPendingOrders(@RequestBody String requestBody) {
-		return orderService.getPendingOrders(requestBody);
+	@GetMapping(path = "/admin/pending")
+	public ResponseEntity<List<Orders>> getPendingOrders() {
+		return ResponseEntity.ok(orderService.getPendingOrders(""));
+	}
+
+	/**
+	 * Gets confirmed orders.
+	 *
+	 * @return the confirmed orders
+	 */
+	@PostMapping(path = "/user/pending")
+	public ResponseEntity<List<Orders>> getUserPendingOrders(HttpEntity<String> http) {
+		List<Orders> pendingOrders = new ArrayList<>();
+		try{
+			JSONObject json = new JSONObject(http.getBody());
+			String department = json.getString("department");
+			pendingOrders = orderService.getPendingOrders(department);
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(pendingOrders);
 	}
 
 	/**
@@ -75,8 +120,8 @@ public class OrderController {
 	 */
 	@GetMapping(path = "/confirmed")
 	@ResponseBody
-	public List<Orders> getConfirmedOrders(@RequestBody String requestBody) {
-		return orderService.getConfirmedOrders(requestBody);
+	public ResponseEntity<List<Orders>> getAdminConfirmedOrders() {
+		return ResponseEntity.ok(orderService.getConfirmedOrders(""));
 	}
 
 
