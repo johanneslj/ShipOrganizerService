@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Report;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.ReportRepository;
@@ -82,11 +83,13 @@ public class ReportService {
      * @return a date, generated from the String
      */
     private Date getDateFromString(String dateString) {
-        Date date = new Date();
+        Date date;
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.mss");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.FRANCE);
             date = formatter.parse(dateString);
+            date.setTime(date.getTime() + 3600000);
         } catch (ParseException e) {
+            date = new Date();
         }
 
         return date;
