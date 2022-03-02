@@ -1,9 +1,11 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
+import no.ntnu.idata.shiporganizer.shiporganizerservice.model.PublicUserModel;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.UserService;
 import org.json.JSONException;
@@ -33,11 +35,17 @@ public class UserController {
   }
 
   /**
-   * Gets a list of all users.
+   * Gets a list of all users with non-sensitive information.
    */
   @GetMapping("/all-users")
-  public ResponseEntity<List<User>> getAllUsers() {
-    return ResponseEntity.ok(userService.getAllUsers());
+  public ResponseEntity<List<PublicUserModel>> getAllPublicUsers() {
+    List<PublicUserModel> publicUsers = new ArrayList<>();
+
+    for (User user : userService.getAllUsers()) {
+      publicUsers.add(new PublicUserModel(user.getFullname(), user.getEmail()));
+    }
+
+    return ResponseEntity.ok(publicUsers);
   }
 
   /**
