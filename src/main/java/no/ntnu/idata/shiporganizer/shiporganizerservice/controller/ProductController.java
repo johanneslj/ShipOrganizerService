@@ -40,17 +40,16 @@ public class ProductController {
 	 * @return the inventory
 	 */
 	@PostMapping(path = "/inventory")
-	public List<Product> getInventory(HttpEntity<String> http) {
-		List<Product> products = new ArrayList<>();
+	public ResponseEntity<List<Product>> getInventory(HttpEntity<String> http) {
 		try {
 			JSONObject json = new JSONObject(http.getBody());
 			String department = json.getString("department");
-			products = productService.getProductInventory(department);
+			List<Product> products = productService.getProductInventory(department);
 
-		}catch (JSONException e){
-
+			return ResponseEntity.ok(products);
+		} catch (JSONException e) {
+			return ResponseEntity.badRequest().build();
 		}
-		return products;
 	}
 
 	/**
@@ -59,17 +58,17 @@ public class ProductController {
 	 * @return the preferred inventory
 	 */
 	@PostMapping(path = "/RecommendedInventory")
-	public List<Product> getRecommendedInventory(HttpEntity<String> http) {
-		List<Product> products = new ArrayList<>();
+	public ResponseEntity<List<Product>> getRecommendedInventory(HttpEntity<String> http) {
 		try {
 			JSONObject json = new JSONObject(http.getBody());
 			String department = json.getString("department");
-			products = productService.getProductRecommendedInventory(department);
 
-		}catch (JSONException e) {
-			
+			List<Product> products = productService.getProductRecommendedInventory(department);
+
+			return ResponseEntity.ok(products);
+		} catch (JSONException e) {
+			return ResponseEntity.badRequest().build();
 		}
-		return products;
 	}
 
 	/**
@@ -100,7 +99,4 @@ public class ProductController {
 		}
 		return ResponseEntity.badRequest().build();
 	}
-
-
-
 }
