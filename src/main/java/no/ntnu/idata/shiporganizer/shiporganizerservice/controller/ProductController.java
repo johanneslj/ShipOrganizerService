@@ -16,21 +16,21 @@ import static java.lang.Float.parseFloat;
 
 
 /**
- * The type Product contoller.
+ * The type Product controller.
  */
 @RestController
-@RequestMapping(value ="/product")
+@RequestMapping(value = "/api/product")
 @Transactional
-public class ProductContoller {
+public class ProductController {
 
 	private final ProductService productService;
 
 	/**
-	 * Instantiates a new Product contoller.
+	 * Instantiates a new Product controller.
 	 *
 	 * @param productService the product service
 	 */
-	ProductContoller(ProductService productService) {
+	ProductController(ProductService productService) {
 		this.productService = productService;
 	}
 
@@ -66,8 +66,8 @@ public class ProductContoller {
 			String department = json.getString("department");
 			products = productService.getProductRecommendedInventory(department);
 
-		}catch (JSONException e){
-
+		}catch (JSONException e) {
+			
 		}
 		return products;
 	}
@@ -79,25 +79,26 @@ public class ProductContoller {
 	 * @return 200 OK or 204 No content
 	 */
 	@PostMapping(path = "/setNewStock")
-	public ResponseEntity setNewStock(HttpEntity<String> http){
+	public ResponseEntity<String> setNewStock(HttpEntity<String> http) {
 		String Success = "";
-		try{
+		try {
 			JSONObject json = new JSONObject(http.getBody());
 
-			String productNumber = json.optString("productnumber");
+			String productNumber = json.optString("productNumber");
 			String username = json.getString("username");
 			int quantity = json.optInt("quantity");
 			float latitude = parseFloat(json.optString("latitude"));
 			float longitude = parseFloat(json.optString("longitude"));
 
-			Success = productService.setNewStock(productNumber,username,quantity,longitude,latitude);
+			Success = productService.setNewStock(productNumber, username, quantity, longitude,
+					latitude);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(Success.equals("Success")){
-			return ResponseEntity.ok().build();
+		if (Success.equals("Success")) {
+			return ResponseEntity.ok("success");
 		}
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.badRequest().build();
 	}
 
 
