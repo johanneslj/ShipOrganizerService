@@ -29,7 +29,6 @@ public class ReportController {
 
     @GetMapping("/reports-with-name={name}")
     public ResponseEntity<Map<String, List<Report>>> getReportsWithName(@PathVariable(value = "name") String name) {
-        System.out.println(name);
         return ResponseEntity.ok(reportService.getMapMarkersOnName(name));
     }
 
