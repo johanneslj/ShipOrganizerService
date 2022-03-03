@@ -18,36 +18,36 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private final PasswordEncoder passwordEncoder;
-	private final UserPrincipalService userPrincipalService;
-	private final UserService userService;
-	private final JWTProperties jwtProperties;
+  private final PasswordEncoder passwordEncoder;
+  private final UserPrincipalService userPrincipalService;
+  private final UserService userService;
+  private final JWTProperties jwtProperties;
 
-	public SecurityConfig(PasswordEncoder passwordEncoder,
-						  UserPrincipalService userPrincipalService,
-						  UserService userService,
-						  JWTProperties jwtProperties) {
-		this.passwordEncoder = passwordEncoder;
-		this.userPrincipalService = userPrincipalService;
-		this.userService = userService;
-		this.jwtProperties = jwtProperties;
-	}
+  public SecurityConfig(PasswordEncoder passwordEncoder,
+                        UserPrincipalService userPrincipalService,
+                        UserService userService,
+                        JWTProperties jwtProperties) {
+    this.passwordEncoder = passwordEncoder;
+    this.userPrincipalService = userPrincipalService;
+    this.userService = userService;
+    this.jwtProperties = jwtProperties;
+  }
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-				.csrf().disable()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and()
-				.addFilter(new JwtAuthenticationFilter(authenticationManager(), userService, jwtProperties))
-				.authorizeRequests()
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http
+        .csrf().disable()
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .addFilter(new JwtAuthenticationFilter(authenticationManager(), userService, jwtProperties))
+        .authorizeRequests()
 
 
         // Permit login and registration
         .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
         .antMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
 
-        // Permit password change
+        // Permit password change/Forgot password
         .antMatchers(HttpMethod.GET, "/api/user/send-verification-code").permitAll()
         .antMatchers(HttpMethod.POST, "/api/user/set-password").permitAll()
 
@@ -57,24 +57,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers(HttpMethod.GET, "/api/user/check-role").hasAnyRole("USER", "ADMIN")
         .antMatchers(HttpMethod.GET, "/api/user/name").hasAnyRole("USER", "ADMIN")
         .antMatchers(HttpMethod.GET, "/api/user/departments").hasAnyRole("USER", "ADMIN")
-  
-  			.antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
+
+        // PRODUCTS
+        .antMatchers(HttpMethod.GET, "/api/product/inventory").hasAnyRole("USER", "ADMIN")
+
+        // CHECK CONNECTIVITY TO SERVER
+        .antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
 
         .anyRequest().authenticated()
         .and().httpBasic().disable();
   }
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder authBuilder) {
-		authBuilder.authenticationProvider(daoAuthenticationProvider());
-	}
+  @Override
+  protected void configure(AuthenticationManagerBuilder authBuilder) {
+    authBuilder.authenticationProvider(daoAuthenticationProvider());
+  }
 
-	@Bean
-	DaoAuthenticationProvider daoAuthenticationProvider() {
-		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-		daoAuthenticationProvider.setUserDetailsService(userPrincipalService);
+  @Bean
+  DaoAuthenticationProvider daoAuthenticationProvider() {
+    DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+    daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+    daoAuthenticationProvider.setUserDetailsService(userPrincipalService);
 
-		return daoAuthenticationProvider;
-	}
+    return daoAuthenticationProvider;
+  }
 }
