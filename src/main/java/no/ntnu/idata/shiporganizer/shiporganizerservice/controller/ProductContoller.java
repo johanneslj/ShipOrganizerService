@@ -16,7 +16,7 @@ import static java.lang.Float.parseFloat;
 
 
 /**
- * The type Product contoller.
+ * The type Product controller.
  */
 @RestController
 @RequestMapping(value = "/product")
@@ -26,7 +26,7 @@ public class ProductContoller {
 	private final ProductService productService;
 
 	/**
-	 * Instantiates a new Product contoller.
+	 * Instantiates a new Product controller.
 	 *
 	 * @param productService the product service
 	 */
