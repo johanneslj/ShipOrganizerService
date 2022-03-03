@@ -19,9 +19,9 @@ import static java.lang.Float.parseFloat;
  * The type Product controller.
  */
 @RestController
-@RequestMapping(value = "/product")
+@RequestMapping(value = "/api/product")
 @Transactional
-public class ProductContoller {
+public class ProductController {
 
 	private final ProductService productService;
 
@@ -30,7 +30,7 @@ public class ProductContoller {
 	 *
 	 * @param productService the product service
 	 */
-	ProductContoller(ProductService productService) {
+	ProductController(ProductService productService) {
 		this.productService = productService;
 	}
 
@@ -40,17 +40,16 @@ public class ProductContoller {
 	 * @return the inventory
 	 */
 	@PostMapping(path = "/inventory")
-	public List<Product> getInventory(HttpEntity<String> http) {
-		List<Product> products = new ArrayList<>();
+	public ResponseEntity<List<Product>> getInventory(HttpEntity<String> http) {
 		try {
 			JSONObject json = new JSONObject(http.getBody());
 			String department = json.getString("department");
-			products = productService.getProductInventory(department);
+			List<Product> products = productService.getProductInventory(department);
 
+			return ResponseEntity.ok(products);
 		} catch (JSONException e) {
-
+			return ResponseEntity.badRequest().build();
 		}
-		return products;
 	}
 
 	/**
@@ -59,16 +58,17 @@ public class ProductContoller {
 	 * @return the preferred inventory
 	 */
 	@PostMapping(path = "/RecommendedInventory")
-	public List<Product> getRecommendedInventory(HttpEntity<String> http) {
-		List<Product> products = new ArrayList<>();
+	public ResponseEntity<List<Product>> getRecommendedInventory(HttpEntity<String> http) {
 		try {
 			JSONObject json = new JSONObject(http.getBody());
 			String department = json.getString("department");
-			products = productService.getProductRecommendedInventory(department);
-		} catch (JSONException e) {
 
+			List<Product> products = productService.getProductRecommendedInventory(department);
+
+			return ResponseEntity.ok(products);
+		} catch (JSONException e) {
+			return ResponseEntity.badRequest().build();
 		}
-		return products;
 	}
 
 	/**
@@ -78,26 +78,25 @@ public class ProductContoller {
 	 * @return 200 OK or 204 No content
 	 */
 	@PostMapping(path = "/setNewStock")
-	public ResponseEntity setNewStock(HttpEntity<String> http) {
+	public ResponseEntity<String> setNewStock(HttpEntity<String> http) {
 		String Success = "";
 		try {
 			JSONObject json = new JSONObject(http.getBody());
 
-			String productNumber = json.optString("productnumber");
+			String productNumber = json.optString("productNumber");
 			String username = json.getString("username");
 			int quantity = json.optInt("quantity");
 			float latitude = parseFloat(json.optString("latitude"));
 			float longitude = parseFloat(json.optString("longitude"));
 
-			Success = productService.setNewStock(productNumber, username, quantity, longitude, latitude);
+			Success = productService.setNewStock(productNumber, username, quantity, longitude,
+					latitude);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		if (Success.equals("Success")) {
-			return ResponseEntity.ok().build();
+			return ResponseEntity.ok("success");
 		}
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.badRequest().build();
 	}
-
-
 }
