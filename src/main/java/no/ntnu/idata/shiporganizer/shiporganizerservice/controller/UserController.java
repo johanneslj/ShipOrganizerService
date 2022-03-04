@@ -41,6 +41,8 @@ public class UserController {
   public ResponseEntity<List<PublicUserModel>> getAllPublicUsers() {
     List<PublicUserModel> publicUsers = new ArrayList<>();
 
+    System.out.println("Getting all users..");
+
     for (User user : userService.getAllUsers()) {
       publicUsers.add(new PublicUserModel(user.getFullname(), user.getEmail()));
     }
