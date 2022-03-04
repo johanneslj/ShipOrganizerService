@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Service
 public class ProductService {
-	@Autowired
+
 	private final ProductRepository productRepository;
 
 	/**
@@ -29,23 +29,21 @@ public class ProductService {
 	/**
 	 * Gets product inventory.
 	 *
-	 * @param dep the users department
+	 * @param department the users department
 	 * @return the product inventory
 	 */
-	public List<Product> getProductInventory(String dep) {
-		List<Product> products = productRepository.getProductInventory(dep);
-		return products;
+	public List<Product> getProductInventory(String department) {
+		return productRepository.getProductInventory(department);
 	}
 
 	/**
 	 * Gets product preferred inventory.
 	 *
-	 * @param dep the users department
+	 * @param department the users department
 	 * @return the product preferred inventory
 	 */
-	public List<Product> getProductRecommendedInventory(String dep) {
-		List<Product> products = productRepository.getProductRecommendedInventory(dep);
-		return products;
+	public List<Product> getProductRecommendedInventory(String department) {
+		return productRepository.getProductRecommendedInventory(department);
 	}
 
 
