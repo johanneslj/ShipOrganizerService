@@ -1,11 +1,11 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.service;
 
-import java.util.ArrayList;
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
 import java.util.Optional;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
-import no.ntnu.idata.shiporganizer.shiporganizerservice.model.UserDepartment;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.DepartmentRepository;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.UserDepartmentRepository;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.UserRepository;
@@ -66,23 +66,21 @@ public class UserService {
   public boolean register(User user, List<Department> departments) {
     userRepository.addUser(user.getEmail(), "", user.getFullname());
 
-    StringBuilder departmentsString = new StringBuilder();
-    for (Department department : departments) {
-      departmentsString.append(department.getName());
-      departmentsString.append(",");
-    }
-
-    userDepartmentRepository.updateUserDepartment(user.getEmail(), departmentsString.toString());
+    userDepartmentRepository.updateUserDepartment(user.getEmail(),
+        getDepartmentsString(departments));
     mailService.sendRegisteredEmail(user.getEmail());
 
-    // TODO Remove this?
-    // Prints the registered user, if suer is not found in the repository a new empty user is printed.
-    System.out.println("Registered: " + getByEmail(user.getEmail()).orElseGet(User::new));
-
-    // Sets new token for user and returns true on success.
     return setNewTokenForUser(user.getEmail());
   }
 
+  private String getDepartmentsString(List<Department> departments) {
+    StringBuilder departmentsString = new StringBuilder();
+    departments.forEach(department -> {
+      departmentsString.append(department.getName());
+      departmentsString.append(",");
+    });
+    return departmentsString.toString();
+  }
 
   public boolean sendNewPasswordEmail(String email) {
     Optional<User> userOptional = userRepository.findFirstByEmail(email);
@@ -109,19 +107,12 @@ public class UserService {
                                                     String verificationCode,
                                                     String password) {
     Optional<User> userOptional = userRepository.findFirstByEmail(email);
-    if (userOptional.isEmpty()) {
-      return false;
-    }
-    User user = userOptional.get();
-    if (!checkValidVerificationCode(email, verificationCode)) {
-      return false;
-    }
+    userOptional.ifPresent(user -> {
+      user.setPassword(passwordEncoder.encode(password));
+      userRepository.save(user);
+    });
 
-    // Encrypt new password and save user.
-    user.setPassword(passwordEncoder.encode(password));
-    userRepository.save(user);
-
-    return true;
+    return checkValidVerificationCode(email, verificationCode) && userOptional.isPresent();
   }
 
   /**
@@ -176,18 +167,14 @@ public class UserService {
    * @return List if departments the user is a member of.
    */
   public List<Department> getDepartments(User user) {
-    List<Department> departments = new ArrayList<>();
-    List<UserDepartment> userDepartments =
-        userDepartmentRepository.getUserDepartmentsByUserID(user.getId());
-
-    
-    for (UserDepartment userDepartment : userDepartments) {
-      Optional<Department> department =
-          departmentRepository.findDepartmentById(userDepartment.getDepartmentID());
-      department.ifPresent(departments::add);
-      System.out.println(department);
-    }
-    return departments;
+    return userDepartmentRepository
+        .getUserDepartmentsByUserID(user.getId())
+        .stream()
+        .map(userDepartment -> departmentRepository.findDepartmentById(
+            userDepartment.getDepartmentID()))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(toList());
   }
 
   /**
@@ -199,14 +186,11 @@ public class UserService {
   private boolean setNewTokenForUser(String email) {
     Optional<User> userOptional = getByEmail(email);
 
-    if (!userOptional.isPresent()) {
-      return false;
-    }
+    userOptional.ifPresent(user -> {
+      user.setToken(loginService.buildJWT(user.getId(), user.getEmail(), user.getFullname()));
+      userRepository.save(user);
+    });
 
-    User user = userOptional.get();
-    user.setToken(loginService.buildJWT(user.getId(), user.getEmail(), user.getFullname()));
-    userRepository.save(user);
-
-    return true;
+    return userOptional.isPresent();
   }
 }
