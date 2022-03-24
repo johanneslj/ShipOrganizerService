@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,14 +28,25 @@ public class ProductService {
 
 
 	/**
-	 * Gets product inventory.
+	 * Gets initial product inventory.
 	 *
 	 * @param department the users department
 	 * @return the product inventory
 	 */
-	public List<Product> getProductInventory(String department) {
-		return productRepository.getProductInventory(department);
+	public List<Product> getInitialProductInventory(String department) {
+		return productRepository.getInitialProductInventory(department);
 	}
+
+	/**
+	 * Gets updated product inventory.
+	 *
+	 * @param department the users department
+	 * @return the product inventory
+	 */
+	public List<Product> getUpdatedProductInventory(String department, Date date) {
+		return productRepository.getUpdatedProductInventory(department,date);
+	}
+
 
 	/**
 	 * Gets product preferred inventory.
