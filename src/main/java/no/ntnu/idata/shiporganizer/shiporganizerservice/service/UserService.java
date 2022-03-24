@@ -86,19 +86,12 @@ public class UserService {
 
   public boolean sendNewPasswordEmail(String email) {
     Optional<User> userOptional = userRepository.findFirstByEmail(email);
-
-    // If user/email does not exist, we cannot set a new password.
-    if (!userOptional.isPresent()) {
+    if (userOptional.isEmpty()) {
       return false;
     }
-
     User user = userOptional.get();
-
-    // Set new token each time verification code is requested.
     setNewTokenForUser(user.getEmail());
-
     String verificationCode = user.getToken().substring(user.getToken().length() - 6);
-
     mailService.sendNewPasswordVerificationCode(user.getEmail(), verificationCode);
 
     return true;
@@ -112,16 +105,14 @@ public class UserService {
    * @param password         New password to set for user.
    * @return True on success.
    */
-  public boolean setNewPasswordWithVerificationCode(String email, String verificationCode,
+  public boolean setNewPasswordWithVerificationCode(String email,
+                                                    String verificationCode,
                                                     String password) {
     Optional<User> userOptional = userRepository.findFirstByEmail(email);
-
-    if (!userOptional.isPresent()) {
+    if (userOptional.isEmpty()) {
       return false;
     }
-
     User user = userOptional.get();
-
     if (!checkValidVerificationCode(email, verificationCode)) {
       return false;
     }
@@ -142,20 +133,12 @@ public class UserService {
    */
   public boolean checkValidVerificationCode(String email, String verificationCode) {
     Optional<User> userOptional = userRepository.findFirstByEmail(email);
-
-    // If user/email does not exist, we cannot set a new password.
-    if (!userOptional.isPresent()) {
+    if (userOptional.isEmpty()) {
       return false;
     }
-
     User user = userOptional.get();
-
     // Check that verification code is correct. Verification code is last 6 characters in token.
-    if (!user.getToken().substring(user.getToken().length() - 6).equals(verificationCode)) {
-      return false;
-    }
-
-    return true;
+    return user.getToken().substring(user.getToken().length() - 6).equals(verificationCode);
   }
 
   /**
@@ -177,25 +160,17 @@ public class UserService {
    */
   public boolean isUserAdmin(String token) {
     Optional<User> userOptional = getByToken(token);
-
-    if (!userOptional.isPresent()) {
+    if (userOptional.isEmpty()) {
       return false;
     }
-
     User user = userOptional.get();
-
     List<Department> departments = getDepartments(user);
 
-    for (Department department : departments) {
-      if (department.getRights() == 1) {
-        return true;
-      }
-    }
-    return false;
+    return departments.stream().anyMatch(department -> department.getRights() == 1);
   }
 
   /**
-   * Get all departments user is a member of.
+   * Get all departments that user is a member of.
    *
    * @param user User to get departments of.
    * @return List if departments the user is a member of.
@@ -205,6 +180,7 @@ public class UserService {
     List<UserDepartment> userDepartments =
         userDepartmentRepository.getUserDepartmentsByUserID(user.getId());
 
+    
     for (UserDepartment userDepartment : userDepartments) {
       Optional<Department> department =
           departmentRepository.findDepartmentById(userDepartment.getDepartmentID());
