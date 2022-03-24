@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,14 +27,25 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	 * @param dep Users selected department
 	 * @return String list from the database
 	 */
-	@Query(value = "EXEC SelectAll @Calltime='Inventory' , @Department= :dep , @Username='', @ProductName='';",nativeQuery = true)
-	List<Product> getProductInventory(@Param(value = "dep") String dep);
+	@Query(value = "EXEC SelectAll @Calltime='InitialInventory' , @Department= :dep , @Username='', @ProductName='' , @DateTime='';",nativeQuery = true)
+	List<Product> getInitialProductInventory(@Param(value = "dep") String dep);
+
+	/**
+	 * Gets all the products from the database with current stock
+	 * @param dep Users selected department
+	 * @param date last time user fetched the inventory
+	 * @return String list from the database
+	 */
+	@Query(value = "EXEC SelectAll @Calltime='UpdatedInventory' , @Department= :dep , @Username='', @ProductName='' , @DateTime=:date;",nativeQuery = true)
+	List<Product> getUpdatedProductInventory(@Param(value = "dep") String dep, @Param(value = "date") Date date);
+
+
 	/**
 	 * Gets all the products from the database with the difference in stock and desired stock
 	 * @param dep Users selected department
 	 * @return String list from the database
 	 */
-	@Query(value = "EXEC SelectAll @Calltime='Recommended' , @Department= :dep , @Username='', @ProductName='';",nativeQuery = true)
+	@Query(value = "EXEC SelectAll @Calltime='Recommended' , @Department= :dep , @Username='', @ProductName='',@DateTime='';",nativeQuery = true)
 	List<Product> getProductRecommendedInventory(@Param(value = "dep") String dep);
 
 
