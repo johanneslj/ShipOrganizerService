@@ -1,9 +1,9 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.PublicUserModel;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
@@ -39,31 +39,25 @@ public class UserController {
    */
   @GetMapping("/all-users")
   public ResponseEntity<List<PublicUserModel>> getAllPublicUsers() {
-    List<PublicUserModel> publicUsers = new ArrayList<>();
-
-    System.out.println("Getting all users..");
-
-    for (User user : userService.getAllUsers()) {
-      publicUsers.add(new PublicUserModel(user.getFullname(), user.getEmail()));
-    }
-
-    return ResponseEntity.ok(publicUsers);
+    return ResponseEntity.ok(
+        userService.getAllUsers().stream()
+            .map(user -> new PublicUserModel(user.getFullname(), user.getEmail()))
+            .collect(Collectors.toList()));
   }
 
   /**
    * Gets the name of the user who owns the token.
    *
-   * @param http Http Entity containing user's bearer token in header.
+   * @param entity Http Entity containing user's bearer token in header.
    * @return 200 OK with name in body.
    */
   @GetMapping("/name")
-  public ResponseEntity<String> getName(HttpEntity<String> http) {
-    String token = getBearerToken(http);
-
-    // Gets name if user exists, else string is empty.
-    String name = userService.getByToken(token).orElseGet(() -> new User("", "")).getFullname();
-
-    return ResponseEntity.ok(name);
+  public ResponseEntity<String> getName(HttpEntity<String> entity) {
+    return ResponseEntity.ok(
+        userService
+            .getByToken(getBearerTokenFromHttpEntity(entity))
+            .orElseGet(() -> new User("", ""))
+            .getFullname());
   }
 
   /**
@@ -74,7 +68,7 @@ public class UserController {
    */
   @GetMapping("/departments")
   public ResponseEntity<List<Department>> getDepartments(HttpEntity<String> entity) {
-    User user = userService.getByToken(getBearerToken(entity)).orElseGet(User::new);
+    User user = userService.getByToken(getBearerTokenFromHttpEntity(entity)).orElseGet(User::new);
     return ResponseEntity.ok(userService.getDepartments(user));
   }
 
@@ -90,7 +84,7 @@ public class UserController {
       JSONObject json = new JSONObject(entity.getBody());
       String usernameToDelete = json.getString("username");
 
-      String token = getBearerToken(entity);
+      String token = getBearerTokenFromHttpEntity(entity);
 
       Optional<User> userOptional = userService.getByToken(token);
 
@@ -175,27 +169,24 @@ public class UserController {
    * <p>
    * Security configuration is so that only authorized users, or admins can access this endpoint.
    *
-   * @param http Http Entity.
+   * @param entity Http Entity.
    * @return 200 OK with role in body.
    */
   @GetMapping("/check-role")
-  public ResponseEntity<String> checkRole(HttpEntity<String> http) {
-    String token = getBearerToken(http);
-
-    if (userService.isUserAdmin(token)) {
-      return ResponseEntity.ok("ADMIN");
-    }
-    return ResponseEntity.ok("USER");
+  public ResponseEntity<String> checkRole(HttpEntity<String> entity) {
+    return userService.isUserAdmin(getBearerTokenFromHttpEntity(entity))
+        ? ResponseEntity.ok("ADMIN")
+        : ResponseEntity.ok("USER");
   }
 
   /**
    * Gets the Bearer token from the HTTP headers if it exists.
    *
-   * @param http HTTP Entity to get bearer from.
+   * @param entity HTTP Entity to get bearer from.
    * @return Token, or empty string if not found
    */
-  private String getBearerToken(HttpEntity<String> http) {
-    List<String> authorizationHeader = http.getHeaders().get(HttpHeaders.AUTHORIZATION);
+  private String getBearerTokenFromHttpEntity(HttpEntity<String> entity) {
+    List<String> authorizationHeader = entity.getHeaders().get(HttpHeaders.AUTHORIZATION);
     String token = "";
 
     // Get the bearer token if it exists.
