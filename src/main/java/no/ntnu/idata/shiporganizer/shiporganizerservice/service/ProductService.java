@@ -26,7 +26,6 @@ public class ProductService {
 		this.productRepository = productRepository;
 	}
 
-
 	/**
 	 * Gets initial product inventory.
 	 *
@@ -77,6 +76,12 @@ public class ProductService {
 		return "";
 	}
 
+	public boolean createNewProduct(String productName, int productNumber, int stock, String barcode, String department) {
+		boolean success = false;
 
+		//productRepository.createNew()
+
+		return success;
+	}
 
 }
