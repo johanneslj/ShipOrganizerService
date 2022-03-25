@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -65,7 +66,7 @@ public class ProductController {
 		try {
 			JSONObject json = new JSONObject(http.getBody());
 			String department = json.getString("department");
-			Date date = new Date(json.getString("date"));
+			String date = json.getString("DateTime");
 			UpdatedProducts = productService.getUpdatedProductInventory(department,date);
 
 		} catch (JSONException e) {
@@ -104,13 +105,15 @@ public class ProductController {
 		try {
 			JSONObject json = new JSONObject(http.getBody());
 
-			String productNumber = json.optString("productnumber");
+			String productNumber = json.optString("productNumber");
 			String username = json.getString("username");
 			int quantity = json.optInt("quantity");
 			float latitude = parseFloat(json.optString("latitude"));
 			float longitude = parseFloat(json.optString("longitude"));
+			String date = json.getString("datetime");
 
-			Success = productService.setNewStock(productNumber, username, quantity, longitude, latitude);
+
+			Success = productService.setNewStock(productNumber, username, quantity, longitude, latitude,date);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
