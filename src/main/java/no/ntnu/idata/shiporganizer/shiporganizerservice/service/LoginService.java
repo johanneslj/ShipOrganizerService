@@ -34,7 +34,7 @@ public class LoginService {
    * @param password User's password.
    * @return Optional of user on success, empty optional on failure.
    */
-  public Optional<User> login(String email, String password) {
+  public Optional<User> loginAndGetUserOptional(String email, String password) {
     // TODO More security features here?
     Optional<User> foundUser = userRepository.findFirstByEmail(email);
 
