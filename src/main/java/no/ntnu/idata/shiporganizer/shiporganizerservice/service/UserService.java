@@ -53,7 +53,7 @@ public class UserService {
     return userRepository.findFirstByEmail(email);
   }
 
-  public boolean doesEmailExist(String email) {
+  public boolean emailExists(String email) {
     return userRepository.findFirstByEmail(email).isPresent();
   }
 
@@ -63,7 +63,7 @@ public class UserService {
    * @param user        User to register.
    * @param departments List of departments the user gets access to.
    */
-  public boolean register(User user, List<Department> departments) {
+  public boolean registerAndGetSuccess(User user, List<Department> departments) {
     userRepository.addUser(user.getEmail(), "", user.getFullname());
 
     userDepartmentRepository.updateUserDepartment(user.getEmail(),
