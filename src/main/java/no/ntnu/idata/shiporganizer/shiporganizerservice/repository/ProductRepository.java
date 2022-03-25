@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -36,8 +36,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	 * @param date last time user fetched the inventory
 	 * @return String list from the database
 	 */
-	@Query(value = "EXEC SelectAll @Calltime='UpdatedInventory' , @Department= :dep , @Username='', @ProductName='' , @DateTime=:date;",nativeQuery = true)
-	List<Product> getUpdatedProductInventory(@Param(value = "dep") String dep, @Param(value = "date") Date date);
+	@Query(value = "EXEC SelectAll @Calltime='UpdatedInventory' , @Department= :dep , @Username='', @ProductName='' , @DateTime= :date ",nativeQuery = true)
+	List<Product> getUpdatedProductInventory(@Param(value = "dep") String dep, @Param(value = "date") String date);
 
 
 	/**
@@ -59,9 +59,9 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	 * @param Latitude  the latitude when the user takes a product
 	 * @return int 1 is success
 	 */
-	@Query(value = "EXEC InsertRecordAndUpdateStorelink @productno=:productno,@username=:username,@quantity =:quantity,@Longitude=:Longitude, @Latitude=:Latitude",nativeQuery = true)
+	@Query(value = "EXEC InsertRecordAndUpdateStorelink @productno=:productno,@username=:username,@quantity =:quantity,@Longitude=:Longitude, @Latitude=:Latitude, @DateTime=:date ",nativeQuery = true)
 	@Modifying
-	int setNewStock(@Param(value = "productno") String productno, @Param(value = "username") String username, @Param(value = "quantity") int quantity, @Param(value = "Longitude")  float Longitude, @Param(value = "Latitude") float Latitude);
+	int setNewStock(@Param(value = "productno") String productno, @Param(value = "username") String username, @Param(value = "quantity") int quantity, @Param(value = "Longitude")  float Longitude, @Param(value = "Latitude") float Latitude,@Param(value = "date") String date);
 
 }
 
