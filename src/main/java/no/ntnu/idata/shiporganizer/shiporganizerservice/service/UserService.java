@@ -95,6 +95,12 @@ public class UserService {
     return true;
   }
 
+  public boolean editUser(User user, String email, List<Department> departments) {
+    boolean success = false;
+    userRepository.editUser(email, user.getEmail(), user.getFullname(), departments.toString());
+    return success;
+  }
+
   /**
    * Use the received verification code to set a new password for the user.
    *
