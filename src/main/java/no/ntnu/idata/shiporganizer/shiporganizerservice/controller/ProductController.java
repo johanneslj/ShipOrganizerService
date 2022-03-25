@@ -85,6 +85,14 @@ public class ProductController {
         return products;
     }
 
+    /**
+     * Creates a new product to add to the database
+     * The new product has a product name, product number, current stock,
+     * a department and potentially a barcode
+     *
+     * @param entity The data coming from frontend
+     * @return response bad request if failed and ok if succeeded
+     */
     @PostMapping(path = "/new-product")
     public ResponseEntity<String> createNewProduct(HttpEntity<String> entity) {
         try {
@@ -96,6 +104,34 @@ public class ProductController {
             String department = json.getString("department");
 
             boolean success = productService.createNewProduct(productName, productNumber, stock, barcode, department);
+            if(success) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+
+        } catch (JSONException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    /**
+     * Edits an already existing product
+     * Can edit both name and barcode of the barcode
+     *
+     * @param entity The details which allow a product to be modified
+     * @return bad request if failed and ok if succeeded
+     */
+    @PostMapping(path = "/edit-product")
+    public ResponseEntity<String> editProduct(HttpEntity<String> entity) {
+        try {
+            JSONObject json = new JSONObject(entity.getBody());
+            String productName = json.getString("productName");
+            int productNumber = Integer.parseInt(json.getString("productNumber"));
+            String barcode = json.getString("barcode");
+            String department = json.getString("department");
+
+            boolean success = productService.editProduct(productName, productNumber, barcode, department);
             if(success) {
                 return ResponseEntity.ok().build();
             } else {
