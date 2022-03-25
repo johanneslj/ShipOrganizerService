@@ -35,26 +35,21 @@ public class LoginService {
    * @return Optional of user on success, empty optional on failure.
    */
   public Optional<User> loginAndGetUserOptional(String email, String password) {
-    // TODO More security features here?
-    Optional<User> foundUser = userRepository.findFirstByEmail(email);
+    Optional<User> userOptional = userRepository.findFirstByEmail(email);
+    userOptional.ifPresent(user -> checkCorrectPasswordAndSetNewTokenForUser(password, user));
+    return userOptional;
+  }
 
-    if (foundUser.isPresent()) {
-      // TODO Generate token in a better way to include date and check its unique.
-      User user = foundUser.get();
-
-      // Checking if password given by client matches password for user.
-      if (passwordEncoder.matches(password, user.getPassword())) {
-        // Creates new token for user on successful login.
-        String token = buildJWT(user.getId(), user.getEmail(), user.getFullname());
-        user.setToken(token);
-        userRepository.save(user);
-        return Optional.of(user);
-      } else {
-        return Optional.empty();
-      }
+  private void checkCorrectPasswordAndSetNewTokenForUser(String password, User user) {
+    if (passwordEncoder.matches(password, user.getPassword())) {
+      setNewTokenForUser(user);
+      userRepository.save(user);
     }
+  }
 
-    return Optional.empty();
+  private void setNewTokenForUser(User user) {
+    String newToken = buildJWT(user.getId(), user.getEmail(), user.getFullname());
+    user.setToken(newToken);
   }
 
   public Optional<User> findByToken(String token) {
