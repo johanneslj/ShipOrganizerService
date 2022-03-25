@@ -43,7 +43,7 @@ public class UserController {
     public ResponseEntity<List<PublicUserModel>> getAllPublicUsers() {
         return ResponseEntity.ok(
             userService.getAllUsers().stream()
-                .map(user -> new PublicUserModel(user.getFullname(), user.getEmail()))
+                .map(user -> new PublicUserModel(user.getFullname(), user.getEmail())) //TODO get departments they have access to as well
                 .collect(Collectors.toList()));
     }
 
@@ -56,13 +56,13 @@ public class UserController {
     public ResponseEntity<String> editUser(HttpEntity<String> entity) {
         try {
             JSONObject json = new JSONObject(entity.getBody());
-            String userEmail = json.getString("oldEmail");
+            String oldEmail = json.getString("oldEmail");
             String newEmail = json.getString("newEmail");
             String name = json.getString("name");
             List<Department> departments = getDepartmentsFromJson(json);
             User user = new User(name, newEmail);
 
-            boolean success = userService.editUser(user, userEmail, departments);
+            boolean success = userService.editUser(user, oldEmail, departments);
             if(success) {
               return ResponseEntity.ok().build();
             } else {

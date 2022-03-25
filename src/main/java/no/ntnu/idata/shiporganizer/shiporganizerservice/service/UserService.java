@@ -97,7 +97,7 @@ public class UserService {
 
   public boolean editUser(User user, String email, List<Department> departments) {
     boolean success = false;
-    userRepository.editUser(email, user.getEmail(), user.getFullname(), departments.toString());
+    //userRepository.editUser(email, user.getEmail(), user.getFullname(), departments.toString()); //TODO make edituser actually do something
     return success;
   }
 
