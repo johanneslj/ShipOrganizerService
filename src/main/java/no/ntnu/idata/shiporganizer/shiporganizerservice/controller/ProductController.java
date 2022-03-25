@@ -1,5 +1,10 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 
+import static java.lang.Float.parseFloat;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Product;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.ProductService;
 import org.json.JSONException;
@@ -25,102 +30,91 @@ import static java.lang.Float.parseFloat;
 @Transactional
 public class ProductController {
 
-	private final ProductService productService;
+  private final ProductService productService;
 
-	/**
-	 * Instantiates a new Product contoller.
-	 *
-	 * @param productService the product service
-	 */
-	ProductController(ProductService productService) {
-		this.productService = productService;
-	}
+  ProductController(ProductService productService) {
+    this.productService = productService;
+  }
 
-	/**
-	 * Gets Initial inventory.
-	 *
-	 * @return the inventory
-	 */
-	@PostMapping(path = "/inventory")
-	public List<Product> getInventory(HttpEntity<String> http) {
-		List<Product> products = new ArrayList<>();
-		try {
-			JSONObject json = new JSONObject(http.getBody());
-			String department = json.getString("department");
-			products = productService.getInitialProductInventory(department);
-
-		} catch (JSONException e) {
-
-		}
-		return products;
-	}
+  /**
+   * Gets Initial inventory.
+   *
+   * @return the inventory
+   */
+  @PostMapping(path = "/get-inventory")
+  public List<Product> getInventory(HttpEntity<String> entity) {
+    List<Product> products = new ArrayList<>();
+    try {
+      JSONObject json = new JSONObject(entity.getBody());
+      String department = json.getString("department");
+      products = productService.getInitialProductInventory(department);
+    } catch (JSONException ignored) {
+    }
+    return products;
+  }
 
 	/**
 	 * Gets updated inventory.
 	 *
 	 * @return the last updated inventory
 	 */
-	@PostMapping(path = "/UpdatedInventory")
-	public List<Product> getUpdatedInventory(HttpEntity<String> http) {
+	@PostMapping(path = "/recently-updated-inventory")
+	public List<Product> getUpdatedInventory(HttpEntity<String> entity) {
 		List<Product> UpdatedProducts = new ArrayList<>();
 		try {
-			JSONObject json = new JSONObject(http.getBody());
+			JSONObject json = new JSONObject(entity.getBody());
 			String department = json.getString("department");
 			String date = json.getString("DateTime");
 			UpdatedProducts = productService.getUpdatedProductInventory(department,date);
 
-		} catch (JSONException e) {
+    } catch (JSONException ignored) {
+    }
+    return UpdatedProducts;
+  }
 
-		}
-		return UpdatedProducts;
-	}
+  /**
+   * Gets preferred inventory.
+   *
+   * @return the preferred inventory
+   */
+  @PostMapping(path = "/get-recommended-inventory")
+  public List<Product> getRecommendedInventory(HttpEntity<String> entity) {
+    List<Product> products = new ArrayList<>();
+    try {
+      JSONObject json = new JSONObject(entity.getBody());
+      String department = json.getString("department");
+      products = productService.getProductRecommendedInventory(department);
+    } catch (JSONException ignored) {
+    }
+    return products;
+  }
 
-	/**
-	 * Gets preferred inventory.
-	 *
-	 * @return the preferred inventory
-	 */
-	@PostMapping(path = "/RecommendedInventory")
-	public List<Product> getRecommendedInventory(HttpEntity<String> http) {
-		List<Product> products = new ArrayList<>();
-		try {
-			JSONObject json = new JSONObject(http.getBody());
-			String department = json.getString("department");
-			products = productService.getProductRecommendedInventory(department);
-		} catch (JSONException e) {
+  /**
+   * Set new stock
+   *
+   * @param entity the request body
+   * @return 200 OK or 204 No content
+   */
+  @PostMapping(path = "/set-new-stock")
+  public ResponseEntity<String> setNewStock(HttpEntity<String> entity) {
+    try {
+      JSONObject json = new JSONObject(entity.getBody());
 
-		}
-		return products;
-	}
+      setNewStockFromJson(json);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return ResponseEntity.ok().build();
+  }
 
-	/**
-	 * Set new stock
-	 *
-	 * @param http the request body
-	 * @return 200 OK or 204 No content
-	 */
-	@PostMapping(path = "/setNewStock")
-	public ResponseEntity setNewStock(HttpEntity<String> http) {
-		String Success = "";
-		try {
-			JSONObject json = new JSONObject(http.getBody());
-
-			String productNumber = json.optString("productNumber");
-			String username = json.getString("username");
-			int quantity = json.optInt("quantity");
-			float latitude = parseFloat(json.optString("latitude"));
-			float longitude = parseFloat(json.optString("longitude"));
-			String date = json.getString("datetime");
-
-
-			Success = productService.setNewStock(productNumber, username, quantity, longitude, latitude,date);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if (Success.equals("Success")) {
-			return ResponseEntity.ok().build();
-		}
-		return ResponseEntity.noContent().build();
-	}
+  private void setNewStockFromJson(JSONObject json) throws JSONException {
+    productService.setNewStock(
+        json.optString("productnumber"),
+        json.getString("username"),
+        json.optInt("quantity"),
+        parseFloat(json.optString("longitude")),
+        parseFloat(json.optString("latitude")),
+			json.getString("datetime"));
+  }
 
 }

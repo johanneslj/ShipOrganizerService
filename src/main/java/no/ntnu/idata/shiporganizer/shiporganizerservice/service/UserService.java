@@ -1,11 +1,11 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.service;
 
-import java.util.ArrayList;
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
 import java.util.Optional;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
-import no.ntnu.idata.shiporganizer.shiporganizerservice.model.UserDepartment;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.DepartmentRepository;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.UserDepartmentRepository;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.UserRepository;
@@ -53,7 +53,7 @@ public class UserService {
     return userRepository.findFirstByEmail(email);
   }
 
-  public boolean doesEmailExist(String email) {
+  public boolean emailExists(String email) {
     return userRepository.findFirstByEmail(email).isPresent();
   }
 
@@ -63,42 +63,33 @@ public class UserService {
    * @param user        User to register.
    * @param departments List of departments the user gets access to.
    */
-  public boolean register(User user, List<Department> departments) {
+  public boolean registerAndGetSuccess(User user, List<Department> departments) {
     userRepository.addUser(user.getEmail(), "", user.getFullname());
 
-    StringBuilder departmentsString = new StringBuilder();
-    for (Department department : departments) {
-      departmentsString.append(department.getName());
-      departmentsString.append(",");
-    }
-
-    userDepartmentRepository.updateUserDepartment(user.getEmail(), departmentsString.toString());
+    userDepartmentRepository.updateUserDepartment(user.getEmail(),
+        getDepartmentsString(departments));
     mailService.sendRegisteredEmail(user.getEmail());
 
-    // TODO Remove this?
-    // Prints the registered user, if suer is not found in the repository a new empty user is printed.
-    System.out.println("Registered: " + getByEmail(user.getEmail()).orElseGet(User::new));
-
-    // Sets new token for user and returns true on success.
     return setNewTokenForUser(user.getEmail());
   }
 
+  private String getDepartmentsString(List<Department> departments) {
+    StringBuilder departmentsString = new StringBuilder();
+    departments.forEach(department -> {
+      departmentsString.append(department.getName());
+      departmentsString.append(",");
+    });
+    return departmentsString.toString();
+  }
 
   public boolean sendNewPasswordEmail(String email) {
     Optional<User> userOptional = userRepository.findFirstByEmail(email);
-
-    // If user/email does not exist, we cannot set a new password.
-    if (!userOptional.isPresent()) {
+    if (userOptional.isEmpty()) {
       return false;
     }
-
     User user = userOptional.get();
-
-    // Set new token each time verification code is requested.
     setNewTokenForUser(user.getEmail());
-
     String verificationCode = user.getToken().substring(user.getToken().length() - 6);
-
     mailService.sendNewPasswordVerificationCode(user.getEmail(), verificationCode);
 
     return true;
@@ -112,25 +103,16 @@ public class UserService {
    * @param password         New password to set for user.
    * @return True on success.
    */
-  public boolean setNewPasswordWithVerificationCode(String email, String verificationCode,
+  public boolean setNewPasswordWithVerificationCode(String email,
+                                                    String verificationCode,
                                                     String password) {
     Optional<User> userOptional = userRepository.findFirstByEmail(email);
+    userOptional.ifPresent(user -> {
+      user.setPassword(passwordEncoder.encode(password));
+      userRepository.save(user);
+    });
 
-    if (!userOptional.isPresent()) {
-      return false;
-    }
-
-    User user = userOptional.get();
-
-    if (!checkValidVerificationCode(email, verificationCode)) {
-      return false;
-    }
-
-    // Encrypt new password and save user.
-    user.setPassword(passwordEncoder.encode(password));
-    userRepository.save(user);
-
-    return true;
+    return checkValidVerificationCode(email, verificationCode) && userOptional.isPresent();
   }
 
   /**
@@ -142,20 +124,12 @@ public class UserService {
    */
   public boolean checkValidVerificationCode(String email, String verificationCode) {
     Optional<User> userOptional = userRepository.findFirstByEmail(email);
-
-    // If user/email does not exist, we cannot set a new password.
-    if (!userOptional.isPresent()) {
+    if (userOptional.isEmpty()) {
       return false;
     }
-
     User user = userOptional.get();
-
     // Check that verification code is correct. Verification code is last 6 characters in token.
-    if (!user.getToken().substring(user.getToken().length() - 6).equals(verificationCode)) {
-      return false;
-    }
-
-    return true;
+    return user.getToken().substring(user.getToken().length() - 6).equals(verificationCode);
   }
 
   /**
@@ -177,41 +151,30 @@ public class UserService {
    */
   public boolean isUserAdmin(String token) {
     Optional<User> userOptional = getByToken(token);
-
-    if (!userOptional.isPresent()) {
+    if (userOptional.isEmpty()) {
       return false;
     }
-
     User user = userOptional.get();
-
     List<Department> departments = getDepartments(user);
 
-    for (Department department : departments) {
-      if (department.getRights() == 1) {
-        return true;
-      }
-    }
-    return false;
+    return departments.stream().anyMatch(department -> department.getRights() == 1);
   }
 
   /**
-   * Get all departments user is a member of.
+   * Get all departments that user is a member of.
    *
    * @param user User to get departments of.
    * @return List if departments the user is a member of.
    */
   public List<Department> getDepartments(User user) {
-    List<Department> departments = new ArrayList<>();
-    List<UserDepartment> userDepartments =
-        userDepartmentRepository.getUserDepartmentsByUserID(user.getId());
-
-    for (UserDepartment userDepartment : userDepartments) {
-      Optional<Department> department =
-          departmentRepository.findDepartmentById(userDepartment.getDepartmentID());
-      department.ifPresent(departments::add);
-      System.out.println(department);
-    }
-    return departments;
+    return userDepartmentRepository
+        .getUserDepartmentsByUserID(user.getId())
+        .stream()
+        .map(userDepartment -> departmentRepository.findDepartmentById(
+            userDepartment.getDepartmentID()))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(toList());
   }
 
   /**
@@ -223,14 +186,11 @@ public class UserService {
   private boolean setNewTokenForUser(String email) {
     Optional<User> userOptional = getByEmail(email);
 
-    if (!userOptional.isPresent()) {
-      return false;
-    }
+    userOptional.ifPresent(user -> {
+      user.setToken(loginService.buildJWT(user.getId(), user.getEmail(), user.getFullname()));
+      userRepository.save(user);
+    });
 
-    User user = userOptional.get();
-    user.setToken(loginService.buildJWT(user.getId(), user.getEmail(), user.getFullname()));
-    userRepository.save(user);
-
-    return true;
+    return userOptional.isPresent();
   }
 }
