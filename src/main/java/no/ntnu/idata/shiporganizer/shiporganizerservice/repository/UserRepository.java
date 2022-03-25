@@ -51,6 +51,21 @@ public interface UserRepository extends JpaRepository<User, Integer> {
   void deleteUser(@Param(value = "username") String username);
 
   /**
+   * Edit a user
+   * @param email
+   * @param newEmail
+   * @param fullname
+   * @param departments
+   */
+  @Modifying
+  @Transactional
+  @Query(value = "EXEC HandleUser @Calltime = 'Edit', @Username = :username, @NewEmail = :newEmail, @Fullname = :fullname, @Departments = departments;", nativeQuery = true)
+  void editUser(@Param(value = "username") String email,
+               @Param(value = "newEmail") String newEmail,
+               @Param(value = "fullname") String fullname,
+                @Param(value = "departments") String departments); //TODO Make procedure for edit user call
+
+  /**
    * Finds first user by passed email.
    *
    * @param email Email of user to find.
