@@ -109,12 +109,12 @@ public class ProductController {
 
   private void setNewStockFromJson(JSONObject json) throws JSONException {
     productService.setNewStock(
-        json.optString("productnumber"),
+        json.optString("productNumber"),
         json.getString("username"),
         json.optInt("quantity"),
         parseFloat(json.optString("longitude")),
         parseFloat(json.optString("latitude")),
-			json.getString("datetime"));
+		json.getString("datetime"));
   }
 
 }
