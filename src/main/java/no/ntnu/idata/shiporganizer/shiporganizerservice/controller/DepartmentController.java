@@ -14,7 +14,7 @@ import java.util.List;
  * for the correct handling
  */
 @Controller
-@RequestMapping(value ="/department")
+@RequestMapping(value = "/api/department")
 @Transactional
 public class DepartmentController {
 
@@ -37,7 +37,7 @@ public class DepartmentController {
 	 *
 	 * @return the departments
 	 */
-	@GetMapping(path = "/all")
+	@GetMapping(path = "/get-all")
 	public List<Department> getDepartments() {
 		return departmentRepository.findAll();
 	}
