@@ -105,10 +105,12 @@ public class ProductController {
             String productName = json.getString("productName");
             int productNumber = Integer.parseInt(json.getString("productNumber"));
             int stock = Integer.parseInt(json.getString("stock"));
+            int desiredStock = Integer.parseInt(json.getString("desiredStock"));
             String barcode = json.getString("barcode");
             String department = json.getString("department");
 
-            boolean success = productService.createNewProduct(productName, productNumber, stock, barcode, department);
+
+            boolean success = productService.createNewProduct(productName, productNumber, desiredStock, stock, barcode, department);
             if(success) {
                 return ResponseEntity.ok().build();
             } else {
@@ -133,10 +135,11 @@ public class ProductController {
             JSONObject json = new JSONObject(entity.getBody());
             String productName = json.getString("productName");
             int productNumber = Integer.parseInt(json.getString("productNumber"));
+            int desiredStock = Integer.parseInt(json.getString("desiredStock"));
             String barcode = json.getString("barcode");
             String department = json.getString("department");
 
-            boolean success = productService.editProduct(productName, productNumber, barcode, department);
+            boolean success = productService.editProduct(productName, productNumber, desiredStock, barcode, department);
             if(success) {
                 return ResponseEntity.ok().build();
             } else {
