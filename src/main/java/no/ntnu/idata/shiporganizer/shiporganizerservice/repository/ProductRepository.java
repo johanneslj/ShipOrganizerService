@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -39,6 +40,10 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	@Query(value = "EXEC HandleProduct @Calltime='UpdatedInventory' , @Department= :dep , @ProductName='', @ProductNumber='',@EAN='',@DesiredStock='',@Stock='',@DateTime= :date ;",nativeQuery = true)
 	List<Product> getUpdatedProductInventory(@Param(value = "dep") String dep, @Param(value = "date") String date);
 
+
+	@Query(value = "EXEC HandleProduct @Calltime='Insert' ,@ProductName = :name, @ProductNumber = :productNumber, @DesiredStock = :desiredStock,@Stock = :stock, @EAN = :barcode, @Department = :dep, @DateTime='' ;", nativeQuery = true)
+	@Modifying
+	int createNewProduct(@Param(value = "name") String name, @Param(value = "productNumber") int productNumber, @Param(value = "desiredStock") int desiredStock, @Param(value = "stock") int stock, @Param(value = "barcode") String barcode, @Param(value = "dep") String dep);
 
 	/**
 	 * Gets all the products from the database with the difference in stock and desired stock

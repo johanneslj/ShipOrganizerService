@@ -75,15 +75,19 @@ public class ProductService {
 		return "";
 	}
 
-	public boolean createNewProduct(String productName, int productNumber, int stock, String barcode, String department) {
+	public boolean createNewProduct(String productName, int productNumber, int desiredStock, int stock, String barcode, String department) {
 		boolean success = false;
 
-		//productRepository.createNewProduct() //TODO make repository create new item
+		int successInt =  productRepository.createNewProduct(productName, productNumber, desiredStock, stock, barcode, department);
+
+		if(successInt == 1) {
+			success = true;
+		}
 
 		return success;
 	}
 
-	public boolean editProduct(String productName, int productNumber, String barcode, String department) {
+	public boolean editProduct(String productName, int productNumber, int desiredStock, String barcode, String department) {
 		boolean success = false;
 
 		//productRepository.editProduct() //TODO make repository update product details
