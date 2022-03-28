@@ -28,9 +28,14 @@ public class ProductController {
 
     private final ProductService productService;
 
-    ProductController(ProductService productService) {
-        this.productService = productService;
-    }
+	/**
+	 * Instantiates a new Product contoller.
+	 *
+	 * @param productService the product service
+	 */
+	ProductController(ProductService productService) {
+		this.productService = productService;
+	}
 
     /**
      * Gets Initial inventory.
