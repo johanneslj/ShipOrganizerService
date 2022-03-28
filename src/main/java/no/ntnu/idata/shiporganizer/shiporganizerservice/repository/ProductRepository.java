@@ -27,7 +27,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	 * @param dep Users selected department
 	 * @return String list from the database
 	 */
-	@Query(value = "EXEC SelectAll @Calltime='InitialInventory' , @Department= :dep , @Username='', @ProductName='' , @DateTime='';",nativeQuery = true)
+	@Query(value = "EXEC HandleProduct @Calltime='InitialInventory' , @Department= :dep , @ProductName='', @ProductNumber='',@EAN='',@DesiredStock='',@Stock='',@DateTime='';",nativeQuery = true)
 	List<Product> getInitialProductInventory(@Param(value = "dep") String dep);
 
 	/**
@@ -36,7 +36,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	 * @param date last time user fetched the inventory
 	 * @return String list from the database
 	 */
-	@Query(value = "EXEC SelectAll @Calltime='UpdatedInventory' , @Department= :dep , @Username='', @ProductName='' , @DateTime= :date ",nativeQuery = true)
+	@Query(value = "EXEC HandleProduct @Calltime='UpdatedInventory' , @Department= :dep , @ProductName='', @ProductNumber='',@EAN='',@DesiredStock='',@Stock='',@DateTime= :date ;",nativeQuery = true)
 	List<Product> getUpdatedProductInventory(@Param(value = "dep") String dep, @Param(value = "date") String date);
 
 
@@ -45,8 +45,9 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	 * @param dep Users selected department
 	 * @return String list from the database
 	 */
-	@Query(value = "EXEC SelectAll @Calltime='Recommended' , @Department= :dep , @Username='', @ProductName='',@DateTime='';",nativeQuery = true)
+	@Query(value = "EXEC HandleProduct @Calltime='Recommended' , @Department= :dep , @ProductName='', @ProductNumber='',@EAN='',@DesiredStock='',@Stock='',@DateTime='';",nativeQuery = true)
 	List<Product> getProductRecommendedInventory(@Param(value = "dep") String dep);
+
 
 
 	/**
