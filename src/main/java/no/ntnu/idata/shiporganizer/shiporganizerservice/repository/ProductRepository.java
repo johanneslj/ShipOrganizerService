@@ -64,5 +64,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	@Modifying
 	int setNewStock(@Param(value = "productno") String productno, @Param(value = "username") String username, @Param(value = "quantity") int quantity, @Param(value = "Longitude")  float Longitude, @Param(value = "Latitude") float Latitude,@Param(value = "date") String date);
 
+	//TODO make a call to database for creating new product
+
 }
 
