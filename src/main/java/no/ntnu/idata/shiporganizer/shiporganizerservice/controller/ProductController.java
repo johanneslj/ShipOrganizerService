@@ -12,9 +12,14 @@ import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static java.lang.Float.parseFloat;
 
 
 /**
@@ -48,19 +53,19 @@ public class ProductController {
     return products;
   }
 
-  /**
-   * Gets updated inventory.
-   *
-   * @return the last updated inventory
-   */
-  @PostMapping(path = "/recently-updated-inventory")
-  public List<Product> getUpdatedInventory(HttpEntity<String> entity) {
-    List<Product> UpdatedProducts = new ArrayList<>();
-    try {
-      JSONObject json = new JSONObject(entity.getBody());
-      String department = json.getString("department");
-      Date date = new Date(json.getString("date"));
-      UpdatedProducts = productService.getUpdatedProductInventory(department, date);
+	/**
+	 * Gets updated inventory.
+	 *
+	 * @return the last updated inventory
+	 */
+	@PostMapping(path = "/recently-updated-inventory")
+	public List<Product> getUpdatedInventory(HttpEntity<String> entity) {
+		List<Product> UpdatedProducts = new ArrayList<>();
+		try {
+			JSONObject json = new JSONObject(entity.getBody());
+			String department = json.getString("department");
+			String date = json.getString("DateTime");
+			UpdatedProducts = productService.getUpdatedProductInventory(department,date);
 
     } catch (JSONException ignored) {
     }
@@ -104,11 +109,12 @@ public class ProductController {
 
   private void setNewStockFromJson(JSONObject json) throws JSONException {
     productService.setNewStock(
-        json.optString("productnumber"),
+        json.optString("productNumber"),
         json.getString("username"),
         json.optInt("quantity"),
         parseFloat(json.optString("longitude")),
-        parseFloat(json.optString("latitude")));
+        parseFloat(json.optString("latitude")),
+		json.getString("datetime"));
   }
 
 }
