@@ -54,19 +54,19 @@ public class ProductController {
         return products;
     }
 
-    /**
-     * Gets updated inventory.
-     *
-     * @return the last updated inventory
-     */
-    @PostMapping(path = "/recently-updated-inventory")
-    public List<Product> getUpdatedInventory(HttpEntity<String> entity) {
-        List<Product> UpdatedProducts = new ArrayList<>();
-        try {
-            JSONObject json = new JSONObject(entity.getBody());
-            String department = json.getString("department");
-            Date date = new Date(json.getString("date"));
-            UpdatedProducts = productService.getUpdatedProductInventory(department, date);
+	/**
+	 * Gets updated inventory.
+	 *
+	 * @return the last updated inventory
+	 */
+	@PostMapping(path = "/recently-updated-inventory")
+	public List<Product> getUpdatedInventory(HttpEntity<String> entity) {
+		List<Product> UpdatedProducts = new ArrayList<>();
+		try {
+			JSONObject json = new JSONObject(entity.getBody());
+			String department = json.getString("department");
+			String date = json.getString("DateTime");
+			UpdatedProducts = productService.getUpdatedProductInventory(department,date);
 
         } catch (JSONException ignored) {
         }
@@ -166,13 +166,14 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
-    private void setNewStockFromJson(JSONObject json) throws JSONException {
-        productService.setNewStock(
-            json.optString("productnumber"),
-            json.getString("username"),
-            json.optInt("quantity"),
-            parseFloat(json.optString("longitude")),
-            parseFloat(json.optString("latitude")));
-    }
+  private void setNewStockFromJson(JSONObject json) throws JSONException {
+    productService.setNewStock(
+        json.optString("productNumber"),
+        json.getString("username"),
+        json.optInt("quantity"),
+        parseFloat(json.optString("longitude")),
+        parseFloat(json.optString("latitude")),
+		json.getString("datetime"));
+  }
 
 }
