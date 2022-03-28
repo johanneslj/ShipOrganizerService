@@ -2,11 +2,9 @@ package no.ntnu.idata.shiporganizer.shiporganizerservice.service;
 
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Product;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -40,9 +38,10 @@ public class ProductService {
 	 * Gets updated product inventory.
 	 *
 	 * @param department the users department
+	 * @param date
 	 * @return the product inventory
 	 */
-	public List<Product> getUpdatedProductInventory(String department, Date date) {
+	public List<Product> getUpdatedProductInventory(String department, String date) {
 		return productRepository.getUpdatedProductInventory(department,date);
 	}
 
@@ -68,8 +67,8 @@ public class ProductService {
 	 * @param latitude  the latitude
 	 * @return Successful if update is successful
 	 */
-	public String setNewStock(String productNo,String username, int quantity, float longitude,float latitude) {
-		int result = productRepository.setNewStock(productNo, username, quantity, longitude, latitude);
+	public String setNewStock(String productNo,String username, int quantity, float longitude,float latitude, String date) {
+		int result = productRepository.setNewStock(productNo, username, quantity, longitude, latitude,date);
 		if(result == 1){
 			return "Success";
 		}
