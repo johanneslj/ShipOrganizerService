@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Report;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.ReportRepository;
@@ -62,11 +63,14 @@ public class ReportService {
         stringReports.forEach(reportString -> {
             List<String> reportBits = Arrays.asList(reportString.split(","));
             Report report = new Report(reportBits.get(1),
-                Integer.parseInt(reportBits.get(2)),
+                Math.abs(Integer.parseInt(reportBits.get(2))),
                 Float.parseFloat(reportBits.get(3)),
                 Float.parseFloat(reportBits.get(4)),
                 getDateFromString(reportBits.get(5)),
                 reportBits.get(6));
+            if(report.getFullName() == null || report.getFullName().equals("null")) {
+                report.setFullName("No name registered");
+            }
             markers.add(report);
         });
         return markers;
@@ -79,11 +83,13 @@ public class ReportService {
      * @return a date, generated from the String
      */
     private Date getDateFromString(String dateString) {
-        Date date = new Date();
+        Date date;
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.mss");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.FRANCE);
             date = formatter.parse(dateString);
+            date.setTime(date.getTime() + 3600000);
         } catch (ParseException e) {
+            date = new Date();
         }
 
         return date;
