@@ -27,7 +27,7 @@ public class Product {
 
 	private String stock;
 
-	private String desiredStock;
+	//private String desiredStock;
 
 	public Product(String productname,String productnumber, String barcode, String stock) {
 		this.productnumber = productnumber;
