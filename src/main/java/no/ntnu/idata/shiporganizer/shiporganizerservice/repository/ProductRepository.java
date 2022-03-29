@@ -55,7 +55,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * @param dep           the department to which the product will be registered
      * @return 1 if success else 0
      */
-    @Query(value = "EXEC HandleProduct @Calltime='Insert' ,@ProductName = :name, @ProductNumber = :productNumber, @DesiredStock = :desiredStock,@Stock = :stock, @EAN = :barcode, @Department = :dep, @DateTime='' ;", nativeQuery = true)
+    @Query(value = "EXEC HandleProduct @Calltime='Insert' ,@ProductName = :name, @ProductNumber = :productNumber, @DesiredStock = :desiredStock, @Stock = :stock, @EAN = :barcode, @Department = :dep, @DateTime='' ;", nativeQuery = true)
     @Modifying
     int createNewProduct(@Param(value = "name") String name, @Param(value = "productNumber") int productNumber, @Param(value = "desiredStock") int desiredStock, @Param(value = "stock") int stock, @Param(value = "barcode") String barcode, @Param(value = "dep") String dep);
 
