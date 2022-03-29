@@ -4,7 +4,6 @@ import static java.lang.Float.parseFloat;
 
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Product;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.ProductService;
