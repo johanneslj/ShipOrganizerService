@@ -22,14 +22,14 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @GetMapping("/all-reports")
-    public ResponseEntity<Map<String, List<Report>>> getAllReports() {
-        return ResponseEntity.ok(reportService.getMapMarkers());
+    @GetMapping("/all-reports={dep}")
+    public ResponseEntity<Map<String, List<Report>>> getAllReports(@PathVariable(value = "dep") String dep) {
+        return ResponseEntity.ok(reportService.getMapMarkers(dep));
     }
 
-    @GetMapping("/reports-with-name={name}")
-    public ResponseEntity<Map<String, List<Report>>> getReportsWithName(@PathVariable(value = "name") String name) {
-        return ResponseEntity.ok(reportService.getMapMarkersOnName(name));
+    @GetMapping("/reports-with-name={name}-dep={dep}")
+    public ResponseEntity<Map<String, List<Report>>> getReportsWithName(@PathVariable(value = "name") String name, @PathVariable(value = "dep") String dep) {
+        return ResponseEntity.ok(reportService.getMapMarkersOnName(dep, name));
     }
 
 }
