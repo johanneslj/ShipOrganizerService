@@ -32,8 +32,8 @@ public class ReportService {
      *
      * @return a sorted Map with LatLng as key and a List of reports as values
      */
-    public Map<String, List<Report>> getMapMarkers() {
-        List<String> stringReports = reportRepository.getMapMarkers();
+    public Map<String, List<Report>> getMapMarkers(String department) {
+        List<String> stringReports = reportRepository.getMapMarkers(department);
 
         return sortReportsByIntoGrids(convertDataToReports(stringReports));
     }
@@ -46,13 +46,13 @@ public class ReportService {
      * @param name the name of equipment which is to be shown
      * @return a sorted Map with LatLng as key and a List of reports as values
      */
-    public Map<String, List<Report>> getMapMarkersOnName(String name) {
-        List<String> stringReports = reportRepository.getMapMarkersOnName(name);
+    public Map<String, List<Report>> getMapMarkersOnName(String name, String department) {
+        List<String> stringReports = reportRepository.getMapMarkersOnName(department, name);
         return sortReportsByIntoGrids(convertDataToReports(stringReports));
     }
 
     /**
-     * Takes the list of strings recieved from the database and converts it into reports
+     * Takes the list of strings received from the database and converts it into reports
      *
      * @param stringReports List of reports in string form
      * @return List of Reports
