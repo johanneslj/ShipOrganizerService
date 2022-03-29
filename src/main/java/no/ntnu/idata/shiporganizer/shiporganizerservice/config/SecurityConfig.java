@@ -64,6 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // CHECK CONNECTIVITY TO SERVER
         .antMatchers(HttpMethod.GET, "/actuator/health").permitAll()
+        .antMatchers(HttpMethod.GET, "/connection").permitAll()
 
         .anyRequest().authenticated()
         .and().httpBasic().disable();
