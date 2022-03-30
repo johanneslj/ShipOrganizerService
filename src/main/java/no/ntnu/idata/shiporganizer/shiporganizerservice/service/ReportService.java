@@ -46,7 +46,7 @@ public class ReportService {
      * @param name the name of equipment which is to be shown
      * @return a sorted Map with LatLng as key and a List of reports as values
      */
-    public Map<String, List<Report>> getMapMarkersOnName(String name, String department) {
+    public Map<String, List<Report>> getMapMarkersOnName(String department, String name) {
         List<String> stringReports = reportRepository.getMapMarkersOnName(department, name);
         return sortReportsByIntoGrids(convertDataToReports(stringReports));
     }
