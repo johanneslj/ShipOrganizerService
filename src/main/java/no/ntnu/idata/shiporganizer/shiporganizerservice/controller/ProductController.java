@@ -204,6 +204,7 @@ public class ProductController {
 			String email = "";
 			JSONObject json = new JSONObject(entity.getBody());
 			List<Product> products = new ArrayList<>();
+			String[] recipients = new String[0];
 
 			JSONArray jsonArrayProducts = json.getJSONArray("items");
 			for (int i = 0; i < jsonArrayProducts.length(); i++) {
@@ -214,21 +215,25 @@ public class ProductController {
 			}
 
 			JSONArray jsonArrayRecipients = json.getJSONArray("receivers");
-			String[] recipients = new String[jsonArrayRecipients.length()-1];
-			for (int i = 0; i < jsonArrayRecipients.length(); i++) {
-				String receiver = jsonArrayRecipients.getString(i);
-				if(i==0){
-					email = receiver;
+			if(jsonArrayRecipients.length()>1){
+				recipients = new String[jsonArrayRecipients.length()-1];
+				for (int i = 0; i < jsonArrayRecipients.length(); i++) {
+					String receiver = jsonArrayRecipients.getString(i);
+					if(i==0){
+						email = receiver;
+					}
+					else {
+						recipients[i-1] = receiver;
+					}
 				}
-				else {
-					recipients[i-1] = receiver;
-				}
-
 			}
+			else{
+				email = jsonArrayRecipients.getString(0);
+			}
+			
 			productService.createPdf(products, email, recipients);
 		} catch (JSONException e) {
 			System.out.println(e.getMessage());
 		}
-
 	}
 }
