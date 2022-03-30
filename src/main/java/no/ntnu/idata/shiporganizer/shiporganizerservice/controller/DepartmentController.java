@@ -2,6 +2,7 @@ package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.DepartmentRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,8 +39,9 @@ public class DepartmentController {
 	 * @return the departments
 	 */
 	@GetMapping(path = "/get-all")
-	public List<Department> getDepartments() {
-		return departmentRepository.findAll();
+	public ResponseEntity<List<Department>> getDepartments() {
+		List<Department> departments = departmentRepository.findAll();
+		return ResponseEntity.ok(departments);
 	}
 
 }

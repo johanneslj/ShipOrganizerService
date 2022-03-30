@@ -55,9 +55,22 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * @param dep           the department to which the product will be registered
      * @return 1 if success else 0
      */
-    @Query(value = "EXEC HandleProduct @Calltime='Insert' ,@ProductName = :name, @ProductNumber = :productNumber, @DesiredStock = :desiredStock, @Stock = :stock, @EAN = :barcode, @Department = :dep, @DateTime='' ;", nativeQuery = true)
+    @Query(value = "EXEC HandleProduct @Calltime='Insert' ,@ProductName = :name, @ProductNumber = :productNumber, @DesiredStock = :desiredStock, @Stock = :stock, @EAN = :barcode, @Department = :dep, @DateTime=:dateTime ;", nativeQuery = true)
     @Modifying
-    int createNewProduct(@Param(value = "name") String name, @Param(value = "productNumber") int productNumber, @Param(value = "desiredStock") int desiredStock, @Param(value = "stock") int stock, @Param(value = "barcode") String barcode, @Param(value = "dep") String dep);
+    int createNewProduct(@Param(value = "name") String name, @Param(value = "productNumber") String productNumber, @Param(value = "desiredStock") int desiredStock, @Param(value = "stock") int stock, @Param(value = "barcode") String barcode, @Param(value = "dep") String dep, @Param(value = "dateTime") String dateTime);
+
+    /**
+     * Deletes a product in the database
+     *
+     * @param productNumber the product number
+     * @return 1 if success else 0
+     */
+    @Query(value = "EXEC HandleProduct @Calltime='Delete' ,@ProductName = '', @ProductNumber = '', @DesiredStock = '', @Stock = '', @EAN = '', @Department = '', @DateTime='' ;", nativeQuery = true)
+    @Modifying
+    int deleteProduct(@Param(value = "productNumber") String productNumber);
+
+
+
 
     /**
      * Edits an existing product
@@ -69,9 +82,9 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * @param dep           the department to which the product is registered
      * @return 1 if success else 0
      */
-    @Query(value = "EXEC HandleProduct @Calltime='Update' ,@ProductName = :name, @ProductNumber = :productNumber, @DesiredStock = :desiredStock, @Stock = '', @EAN = :barcode, @Department = :dep, @DateTime='' ;", nativeQuery = true)
+    @Query(value = "EXEC HandleProduct @Calltime='Update' ,@ProductName = :name, @ProductNumber = :productNumber, @DesiredStock = :desiredStock, @Stock = '', @EAN = :barcode, @Department = :dep, @DateTime=:dateTime ;", nativeQuery = true)
     @Modifying
-    int editProduct(@Param(value = "name") String name, @Param(value = "productNumber") int productNumber, @Param(value = "desiredStock") int desiredStock, @Param(value = "barcode") String barcode, @Param(value = "dep") String dep);
+    int editProduct(@Param(value = "name") String name, @Param(value = "productNumber") String productNumber, @Param(value = "desiredStock") int desiredStock, @Param(value = "barcode") String barcode, @Param(value = "dep") String dep, @Param(value = "dateTime") String dateTime);
 
 
     /**
@@ -98,7 +111,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Modifying
     int setNewStock(@Param(value = "productno") String productno, @Param(value = "username") String username, @Param(value = "quantity") int quantity, @Param(value = "Longitude") float Longitude, @Param(value = "Latitude") float Latitude, @Param(value = "date") String date);
 
-    //TODO make a call to database for creating new product
 
 }
 
