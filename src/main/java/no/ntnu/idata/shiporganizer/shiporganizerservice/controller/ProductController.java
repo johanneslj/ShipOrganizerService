@@ -117,14 +117,14 @@ public class ProductController {
 		try {
 			JSONObject json = new JSONObject(entity.getBody());
 			String productName = json.getString("productName");
-			int productNumber = Integer.parseInt(json.getString("productNumber"));
+			String productNumber = json.getString("productNumber");
 			int stock = Integer.parseInt(json.getString("stock"));
 			int desiredStock = Integer.parseInt(json.getString("desiredStock"));
 			String barcode = json.getString("barcode");
 			String department = json.getString("department");
+			String dateTime = json.getString("dateTime");
 
-
-			boolean success = productService.createNewProduct(productName, productNumber, desiredStock, stock, barcode, department);
+			boolean success = productService.createNewProduct(productName, productNumber, desiredStock, stock, barcode, department, dateTime);
 			if (success) {
 				return ResponseEntity.ok().build();
 			} else {
@@ -148,12 +148,13 @@ public class ProductController {
 		try {
 			JSONObject json = new JSONObject(entity.getBody());
 			String productName = json.getString("productName");
-			int productNumber = Integer.parseInt(json.getString("productNumber"));
+			String productNumber = json.getString("productNumber");
 			int desiredStock = Integer.parseInt(json.getString("desiredStock"));
 			String barcode = json.getString("barcode");
 			String department = json.getString("department");
+			String dateTime = json.getString("dateTime");
 
-			boolean success = productService.editProduct(productName, productNumber, desiredStock, barcode, department);
+			boolean success = productService.editProduct(productName, productNumber, desiredStock, barcode, department, dateTime);
 			if (success) {
 				return ResponseEntity.ok().build();
 			} else {
@@ -164,6 +165,27 @@ public class ProductController {
 			return ResponseEntity.badRequest().build();
 		}
 	}
+
+
+	/**
+	 * Deletes a product from all the tables the product linked
+	 */
+	@PostMapping(path = "/delete-product")
+	public ResponseEntity<String> delterProduct(HttpEntity<String> entity) {
+		try {
+			JSONObject product = new JSONObject(entity.getBody());
+			String productNumber = product.getString("productNumber");
+			boolean success = productService.deleteProduct(productNumber);
+			if (success) {
+				return ResponseEntity.ok().build();
+			} else {
+				return ResponseEntity.badRequest().build();
+			}
+		} catch (JSONException e) {
+			return ResponseEntity.badRequest().build();
+		}
+	}
+
 
 	/**
 	 * Set new stock
@@ -196,6 +218,7 @@ public class ProductController {
 	/**
 	 * Gets list of products and recipients from the frontend and sends it to the
 	 * productService to create the pdf
+	 *
 	 * @param entity Http request
 	 */
 	@PostMapping(path = "/create-pdf")
@@ -209,28 +232,26 @@ public class ProductController {
 			JSONArray jsonArrayProducts = json.getJSONArray("items");
 			for (int i = 0; i < jsonArrayProducts.length(); i++) {
 				JSONObject product = jsonArrayProducts.getJSONObject(i);
-				if(product.getInt("stock") > 0){
+				if (product.getInt("stock") > 0) {
 					products.add(new Product(product.getString("productName"), product.getString("productNumber"), product.getString("barcode"), ("" + product.getInt("stock"))));
 				}
 			}
 
 			JSONArray jsonArrayRecipients = json.getJSONArray("receivers");
-			if(jsonArrayRecipients.length()>1){
-				recipients = new String[jsonArrayRecipients.length()-1];
+			if (jsonArrayRecipients.length() > 1) {
+				recipients = new String[jsonArrayRecipients.length() - 1];
 				for (int i = 0; i < jsonArrayRecipients.length(); i++) {
 					String receiver = jsonArrayRecipients.getString(i);
-					if(i==0){
+					if (i == 0) {
 						email = receiver;
-					}
-					else {
-						recipients[i-1] = receiver;
+					} else {
+						recipients[i - 1] = receiver;
 					}
 				}
-			}
-			else{
+			} else {
 				email = jsonArrayRecipients.getString(0);
 			}
-			
+
 			productService.createPdf(products, email, recipients);
 		} catch (JSONException e) {
 			System.out.println(e.getMessage());
