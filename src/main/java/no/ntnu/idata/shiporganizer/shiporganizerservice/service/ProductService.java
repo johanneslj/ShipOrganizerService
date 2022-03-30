@@ -87,10 +87,10 @@ public class ProductService {
         return "";
     }
 
-    public boolean createNewProduct(String productName, int productNumber, int desiredStock, int stock, String barcode, String department) {
+    public boolean createNewProduct(String productName, String productNumber, int desiredStock, int stock, String barcode, String department,String dateTime) {
         boolean success = false;
 
-        int successInt = productRepository.createNewProduct(productName, productNumber, desiredStock, stock, barcode, department);
+        int successInt = productRepository.createNewProduct(productName, productNumber, desiredStock, stock, barcode, department,dateTime);
 
         if(successInt == 1) {
             success = true;
@@ -99,10 +99,23 @@ public class ProductService {
         return success;
     }
 
-    public boolean editProduct(String productName, int productNumber, int desiredStock, String barcode, String department) {
+
+    public boolean deleteProduct(String productNumber) {
         boolean success = false;
 
-        int successInt = productRepository.editProduct(productName, productNumber, desiredStock, barcode, department);
+        int successInt = productRepository.deleteProduct(productNumber);
+
+        if(successInt == 1) {
+            success = true;
+        }
+
+        return success;
+    }
+
+    public boolean editProduct(String productName, String productNumber, int desiredStock, String barcode, String department,String dateTime) {
+        boolean success = false;
+
+        int successInt = productRepository.editProduct(productName, productNumber, desiredStock, barcode, department,dateTime);
         if(successInt == 1) {
             success = true;
         }
