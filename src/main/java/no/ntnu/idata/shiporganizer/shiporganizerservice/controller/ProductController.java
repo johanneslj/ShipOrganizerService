@@ -233,7 +233,7 @@ public class ProductController {
 			for (int i = 0; i < jsonArrayProducts.length(); i++) {
 				JSONObject product = jsonArrayProducts.getJSONObject(i);
 				if (product.getInt("stock") > 0) {
-					products.add(new Product(product.getString("productName"), product.getString("productNumber"), product.getString("barcode"), ("" + product.getInt("stock"))));
+					products.add(new Product(product.getString("productName"), product.getString("productNumber"), product.getString("barcode"), ("" + product.getInt("stock")),(product.getString("desiredStock"))));
 				}
 			}
 
