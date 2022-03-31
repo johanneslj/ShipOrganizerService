@@ -27,17 +27,22 @@ public class Product {
 
 	private String stock;
 
-	//private String desiredStock;
+	private String Desired_Stock;
 
-	public Product(String productname,String productnumber, String barcode, String stock) {
+	public Product(String productname,String productnumber, String barcode, String stock, String desiredStock) {
 		this.productnumber = productnumber;
 		this.productname = productname;
 		this.barcode = barcode;
 		this.stock = stock;
+		this.Desired_Stock  = desiredStock;
 	}
 
 	public Product() {
 
+	}
+
+	public String getDesired_Stock() {
+		return Desired_Stock;
 	}
 
 	/**
