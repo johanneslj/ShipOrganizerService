@@ -34,7 +34,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
    */
   @Modifying
   @Transactional
-  @Query(value = "EXEC HandleUser @Calltime = 'Insert', @Username = :username, @Password = :password, @Fullname = :fullname, @Department = '';", nativeQuery = true)
+  @Query(value = "EXEC HandleUser @Calltime = 'Insert', @Username = :username, @Password = :password, @Fullname = :fullname, @Department = '', @OldEmail='';", nativeQuery = true)
   void addUser(@Param(value = "username") String email,
                @Param(value = "password") String password,
                @Param(value = "fullname") String fullname);
