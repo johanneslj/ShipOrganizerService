@@ -29,7 +29,7 @@ public class ReportController {
 
     @GetMapping("/reports-with-name={name}-dep={dep}")
     public ResponseEntity<Map<String, List<Report>>> getReportsWithName(@PathVariable(value = "name") String name, @PathVariable(value = "dep") String dep) {
-        return ResponseEntity.ok(reportService.getMapMarkersOnName(name, dep));
+        return ResponseEntity.ok(reportService.getMapMarkersOnName(dep, name));
     }
 
 }

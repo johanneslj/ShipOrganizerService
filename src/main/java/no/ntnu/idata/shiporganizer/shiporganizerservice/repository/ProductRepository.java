@@ -65,7 +65,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * @param productNumber the product number
      * @return 1 if success else 0
      */
-    @Query(value = "EXEC HandleProduct @Calltime='Delete' ,@ProductName = '', @ProductNumber = '', @DesiredStock = '', @Stock = '', @EAN = '', @Department = '', @DateTime='' ;", nativeQuery = true)
+    @Query(value = "EXEC HandleProduct @Calltime='Delete' ,@ProductName = '', @ProductNumber = :productNumber, @DesiredStock = '', @Stock = '', @EAN = '', @Department = '', @DateTime='' ;", nativeQuery = true)
     @Modifying
     int deleteProduct(@Param(value = "productNumber") String productNumber);
 

@@ -22,7 +22,7 @@ public interface UserDepartmentRepository extends JpaRepository<UserDepartment, 
    */
   @Modifying
   @Transactional
-  @Query(value = "EXEC HandleUser @Calltime = 'UpdateDepartment', @Username = :username, @Password = '', @Fullname = '', @Department = :departments, @OldEmail = ''", nativeQuery = true)
+  @Query(value = "EXEC HandleUser @Calltime = 'UpdateDepartment', @Username = :username, @Password = '', @Fullname = '', @Department = :departments, @OldEmail=''", nativeQuery = true)
   void updateUserDepartment(@Param(value = "username") String username,
                             @Param(value = "departments") String departments);
 }

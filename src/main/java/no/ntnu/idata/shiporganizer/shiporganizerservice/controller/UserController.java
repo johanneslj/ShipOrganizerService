@@ -164,22 +164,26 @@ public class UserController {
     }
   }
 
-  /**
-   * Checks if verification code is valid.
-   *
-   * @param email User's email.
-   * @param code  User's received verification code.
-   * @return ResponseEntity 200 OK if valid.
-   */
-  @GetMapping("/check-valid-verification-code")
-  public ResponseEntity<String> checkValidVerificationCode(@Param("email") String email,
-                                                           @Param("code") String code) {
-    if (userService.checkValidVerificationCode(email, code)) {
-      return ResponseEntity.ok("Verification code valid.");
-    } else {
-      return ResponseEntity.badRequest().build();
+    /**
+     * Checks if verification code is valid.
+     *
+     * @return ResponseEntity 200 OK if valid.
+     */
+    @PostMapping("/check-valid-verification-code")
+    public ResponseEntity<String> checkValidVerificationCode(HttpEntity<String> httpEntity) {
+        try {
+            JSONObject json = new JSONObject(httpEntity.getBody());
+            String verificationCode = json.getString("code");
+            String email = json.getString("email");
+            if(userService.checkValidVerificationCode(email, verificationCode)) {
+                return ResponseEntity.ok("Verification code valid.");
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        } catch (JSONException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
-  }
 
   /**
    * Returns the role of the user. ADMIN or USER.
