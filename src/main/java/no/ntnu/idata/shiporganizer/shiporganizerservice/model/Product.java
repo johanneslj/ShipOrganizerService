@@ -36,7 +36,6 @@ public class Product {
 		this.stock = stock;
 		this.Desired_Stock  = desiredStock;
 	}
-
 	public Product() {
 
 	}
