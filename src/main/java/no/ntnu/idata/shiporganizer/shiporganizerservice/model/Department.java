@@ -59,4 +59,13 @@ public class Department {
   public void setRights(int rights) {
     this.rights = rights;
   }
+
+  @Override
+  public String toString() {
+    return "Department{" +
+        "id=" + id +
+        ", name='" + name + '\'' +
+        ", rights=" + rights +
+        '}';
+  }
 }

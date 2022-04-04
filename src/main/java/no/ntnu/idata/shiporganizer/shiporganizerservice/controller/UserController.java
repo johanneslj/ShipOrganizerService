@@ -43,8 +43,13 @@ public class UserController {
   public ResponseEntity<List<PublicUserModel>> getAllPublicUsers() {
     return ResponseEntity.ok(
         userService.getAllUsers().stream()
-            .map(user -> new PublicUserModel(user.getFullname(),
-                user.getEmail())) //TODO get departments they have access to as well
+            .map(user -> new PublicUserModel(
+                user.getFullname(),
+                user.getEmail(),
+                userService.getDepartments(user)
+                    .stream()
+                    .map(Department::getName)
+                    .collect(Collectors.toList())))
             .collect(Collectors.toList()));
   }
 
