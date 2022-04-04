@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,11 +48,12 @@ public class UserController {
                 .collect(Collectors.toList()));
     }
 
-  /**
-   * Uses information about the user to enable editing a pre-existing user
-   * @param entity details about the user
-   * @return Response of ok if successful else an error response
-   */
+    /**
+     * Uses information about the user to enable editing a pre-existing user
+     *
+     * @param entity details about the user
+     * @return Response of ok if successful else an error response
+     */
     @PostMapping("/edit-user")
     public ResponseEntity<String> editUser(HttpEntity<String> entity) {
         try {
@@ -64,9 +66,9 @@ public class UserController {
 
             boolean success = userService.editUser(user, oldEmail, departments);
             if(success) {
-              return ResponseEntity.ok().build();
+                return ResponseEntity.ok().build();
             } else {
-              return ResponseEntity.badRequest().build();
+                return ResponseEntity.badRequest().build();
             }
         } catch (JSONException e) {
             return ResponseEntity.badRequest().build();
@@ -178,16 +180,20 @@ public class UserController {
     /**
      * Checks if verification code is valid.
      *
-     * @param email User's email.
-     * @param code  User's received verification code.
      * @return ResponseEntity 200 OK if valid.
      */
-    @GetMapping("/check-valid-verification-code")
-    public ResponseEntity<String> checkValidVerificationCode(@Param("email") String email,
-                                                             @Param("code") String code) {
-        if(userService.checkValidVerificationCode(email, code)) {
-            return ResponseEntity.ok("Verification code valid.");
-        } else {
+    @PostMapping("/check-valid-verification-code")
+    public ResponseEntity<String> checkValidVerificationCode(HttpEntity<String> httpEntity) {
+        try {
+            JSONObject json = new JSONObject(httpEntity.getBody());
+            String verificationCode = json.getString("code");
+            String email = json.getString("email");
+            if(userService.checkValidVerificationCode(email, verificationCode)) {
+                return ResponseEntity.ok("Verification code valid.");
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        } catch (JSONException e) {
             return ResponseEntity.badRequest().build();
         }
     }
