@@ -10,6 +10,8 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -63,6 +65,7 @@ public class ProductController {
 			JSONObject json = new JSONObject(entity.getBody());
 			String department = json.getString("department");
 			products = productService.getInitialProductInventory(department);
+			products.sort(Comparator.comparing(Product::getProductName));
 		} catch (JSONException ignored) {
 		}
 		return products;
@@ -81,7 +84,7 @@ public class ProductController {
 			String department = json.getString("department");
 			String date = json.getString("DateTime");
 			UpdatedProducts = productService.getUpdatedProductInventory(department, date);
-
+            UpdatedProducts.sort(Comparator.comparing(Product::getProductName));
 		} catch (JSONException ignored) {
 		}
 		return UpdatedProducts;
@@ -99,6 +102,7 @@ public class ProductController {
 			JSONObject json = new JSONObject(entity.getBody());
 			String department = json.getString("department");
 			products = productService.getProductRecommendedInventory(department);
+			products.sort(Comparator.comparing(Product::getProductName));
 		} catch (JSONException ignored) {
 		}
 		return products;
