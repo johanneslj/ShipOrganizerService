@@ -86,7 +86,6 @@ public class ProductController {
 		}
 		return UpdatedProducts;
 	}
-
 	/**
 	 * Gets preferred inventory.
 	 *
