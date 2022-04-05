@@ -19,7 +19,7 @@ public interface OrderRepository extends JpaRepository<Orders,Integer> {
 	 * @param dep the user selected department
 	 * @return List of pending orders
 	 */
-	@Query(value = "SELECT * from getorders('Pending', :dep);",nativeQuery = true)
+	@Query(value = "Call HandleOrders('Pending',:dep,'','');",nativeQuery = true)
 	List<String> getPendingOrders(@Param(value = "dep") String dep);
 
 	/**
@@ -28,7 +28,7 @@ public interface OrderRepository extends JpaRepository<Orders,Integer> {
 	 * @param dep the user selected department
 	 * @return List of confirmed orders
 	 */
-	@Query(value = "SELECT * from getorders('Confirmed', :dep);",nativeQuery = true)
+	@Query(value = "Call HandleOrders('Confirmed',:dep,'','');",nativeQuery = true)
 	List<String> getConfirmedOrders(@Param(value = "dep") String dep);
 
 	/**
@@ -38,7 +38,8 @@ public interface OrderRepository extends JpaRepository<Orders,Integer> {
 	 * @param imageName The image name for the bill
 	 * @return int 1 if the query is completed
 	 */
-	@Query(value = "EXEC HandleOrders @Calltime='New' , @Department= :dep , @Imagename=:imageName ;",nativeQuery = true)
+	// TODO: Add image url to database
+	@Query(value = "Call HandleOrders('New',:dep,:imageName,'');",nativeQuery = true)
 	@Modifying
 	int insertNewOrder(@Param(value = "dep") String dep , @Param(value = "imageName") String imageName);
 
@@ -49,10 +50,7 @@ public interface OrderRepository extends JpaRepository<Orders,Integer> {
 	 * @param imagename The image name for the bill
 	 * @return int 1 if the query is completed
 	 */
-	@Query(value = "EXEC HandleOrders @Calltime='Update' , @Department= :dep , @Imagename=:imagename ;",nativeQuery = true)
+	@Query(value = "Call HandleOrders('Update',:dep,:imageName,''); ;",nativeQuery = true)
 	@Modifying
 	int updateOrder(@Param(value = "dep") String dep , @Param(value = "imagename") String imagename);
-
-
-
 }
