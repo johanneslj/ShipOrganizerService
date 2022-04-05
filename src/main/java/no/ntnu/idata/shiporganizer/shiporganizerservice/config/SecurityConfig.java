@@ -46,7 +46,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Permit login and registration
         .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
         .antMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
-
         // Permit password change/Forgot password
         .antMatchers(HttpMethod.GET, "/api/user/send-verification-code").permitAll()
         .antMatchers(HttpMethod.POST, "/api/user/set-password").permitAll()

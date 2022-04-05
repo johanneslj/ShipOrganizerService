@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Integer> {
 
-    @Query(value = "SELECT * from getmappins('Map', :dep,'');", nativeQuery = true)
+    @Query(value = "Call SelectAll('Map',:dep,'','','');;", nativeQuery = true)
     List<String> getMapMarkers(@Param(value = "dep") String dep);
 
-    @Query(value = "SELECT * from getmappins('Productmap', :dep,:name);", nativeQuery = true)
+    @Query(value = "Call SelectAll('ProductMap', :dep,'',:name,'');;", nativeQuery = true)
     List<String> getMapMarkersOnName(@Param(value = "dep") String dep, @Param(value = "name") String name);
 }
