@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Permit password change/Forgot password
         .antMatchers(HttpMethod.GET, "/api/user/send-verification-code").permitAll()
         .antMatchers(HttpMethod.POST, "/api/user/set-password").permitAll()
-        .antMatchers(HttpMethod.GET, "/api/user/check-valid-verification-code").permitAll()
+        .antMatchers(HttpMethod.POST, "/api/user/check-valid-verification-code").permitAll()
 
         // USER API
         .antMatchers(HttpMethod.DELETE, "/api/user/delete-user").hasAnyRole("USER", "ADMIN")
@@ -58,6 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers(HttpMethod.GET, "/api/user/check-role").hasAnyRole("USER", "ADMIN")
         .antMatchers(HttpMethod.GET, "/api/user/name").hasAnyRole("USER", "ADMIN")
         .antMatchers(HttpMethod.GET, "/api/user/departments").hasAnyRole("USER", "ADMIN")
+        .antMatchers(HttpMethod.POST, "/api/user/edit-user").hasRole("ADMIN")
 
         // PRODUCTS
         .antMatchers(HttpMethod.GET, "/api/product/inventory").hasAnyRole("USER", "ADMIN")
