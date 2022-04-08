@@ -7,7 +7,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ShipOrganizerServiceApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(ShipOrganizerServiceApplication.class, args);
+
+    SpringApplication.run(ShipOrganizerServiceApplication.class, args)
+
+
+    ;
   }
 
 }

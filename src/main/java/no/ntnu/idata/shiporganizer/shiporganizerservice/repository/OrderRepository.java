@@ -44,13 +44,13 @@ public interface OrderRepository extends JpaRepository<Orders,Integer> {
 	int insertNewOrder(@Param(value = "dep") String dep , @Param(value = "imageName") String imageName);
 
 	/**
-	 * Updates order from pending to confirmed
+	 * Updates order from pending to confirm
 	 *
 	 * @param dep the user selected department
-	 * @param imagename The image name for the bill
+	 * @param imageName The image name for the bill
 	 * @return int 1 if the query is completed
 	 */
-	@Query(value = "Call HandleOrders('Update',:dep,:imageName,''); ;",nativeQuery = true)
+	@Query(value = "Call HandleOrders('Update',:dep,:imageName,'');",nativeQuery = true)
 	@Modifying
-	int updateOrder(@Param(value = "dep") String dep , @Param(value = "imagename") String imagename);
+	int updateOrder(@Param(value = "dep") String dep , @Param(value = "imageName") String imageName);
 }
