@@ -3,18 +3,9 @@ package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 import static java.lang.Float.parseFloat;
 
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Product;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.MailService;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.ProductService;
@@ -24,12 +15,9 @@ import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.mail.MessagingException;
 
 
 /**
@@ -41,14 +29,18 @@ import javax.mail.MessagingException;
 public class ProductController {
 
 	private final ProductService productService;
+	private final MailService mailService;
 
 	/**
 	 * Instantiates a new Product contoller.
 	 *
 	 * @param productService the product service
+	 * @param mailService    Mail Service.
 	 */
-	ProductController(ProductService productService) {
+	ProductController(ProductService productService,
+					  MailService mailService) {
 		this.productService = productService;
+		this.mailService = mailService;
 	}
 
 	/**
@@ -252,7 +244,7 @@ public class ProductController {
 				email = jsonArrayRecipients.getString(0);
 			}
 
-			productService.createPdf(products, email, recipients);
+			mailService.createAndSendPdf(products, email, recipients);
 		} catch (JSONException e) {
 			System.out.println(e.getMessage());
 		}
