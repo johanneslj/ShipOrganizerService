@@ -2,14 +2,15 @@ package no.ntnu.idata.shiporganizer.shiporganizerservice.service;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
+import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.UserDepartmentRepository;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.UserRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,10 +19,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -30,6 +29,9 @@ class UserServiceTest {
 
   @MockBean
   UserRepository userRepository;
+
+  @MockBean
+  UserDepartmentRepository userDepartmentRepository;
 
   @Autowired
   @InjectMocks
@@ -44,20 +46,39 @@ class UserServiceTest {
   final Department dep3 = new Department(3, "Motor", 0);
 
   @BeforeEach
-  void addTestUsers() {
-    underTest.registerAndGetSuccess(userOne, Arrays.asList(dep1, dep2, dep3));
-    underTest.registerAndGetSuccess(userTwo, Arrays.asList(dep1, dep2));
-    underTest.registerAndGetSuccess(userThree, Arrays.asList(dep2, dep3));
+  void setup() {
+    Mockito
+        .doNothing()
+        .when(userRepository)
+        .addUser(any(), any(), any());
+    Mockito
+        .doNothing()
+        .when(userDepartmentRepository)
+        .updateUserDepartment(any(), any());
+  }
+
+  @Test
+  void addUserShouldReturnTrue() {
+    Mockito
+        .when(userRepository.findFirstByEmail("one@address.com"))
+        .thenReturn(Optional.of(userOne));
+    Mockito.when(userRepository.save(any(User.class))).thenReturn(userOne);
+    assertTrue(underTest.registerAndGetSuccess(userOne, Arrays.asList(dep1, dep2, dep3)));
   }
 
   @Test
   void getAllUsers() {
+    Mockito.when(userRepository.findAll()).thenReturn(Arrays.asList(userOne, userTwo, userThree));
+
     List<User> users = underTest.getAllUsers();
     assertEquals(3, users.size());
   }
 
   @Test
   void shouldGetByEmail() {
+    Mockito
+        .when(userRepository.findFirstByEmail("one@address.com"))
+        .thenReturn(Optional.of(userOne));
     User result = underTest.getByEmail("one@address.com").orElse(new User());
     assertEquals(userOne, result);
   }
