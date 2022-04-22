@@ -1,17 +1,24 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.repository;
 
-import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Orders;
+import java.util.Optional;
+import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import org.springframework.stereotype.Repository;
 
 /**
  * The interface Order repository. Interface used for the connection to the database.
  */
-public interface OrderRepository extends JpaRepository<Orders,Integer> {
+@Repository
+public interface OrderRepository extends JpaRepository<Order, Integer> {
+
+	Optional<Order> findById(int id);
+
+	Optional<Order> findOrderByImageName(String imageName);
 
 	/**
 	 * Gets pending orders.
