@@ -40,7 +40,7 @@ public class OrderService {
 		List<String> bits = orderRepository.getPendingOrders(department);
 		for (String ting : bits) {
 			String[] data = ting.split(",");
-			pendingOrders.add(new Order(data[0], data[1]));
+			pendingOrders.add(new Order(data[0], data[1],Integer.parseInt(data[2])));
 		}
 		return pendingOrders;
 	}
@@ -56,7 +56,7 @@ public class OrderService {
 		List<String> bits = orderRepository.getConfirmedOrders(department);
 		for (String ting : bits) {
 			String[] data = ting.split(",");
-			confirmedOrders.add(new Order(data[0], data[1]));
+			confirmedOrders.add(new Order(data[0], data[1],Integer.parseInt(data[2])));
 		}
 		return confirmedOrders;
 	}
@@ -77,10 +77,11 @@ public class OrderService {
 	 *
 	 * @param department the department of the user.
 	 * @param imageName  File name of the selected image.
+	 * @param status  status 1 if order is confirmed and 0 if the order is rejected
 	 * @return Success or empty depending on if the query completed or not
 	 */
-	public String updateOrder(String department, String imageName) {
-		int result = orderRepository.updateOrder(department, imageName);
+	public String updateOrder(String department, String imageName, int status) {
+		int result = orderRepository.updateOrder(department, imageName,status);
 		if(result == 1){
 			return "Success";
 		}

@@ -26,7 +26,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	 * @param dep the user selected department
 	 * @return List of pending orders
 	 */
-	@Query(value = "Call HandleOrders('Pending',:dep,'','');",nativeQuery = true)
+	@Query(value = "Call HandleOrders('Pending',:dep,'',0);",nativeQuery = true)
 	List<String> getPendingOrders(@Param(value = "dep") String dep);
 
 	/**
@@ -35,7 +35,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	 * @param dep the user selected department
 	 * @return List of confirmed orders
 	 */
-	@Query(value = "Call HandleOrders('Confirmed',:dep,'','');",nativeQuery = true)
+	@Query(value = "Call HandleOrders('Confirmed',:dep,'',0);",nativeQuery = true)
 	List<String> getConfirmedOrders(@Param(value = "dep") String dep);
 
 	/**
@@ -45,8 +45,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	 * @param imageName The image name for the bill
 	 * @return int 1 if the query is completed
 	 */
-	// TODO: Add image url to database
-	@Query(value = "Call HandleOrders('New',:dep,:imageName,'');",nativeQuery = true)
+	@Query(value = "Call HandleOrders('New',:dep,:imageName,0);",nativeQuery = true)
 	@Modifying
 	int insertNewOrder(@Param(value = "dep") String dep , @Param(value = "imageName") String imageName);
 
@@ -57,7 +56,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	 * @param imageName The image name for the bill
 	 * @return int 1 if the query is completed
 	 */
-	@Query(value = "Call HandleOrders('Update',:dep,:imageName,'');",nativeQuery = true)
+	@Query(value = "Call HandleOrders('Update',:dep,:imageName,:status);",nativeQuery = true)
 	@Modifying
-	int updateOrder(@Param(value = "dep") String dep , @Param(value = "imageName") String imageName);
+	int updateOrder(@Param(value = "dep") String dep , @Param(value = "imageName") String imageName,@Param(value = "status") int stauts);
 }

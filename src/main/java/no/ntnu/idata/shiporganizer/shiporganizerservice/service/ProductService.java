@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
