@@ -1,11 +1,12 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.service;
 
-import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Orders;
+import java.io.IOException;
+import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Order;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * The type Order service. The link between the Controller and the repository classes
@@ -13,19 +14,19 @@ import java.util.List;
 @Service
 public class OrderService {
 
-	/**
-	 * The Order repository.
-	 */
-	@Autowired
 	private final OrderRepository orderRepository;
+	private final OrderImageStorageService orderImageStorageService;
 
 	/**
 	 * Instantiates a new Order service.
 	 *
-	 * @param orderRepository the order repository
+	 * @param orderRepository          the order repository
+	 * @param orderImageStorageService image storage service
 	 */
-	public OrderService(OrderRepository orderRepository) {
+	public OrderService(OrderRepository orderRepository,
+						OrderImageStorageService orderImageStorageService) {
 		this.orderRepository = orderRepository;
+		this.orderImageStorageService = orderImageStorageService;
 	}
 
 	/**
@@ -34,12 +35,12 @@ public class OrderService {
 	 * @param department the department
 	 * @return the list
 	 */
-	public List<Orders> getPendingOrders(String department){
-		List<Orders> pendingOrders = new ArrayList<>();
+	public List<Order> getPendingOrders(String department) {
+		List<Order> pendingOrders = new ArrayList<>();
 		List<String> bits = orderRepository.getPendingOrders(department);
 		for (String ting : bits) {
 			String[] data = ting.split(",");
-			pendingOrders.add(new Orders(data[0],data[1]));
+			pendingOrders.add(new Order(data[0], data[1]));
 		}
 		return pendingOrders;
 	}
@@ -50,45 +51,39 @@ public class OrderService {
 	 * @param department the department
 	 * @return the list
 	 */
-	public List<Orders> getConfirmedOrders(String department){
-		List<Orders> confirmedOrders = new ArrayList<>();
+	public List<Order> getConfirmedOrders(String department) {
+		List<Order> confirmedOrders = new ArrayList<>();
 		List<String> bits = orderRepository.getConfirmedOrders(department);
 		for (String ting : bits) {
 			String[] data = ting.split(",");
-			confirmedOrders.add(new Orders(data[0],data[1]));
+			confirmedOrders.add(new Order(data[0], data[1]));
 		}
 		return confirmedOrders;
 	}
-	/**
-	 * Insert new order for confirmation
-	 *
-	 * @param requestBody the request body containing users department and image-name
-	 * @return Success or empty depending on if the query completed or not
-	 */
-	public String insertNewOrder(String department,String imageName){
-		//TODO Send image to image server
-		int result = orderRepository.insertNewOrder(department,imageName);
-		if(result == 1){
-			return "Success";
-		}
-		return "";
+
+	public void insertNewOrder(String department, MultipartFile image) throws IOException {
+		String imageName = OrderImageStorageService.getFileName(image);
+		orderRepository.insertNewOrder(department, imageName);
+		int orderId =
+				orderRepository
+						.findOrderByImageName(imageName)
+						.orElse(new Order(-1, "", "", -1))
+						.getId();
+		orderImageStorageService.storeFile(image, orderId);
 	}
 
 	/**
 	 * Updates order from pending to confirm
 	 *
 	 * @param department the department of the user.
-	 * @param imageName File name of the selected image.
+	 * @param imageName  File name of the selected image.
 	 * @return Success or empty depending on if the query completed or not
 	 */
-	public String updateOrder(String department, String imageName){
-		//TODO Send image to image server
-		int result = orderRepository.updateOrder(department,imageName);
+	public String updateOrder(String department, String imageName) {
+		int result = orderRepository.updateOrder(department, imageName);
 		if(result == 1){
 			return "Success";
 		}
 		return "";
 	}
-
-
 }
