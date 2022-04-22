@@ -62,6 +62,7 @@ public class Product {
 		return productnumber;
 	}
 
+
 	/**
 	 * Gets product name.
 	 *
