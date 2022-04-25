@@ -64,11 +64,7 @@ public class UserService {
    * @param departments List of departments the user gets access to.
    */
   public boolean registerAndGetSuccess(User user, List<Department> departments) {
-    String password = "";
-    if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-      password = user.getPassword();
-    }
-    userRepository.addUser(user.getEmail(), password, user.getFullname());
+    userRepository.addUser(user.getEmail(), "", user.getFullname());
 
     updateUserDepartments(user, departments);
     mailService.sendRegisteredEmail(user.getEmail());
