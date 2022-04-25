@@ -53,7 +53,6 @@ public class Product {
 	public String getStock() {
 		return stock;
 	}
-
 	/**
 	 * Gets product number.
 	 *
@@ -62,6 +61,7 @@ public class Product {
 	public String getProductNumber() {
 		return productnumber;
 	}
+
 
 	/**
 	 * Gets product name.
