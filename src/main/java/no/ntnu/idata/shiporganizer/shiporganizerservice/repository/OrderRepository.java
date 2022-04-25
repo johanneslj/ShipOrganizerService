@@ -58,5 +58,5 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	 */
 	@Query(value = "Call HandleOrders('Update',:dep,:imageName,:status);",nativeQuery = true)
 	@Modifying
-	int updateOrder(@Param(value = "dep") String dep , @Param(value = "imageName") String imageName,@Param(value = "status") int stauts);
+	int updateOrder(@Param(value = "dep") String dep , @Param(value = "imageName") String imageName,@Param(value = "status") int status);
 }
