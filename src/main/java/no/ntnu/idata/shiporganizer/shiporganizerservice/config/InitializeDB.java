@@ -1,8 +1,5 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.config;
 
-import java.util.List;
-import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
-import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.UserDepartmentRepository;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,10 +31,9 @@ public class InitializeDB implements CommandLineRunner {
    * Callback used to run the bean.
    *
    * @param args incoming main method arguments
-   * @throws Exception on error
    */
   @Override
-  public void run(String... args) throws Exception {
+  public void run(String... args) {
     if (userRepository.findFirstByEmail(username).isEmpty()) {
       userRepository.addUser(username, passwordEncoder.encode(password), name);
       userDepartmentRepository.updateUserDepartment(username, "Skipper,");
