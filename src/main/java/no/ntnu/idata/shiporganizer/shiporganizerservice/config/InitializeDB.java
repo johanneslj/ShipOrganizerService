@@ -4,17 +4,17 @@ import java.util.List;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Department;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.User;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 
 @Service
-@Configuration
-@ConfigurationProperties(prefix = "user.properties")
 public class InitializeDB implements CommandLineRunner {
+  @Value("${user.properties.name}")
   private String name;
+  @Value("${user.properties.username}")
   private String username;
+  @Value("${user.properties.password}")
   private String password;
   private final UserService userService;
 
