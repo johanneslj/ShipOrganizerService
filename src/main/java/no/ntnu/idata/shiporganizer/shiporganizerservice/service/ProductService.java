@@ -136,7 +136,7 @@ public class ProductService {
 
             mailService.sendPdfEmail(email,recipients,"BestillingsListe.pdf");
         }catch (DocumentException | FileNotFoundException | MessagingException e ){
-            System.out.println(e.getMessage());
+            System.out.println(e);
         }
     }
     // Add File meta data
