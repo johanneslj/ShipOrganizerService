@@ -62,7 +62,7 @@ public class OrderService {
 	/**
 	 * Insert new order for confirmation
 	 *
-	 * @param requestBody the request body containing users department and image-name
+	 * @param imageName the request body containing users department and image-name
 	 * @return Success or empty depending on if the query completed or not
 	 */
 	public String insertNewOrder(String department,String imageName){
