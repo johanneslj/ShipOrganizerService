@@ -53,7 +53,6 @@ public class AuthController {
       return ResponseEntity.badRequest().build();
     }
   }
-
   private Optional<User> getUserOptionalFromHttpEntity(HttpEntity<String> entity)
       throws JSONException {
     JSONObject json = new JSONObject(entity.getBody());
