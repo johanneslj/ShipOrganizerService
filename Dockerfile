@@ -5,10 +5,12 @@ COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
-COPY scripts/*.sql /docker-entrypoint-initdb.d/
+COPY sql/*.sql /docker-entrypoint-initdb.d/
 
 RUN ./mvnw install -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+
 
 FROM openjdk:17-alpine
 VOLUME /tmp

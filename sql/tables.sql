@@ -1,7 +1,7 @@
 CREATE DATABASE  IF NOT EXISTS `KystFiske_db`;
 USE `KystFiske_db`;
 
-create table Department
+create table  IF NOT EXISTS Department
 (
     PK_DepartmentID int auto_increment
         primary key,
@@ -9,7 +9,7 @@ create table Department
     Rights          int          null
 );
 
-create table LoginTable
+create table IF NOT EXISTS LoginTable
 (
     PK_UserID int auto_increment
         primary key,
@@ -20,7 +20,7 @@ create table LoginTable
     Token     varchar(255) null
 );
 
-create table Orders
+create table IF NOT EXISTS Orders
 (
     PK_OrderID      int auto_increment
         primary key,
@@ -35,7 +35,7 @@ create table Orders
 create index FK_DepartmentID
     on Orders (FK_DepartmentID);
 
-create table Product
+create table IF NOT EXISTS Product
 (
     PK_ProdID     int auto_increment
         primary key,
@@ -44,7 +44,7 @@ create table Product
     EAN           varchar(13)  null
 );
 
-create table Reports
+create table IF NOT EXISTS Reports
 (
     PK_ReportID int auto_increment
         primary key,
@@ -66,7 +66,7 @@ create table Reports
 create index FK_Product
     on Reports (FK_Product);
 
-create table Storelink
+create table IF NOT EXISTS Storelink
 (
     PK_LinkID     int auto_increment
         primary key,
@@ -92,7 +92,7 @@ create index FK_Product
 create index FK_Store
     on Storelink (FK_Store);
 
-create table UserDepartment
+create table IF NOT EXISTS UserDepartment
 (
     PK_UserDepID  int auto_increment
         primary key,
@@ -107,3 +107,4 @@ create table UserDepartment
 
 create index FK_Department
     on UserDepartment (FK_Department);
+
