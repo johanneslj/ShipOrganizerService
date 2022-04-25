@@ -15,6 +15,16 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
   List<User> findAll();
 
+  /*/**
+   * Gets model of user-department relationship for specified user.
+   *
+   * @param username Username of user to find departments for.
+   * @return List of strings, where username and department name is seperated by comma.
+   *//*
+
+  @Query(value = "EXEC SelectAll @Calltime = 'Users', @Department = '', @Username = :username;", nativeQuery = true)
+  List<String> getUserDepartments(@Param(value = "username") String username);*/
+
   /**
    * Adds new user with specified arguments to database.
    *
@@ -24,7 +34,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
    */
   @Modifying
   @Transactional
-  @Query(value = "EXEC HandleUser @Calltime = 'Insert', @Username = :username, @Password = :password, @Fullname = :fullname, @Department = '', @OldEmail='';", nativeQuery = true)
+  @Query(value = "Call HandleUser('Insert',:username,:password,:fullname,'','');", nativeQuery = true)
   void addUser(@Param(value = "username") String email,
                @Param(value = "password") String password,
                @Param(value = "fullname") String fullname);
@@ -37,15 +47,22 @@ public interface UserRepository extends JpaRepository<User, Integer> {
    */
   @Modifying
   @Transactional
-  @Query(value = "EXEC HandleUser @Calltime = 'Delete', @Username = :username, @Password = '', @Fullname = '', @Department = '', @OldEmail = '';", nativeQuery = true)
+  @Query(value = "Call HandleUser('Delete',:username,:password,:fullname,'','');", nativeQuery = true)
   void deleteUser(@Param(value = "username") String username);
+
+  /**
+   * Edit a user
+   * @param email
+   * @param newEmail
+   * @param fullname
+   */
 
   @Modifying
   @Transactional
-  @Query(value = "EXEC HandleUser @Calltime = 'Update', @Username = :username, @Password='', @Fullname = :fullname, @Department = '', @OldEmail = :oldEmail", nativeQuery = true)
-  void editUser(@Param(value = "username") String username,
-                @Param(value = "fullname") String fullname,
-                @Param(value = "oldEmail") String oldEmail);
+  @Query(value = "Call HandleUser('Update',:newEmail,'',:fullname,'',:username);", nativeQuery = true)
+  void editUser(@Param(value = "username") String email,
+               @Param(value = "newEmail") String newEmail,
+               @Param(value = "fullname") String fullname);
 
   /**
    * Finds first user by passed email.

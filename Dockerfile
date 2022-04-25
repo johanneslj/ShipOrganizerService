@@ -17,4 +17,5 @@ ARG MAINAPP=src/main/java/no.ntnu.idata.shiporganizer.shiporganizerservice.ShipO
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*", "no.ntnu.idata.shiporganizer.shiporganizerservice.ShipOrganizerServiceApplication"]
+EXPOSE 8080
+ENTRYPOINT ["./wait-for-it.sh", "mysqldb:3306","java","-cp","app:app/lib/*", "no.ntnu.idata.shiporganizer.shiporganizerservice.ShipOrganizerServiceApplication"]

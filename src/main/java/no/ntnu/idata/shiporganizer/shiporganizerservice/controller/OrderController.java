@@ -67,10 +67,10 @@ public class OrderController {
 		String success = "";
 		try{
 			JSONObject json = new JSONObject(http.getBody());
-
 			String imagename = json.optString("imageName");
 			String department = json.getString("department");
-			success = orderService.updateOrder(department,imagename);
+			int status = json.getInt("status");
+			success = orderService.updateOrder(department,imagename,status);
 		} 
 		catch (JSONException e) {
 			e.printStackTrace();

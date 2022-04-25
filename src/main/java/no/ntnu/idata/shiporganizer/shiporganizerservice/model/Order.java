@@ -29,9 +29,10 @@ public class Order {
 	public Order() {
 	}
 
-	public Order(String imageName, String departmentName) {
+	public Order(String imageName, String departmentName,int status) {
 		this.imageName = imageName;
 		this.departmentName = departmentName;
+		this.status = status;
 	}
 
 	public Order(int id, String imageName, String departmentName, int status) {
