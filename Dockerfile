@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-alpine as build
+FROM openjdk:17-alpine as build
 WORKDIR /workspace/app
 
 COPY mvnw .
@@ -9,8 +9,9 @@ COPY src src
 RUN ./mvnw install -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
-FROM openjdk:8-jdk-alpine
+FROM openjdk:17-alpine
 VOLUME /tmp
+EXPOSE 8080
 ARG DEPENDENCY=/workspace/app/target/dependency
 ARG MAINAPP=src/main/java/no.ntnu.idata.shiporganizer.shiporganizerservice.ShipOrganizerServiceApplication
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib

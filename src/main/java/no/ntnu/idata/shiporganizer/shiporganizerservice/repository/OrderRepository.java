@@ -1,17 +1,24 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.repository;
 
-import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Orders;
+import java.util.Optional;
+import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import org.springframework.stereotype.Repository;
 
 /**
  * The interface Order repository. Interface used for the connection to the database.
  */
-public interface OrderRepository extends JpaRepository<Orders,Integer> {
+@Repository
+public interface OrderRepository extends JpaRepository<Order, Integer> {
+
+	Optional<Order> findById(int id);
+
+	Optional<Order> findOrderByImageName(String imageName);
 
 	/**
 	 * Gets pending orders.
@@ -19,7 +26,7 @@ public interface OrderRepository extends JpaRepository<Orders,Integer> {
 	 * @param dep the user selected department
 	 * @return List of pending orders
 	 */
-	@Query(value = "EXEC HandleOrders @Calltime='Pending' , @Department= :dep , @Imagename='';",nativeQuery = true)
+	@Query(value = "EXEC HandleOrders @Calltime='Pending' , @Department= :dep , @Imagename='';", nativeQuery = true)
 	List<String> getPendingOrders(@Param(value = "dep") String dep);
 
 	/**
@@ -43,7 +50,7 @@ public interface OrderRepository extends JpaRepository<Orders,Integer> {
 	int insertNewOrder(@Param(value = "dep") String dep , @Param(value = "imageName") String imageName);
 
 	/**
-	 * Updates order from pending to confirmed
+	 * Updates order from "pending" to "confirmed"
 	 *
 	 * @param dep the user selected department
 	 * @param imagename The image name for the bill
@@ -52,7 +59,4 @@ public interface OrderRepository extends JpaRepository<Orders,Integer> {
 	@Query(value = "EXEC HandleOrders @Calltime='Update' , @Department= :dep , @Imagename=:imagename ;",nativeQuery = true)
 	@Modifying
 	int updateOrder(@Param(value = "dep") String dep , @Param(value = "imagename") String imagename);
-
-
-
 }
