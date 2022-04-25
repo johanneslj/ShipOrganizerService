@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
@@ -135,7 +136,7 @@ public class ProductService {
 
             mailService.sendPdfEmail(email,recipients,"BestillingsListe.pdf");
         }catch (DocumentException | FileNotFoundException | MessagingException e ){
-            System.out.println(e.getMessage());
+            System.out.println(e);
         }
     }
     // Add File meta data
@@ -166,7 +167,7 @@ public class ProductService {
     // Add Table with products to pdf
     private static void addTableToPdf(Document document, List<Product> products) throws DocumentException {
         PdfPTable table = new PdfPTable(3);
-        Stream.of("Produktnavn", "Produktnummer", "Antall å bestille")
+        Stream.of("Produkt navn", "Produkt nummer", "Antall å bestille")
                 .forEach(columnTitle -> {
                     PdfPCell header = new PdfPCell();
                     header.setBackgroundColor(BaseColor.LIGHT_GRAY);
