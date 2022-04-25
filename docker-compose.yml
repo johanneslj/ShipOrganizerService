@@ -8,6 +8,11 @@ services:
       - MYSQL_DATABASE=KystFiske_db
     ports:
       - "3307:3306"
+    volumes:
+      - "./scripts/tables.sql:/docker-entrypoint-initdb.d/1.sql"
+      - "./scripts/tables.sql:/docker-entrypoint-initdb.d/2.sql"
+      -  "./scripts/insert.sql:/docker-entrypoint-initdb.d/3.sql"
+
   app:
     depends_on:
       - mysqldb
