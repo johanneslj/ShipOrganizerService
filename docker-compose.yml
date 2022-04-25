@@ -3,15 +3,15 @@ services:
   mysqldb:
     image: mysql:5.7
     restart: unless-stopped
+    command: [--ignore-db-dir=lost+found]
     environment:
       - MYSQL_ROOT_PASSWORD=ntnu
       - MYSQL_DATABASE=KystFiske_db
     ports:
       - "3307:3306"
     volumes:
-      - "./scripts/tables.sql:/docker-entrypoint-initdb.d/1.sql"
-      - "./scripts/tables.sql:/docker-entrypoint-initdb.d/2.sql"
-      -  "./scripts/insert.sql:/docker-entrypoint-initdb.d/3.sql"
+      - "./sql/tables.sql:/docker-entrypoint-initdb.d/create_tables.sql"
+      - "./sql/insert.sql:/docker-entrypoint-initdb.d/insert_data.sql"
 
   app:
     depends_on:

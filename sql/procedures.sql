@@ -1,9 +1,7 @@
 CREATE DATABASE  IF NOT EXISTS `KystFiske_db`;
 USE `KystFiske_db`;
 
-
-create
-definer = root@localhost procedure GetReports(IN Department varchar(255), IN Calltime varchar(255))
+create procedure GetReports(IN Department varchar(255), IN Calltime varchar(255))
 BEGIN
 IF(Calltime = 'Detail')
   then
@@ -29,8 +27,7 @@ Group by Department.DepartmentName;
 end if;
 END;
 
-create
-definer = root@localhost procedure HandleOrders(IN Calltime varchar(255), IN Department varchar(255),
+create procedure HandleOrders(IN Calltime varchar(255), IN Department varchar(255),
                                                     IN ImageNameString varchar(255), IN URL varchar(255))
 BEGIN
 Declare DepartmentID int;
@@ -69,8 +66,7 @@ update orders set status=1 where Imagename=@ImageName and FK_DepartmentID=@Depar
 end if;
 END;
 
-create
-definer = root@localhost procedure HandleProduct(IN Calltime varchar(255), IN Department varchar(255),
+create procedure HandleProduct(IN Calltime varchar(255), IN Department varchar(255),
                                                      IN ProductName varchar(255), IN ProductNumber varchar(255),
                                                      IN EAN varchar(255), IN DesiredStock int, IN Stock int,
                                                      IN DateTimeString varchar(255))
@@ -139,8 +135,7 @@ delete from Product where PK_ProdID=productID;
 end if;
 END;
 
-create
-definer = root@localhost procedure HandleStock(IN Prodnumber varchar(255), IN Desired_Stock int, IN Stock int,
+create procedure HandleStock(IN Prodnumber varchar(255), IN Desired_Stock int, IN Stock int,
                                                    IN Department varchar(255), IN Date datetime)
 BEGIN
 -- Local Variables
@@ -156,8 +151,7 @@ update Storelink set Desired_Stock=Desired_Stock , Updated = Date where FK_Produ
 end if;
 END;
 
-create
-definer = root@localhost procedure HandleUser(IN Calltime varchar(255), IN UsernameString varchar(255),
+create procedure HandleUser(IN Calltime varchar(255), IN UsernameString varchar(255),
                                                   IN PasswordString varchar(255), IN Fullname varchar(255),
                                                   IN Department varchar(255), IN OldEmail varchar(255))
 BEGIN
@@ -215,8 +209,7 @@ Delete from LoginTable where PK_UserID = UserID;
 end if;
 END;
 
-create
-definer = root@localhost procedure InsertRecordAndUpdateStorelink(IN productno varchar(255),
+create procedure InsertRecordAndUpdateStorelink(IN productno varchar(255),
                                                                       IN usernameString varchar(255), IN quantity int,
                                                                       IN longitude float, IN latitude float,
                                                                       IN DateTimeString varchar(255))
@@ -250,8 +243,7 @@ SET CurrStock = (Select STOCK from storelink where FK_Product = PK_Product);
 Update storelink set Stock = (CurrStock + quantity) , Updated=date where FK_Product = PK_Product;
 END;
 
-create
-definer = root@localhost procedure SelectAll(IN Calltime varchar(255), IN Department varchar(255),
+create procedure SelectAll(IN Calltime varchar(255), IN Department varchar(255),
                                                  IN Username varchar(255), IN ProductName varchar(255),
                                                  IN DateTimeString varchar(255))
 Begin
