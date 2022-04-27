@@ -103,7 +103,7 @@ public class UserService {
   }
 
   public void editUser(User editedUser, String oldEmail, List<Department> departments) {
-    userRepository.editUser(editedUser.getEmail(), editedUser.getFullname(), oldEmail);
+    userRepository.editUser(oldEmail,editedUser.getEmail(), editedUser.getFullname());
     updateUserDepartments(editedUser, departments);
   }
 
