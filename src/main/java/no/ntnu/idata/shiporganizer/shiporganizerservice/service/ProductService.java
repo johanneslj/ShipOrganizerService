@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -90,9 +92,7 @@ public class ProductService {
 
     public boolean createNewProduct(String productName, String productNumber, int desiredStock, int stock, String barcode, String department,String dateTime) {
         boolean success = false;
-
         int successInt = productRepository.createNewProduct(productName, productNumber, desiredStock, stock, barcode, department,dateTime);
-
         if(successInt == 1) {
             success = true;
         }
@@ -100,6 +100,16 @@ public class ProductService {
         return success;
     }
 
+
+    public boolean checkProdNumber(String productNumber){
+        boolean success = false;
+        List<Product> products = productRepository.getAll(productNumber);
+
+        if(!products.isEmpty()){
+            success=true;
+        }
+        return success;
+    }
 
     public boolean deleteProduct(String productNumber) {
         boolean success = false;
@@ -124,13 +134,13 @@ public class ProductService {
     }
 
     /// Creates the pdf with correct content and calls the mailService to send the email with the pdf
-    public void createPdf(List<Product> products, String email, String[] recipients){
+    public void createPdf(List<Product> products, String email, String[] recipients,String department){
         try{
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream("BestillingsListe.pdf"));
             document.open();
             addMetaData(document);
-            addTextToPdf(document,email);
+            addTextToPdf(document,email,department);
             addTableToPdf(document,products);
             document.close();
 
@@ -146,7 +156,7 @@ public class ProductService {
         document.addCreator("Ship Organizer app");
     }
     // Add Text to pdf
-    private static void addTextToPdf(Document document,String email) throws DocumentException {
+    private static void addTextToPdf(Document document,String email, String department) throws DocumentException {
         Paragraph preface = new Paragraph();
         Font font = FontFactory.getFont(FontFactory.TIMES, 16, BaseColor.BLACK);
         addEmptyLine(preface, 1);
@@ -157,6 +167,9 @@ public class ProductService {
                 font));
         preface.add(new Paragraph(
                 "Email: " + email,
+                font));
+        preface.add(new Paragraph(
+                "Department: " + department,
                 font));
         preface.add(new Paragraph(
                 "Dato: " + new Date(),

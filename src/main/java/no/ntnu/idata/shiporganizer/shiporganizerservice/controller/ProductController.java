@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -116,6 +117,7 @@ public class ProductController {
      */
     @PostMapping(path = "/new-product")
     public ResponseEntity<String> createNewProduct(HttpEntity<String> entity) {
+        ResponseEntity<String> response = null;
         try {
             JSONObject json = new JSONObject(entity.getBody());
             String productName = json.getString("productName");
@@ -125,17 +127,21 @@ public class ProductController {
             String barcode = json.getString("barcode");
             String department = json.getString("department");
             String dateTime = json.getString("dateTime");
-
-            boolean success = productService.createNewProduct(productName, productNumber, desiredStock, stock, barcode, department, dateTime);
-            if(success) {
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
-
+                if(productService.checkProdNumber(productNumber)){
+                    response = ResponseEntity.badRequest().body("Exists");
+                }
+                else {
+                    boolean success = productService.createNewProduct(productName, productNumber, desiredStock, stock, barcode, department, dateTime);
+                    if(success) {
+                        response = ResponseEntity.ok().build();
+                    } else {
+                        response = ResponseEntity.badRequest().build();
+                    }
+                }
         } catch (JSONException e) {
-            return ResponseEntity.badRequest().build();
+            response =  ResponseEntity.badRequest().build();
         }
+        return response;
     }
 
     /**
@@ -230,6 +236,7 @@ public class ProductController {
             JSONObject json = new JSONObject(entity.getBody());
             List<Product> products = new ArrayList<>();
             String[] recipients = new String[0];
+            String department = json.getString("department");
 
             JSONArray jsonArrayProducts = json.getJSONArray("items");
             for(int i = 0; i < jsonArrayProducts.length(); i++) {
@@ -254,7 +261,7 @@ public class ProductController {
                 email = jsonArrayRecipients.getString(0);
             }
 
-            productService.createPdf(products, email, recipients);
+            productService.createPdf(products, email, recipients,department);
         } catch (JSONException e) {
             System.out.println(e);
         }

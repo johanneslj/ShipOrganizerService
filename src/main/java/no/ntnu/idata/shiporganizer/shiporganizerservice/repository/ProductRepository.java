@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -33,6 +34,16 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query(value = "Call HandleProduct('InitialInventory',:dep,'','','',0,0,'');", nativeQuery = true)
     List<Product> getInitialProductInventory(@Param(value = "dep") String dep);
 
+
+    /**
+     * Gets all the products from the database with current stock
+     *
+     * @return String list from the database
+     */
+    @Query(value = "Call HandleProduct('CheckProduct','','',:number,'',0,0,'');", nativeQuery = true)
+    List<Product> getAll(@Param(value = "number") String number);
+
+
     /**
      * Gets all the products from the database with current stock
      *
@@ -40,7 +51,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * @param date last time user fetched the inventory
      * @return String list from the database
      */
-    @Query(value = "Call HandleProduct('UpdatedInventory',:dep,'','','',0,0,:date);;", nativeQuery = true)
+    @Query(value = "Call HandleProduct('UpdatedInventory',:dep,'','','',0,0,:date);", nativeQuery = true)
     List<Product> getUpdatedProductInventory(@Param(value = "dep") String dep, @Param(value = "date") String date);
 
 
