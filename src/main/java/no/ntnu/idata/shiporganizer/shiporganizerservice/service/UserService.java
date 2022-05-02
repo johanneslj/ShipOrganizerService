@@ -65,13 +65,10 @@ public class UserService {
    */
   public boolean registerAndGetSuccess(User user, List<Department> departments) {
     userRepository.addUser(user.getEmail(), "", user.getFullname());
-
     updateUserDepartments(user, departments);
     if(!user.getEmail().equals("admin@admin.com")){
       mailService.sendRegisteredEmail(user.getEmail());
     }
-
-
     return setNewTokenForUser(user.getEmail());
   }
 
