@@ -36,15 +36,22 @@ public class LoginService {
    */
   public Optional<User> loginAndGetUserOptional(String email, String password) {
     Optional<User> userOptional = userRepository.findFirstByEmail(email);
-    userOptional.ifPresent(user -> checkCorrectPasswordAndSetNewTokenForUser(password, user));
-    return userOptional;
+    if (userOptional.isPresent()) {
+      User user = userOptional.get();
+      return checkCorrectPasswordAndSetNewTokenForUser(password, user)
+          ? Optional.of(user)
+          : Optional.empty();
+    }
+    return Optional.empty();
   }
 
-  private void checkCorrectPasswordAndSetNewTokenForUser(String password, User user) {
+  private boolean checkCorrectPasswordAndSetNewTokenForUser(String password, User user) {
     if (passwordEncoder.matches(password, user.getPassword())) {
       setNewTokenForUser(user);
       userRepository.save(user);
+      return true;
     }
+    return false;
   }
 
   private void setNewTokenForUser(User user) {
