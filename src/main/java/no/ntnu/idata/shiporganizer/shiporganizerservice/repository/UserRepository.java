@@ -47,7 +47,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
    */
   @Modifying
   @Transactional
-  @Query(value = "Call HandleUser('Delete',:username,:password,:fullname,'','');", nativeQuery = true)
+  @Query(value = "Call HandleUser('Delete',:username,'','','','');", nativeQuery = true)
   void deleteUser(@Param(value = "username") String username);
 
   /**
