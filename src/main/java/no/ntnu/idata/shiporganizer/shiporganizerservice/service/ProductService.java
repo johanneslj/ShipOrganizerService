@@ -123,10 +123,10 @@ public class ProductService {
         return success;
     }
 
-    public boolean editProduct(String productName, String productNumber, int desiredStock, String barcode, String department,String dateTime) {
+    public boolean editProduct(int id,String productName, String productNumber, int desiredStock, String barcode, String department,String dateTime) {
         boolean success = false;
 
-        int successInt = productRepository.editProduct(productName, productNumber, desiredStock, barcode, department,dateTime);
+        int successInt = productRepository.editProduct(id,productName, productNumber, desiredStock, barcode, department,dateTime);
         if(successInt == 1) {
             success = true;
         }

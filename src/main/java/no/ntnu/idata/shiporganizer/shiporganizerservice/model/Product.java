@@ -29,7 +29,8 @@ public class Product {
 
 	private String Desired_Stock;
 
-	public Product(String productname,String productnumber, String barcode, String stock, String desiredStock) {
+	public Product(int id,String productname,String productnumber, String barcode, String stock, String desiredStock) {
+		this.id = id;
 		this.productnumber = productnumber;
 		this.productname = productname;
 		this.barcode = barcode;
@@ -39,6 +40,10 @@ public class Product {
 
 	public Product() {
 
+	}
+
+	public int getId() {
+		return id;
 	}
 
 	public String getDesired_Stock() {
