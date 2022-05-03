@@ -31,7 +31,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * @param dep Users selected department
      * @return String list from the database
      */
-    @Query(value = "Call HandleProduct('InitialInventory',:dep,'','','',0,0,'');", nativeQuery = true)
+    @Query(value = "Call HandleProduct('InitialInventory',:dep,'','','',0,0,'',0);", nativeQuery = true)
     List<Product> getInitialProductInventory(@Param(value = "dep") String dep);
 
 
@@ -40,7 +40,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      *
      * @return String list from the database
      */
-    @Query(value = "Call HandleProduct('CheckProduct','','',:number,'',0,0,'');", nativeQuery = true)
+    @Query(value = "Call HandleProduct('CheckProduct','','',:number,'',0,0,'',0);", nativeQuery = true)
     List<Product> getAll(@Param(value = "number") String number);
 
 
@@ -51,7 +51,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * @param date last time user fetched the inventory
      * @return String list from the database
      */
-    @Query(value = "Call HandleProduct('UpdatedInventory',:dep,'','','',0,0,:date);", nativeQuery = true)
+    @Query(value = "Call HandleProduct('UpdatedInventory',:dep,'','','',0,0,:date,0);", nativeQuery = true)
     List<Product> getUpdatedProductInventory(@Param(value = "dep") String dep, @Param(value = "date") String date);
 
 
@@ -66,7 +66,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * @param dep           the department to which the product will be registered
      * @return 1 if success else 0
      */
-    @Query(value = "Call HandleProduct('Insert',:dep,:name,:productNumber,:barcode,:desiredStock,:stock,:dateTime);", nativeQuery = true)
+    @Query(value = "Call HandleProduct('Insert',:dep,:name,:productNumber,:barcode,:desiredStock,:stock,:dateTime,0);", nativeQuery = true)
     @Modifying
     int createNewProduct(@Param(value = "name") String name, @Param(value = "productNumber") String productNumber, @Param(value = "desiredStock") int desiredStock, @Param(value = "stock") int stock, @Param(value = "barcode") String barcode, @Param(value = "dep") String dep, @Param(value = "dateTime") String dateTime);
 
@@ -76,7 +76,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * @param productNumber the product number
      * @return 1 if success else 0
      */
-    @Query(value = "Call HandleProduct('Delete','','',:productNumber,'',0,0,'');", nativeQuery = true)
+    @Query(value = "Call HandleProduct('Delete','','',:productNumber,'',0,0,'',0);", nativeQuery = true)
     @Modifying
     int deleteProduct(@Param(value = "productNumber") String productNumber);
 
@@ -93,9 +93,9 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * @param dep           the department to which the product is registered
      * @return 1 if success else 0
      */
-    @Query(value = "Call HandleProduct('Update',:dep,:name,:productNumber,:barcode,:desiredStock,0,:dateTime);", nativeQuery = true)
+    @Query(value = "Call HandleProduct('Update',:dep,:name,:productNumber,:barcode,:desiredStock,0,:dateTime,:id);", nativeQuery = true)
     @Modifying
-    int editProduct(@Param(value = "name") String name, @Param(value = "productNumber") String productNumber, @Param(value = "desiredStock") int desiredStock, @Param(value = "barcode") String barcode, @Param(value = "dep") String dep, @Param(value = "dateTime") String dateTime);
+    int editProduct(@Param(value = "id") int id,@Param(value = "name") String name, @Param(value = "productNumber") String productNumber, @Param(value = "desiredStock") int desiredStock, @Param(value = "barcode") String barcode, @Param(value = "dep") String dep, @Param(value = "dateTime") String dateTime);
 
 
     /**
@@ -104,7 +104,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * @param dep Users selected department
      * @return String list from the database
      */
-    @Query(value = "Call HandleProduct('Recommended',:dep,'','','',0,0,'');", nativeQuery = true)
+    @Query(value = "Call HandleProduct('Recommended',:dep,'','','',0,0,'',0);", nativeQuery = true)
     List<Product> getProductRecommendedInventory(@Param(value = "dep") String dep);
 
 
