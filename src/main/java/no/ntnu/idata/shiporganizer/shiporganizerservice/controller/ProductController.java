@@ -155,6 +155,7 @@ public class ProductController {
     public ResponseEntity<String> editProduct(HttpEntity<String> entity) {
         try {
             JSONObject json = new JSONObject(entity.getBody());
+            int id =  json.getInt("productID");
             String productName = json.getString("productName");
             String productNumber = json.getString("productNumber");
             int desiredStock = Integer.parseInt(json.getString("desiredStock"));
@@ -162,7 +163,7 @@ public class ProductController {
             String department = json.getString("department");
             String dateTime = json.getString("dateTime");
 
-            boolean success = productService.editProduct(productName, productNumber, desiredStock, barcode, department, dateTime);
+            boolean success = productService.editProduct(id,productName, productNumber, desiredStock, barcode, department, dateTime);
             if(success) {
                 return ResponseEntity.ok().build();
             } else {
@@ -242,7 +243,7 @@ public class ProductController {
             for(int i = 0; i < jsonArrayProducts.length(); i++) {
                 JSONObject product = jsonArrayProducts.getJSONObject(i);
                 if(product.getInt("stock") > 0) {
-                    products.add(new Product(product.getString("productName"), product.getString("productNumber"), product.getString("barcode"), ("" + product.getInt("stock")), (product.getString("desiredStock"))));
+                    products.add(new Product(product.getInt("id"),product.getString("productName"), product.getString("productNumber"), product.getString("barcode"), ("" + product.getInt("stock")), (product.getString("desiredStock"))));
                 }
             }
 
