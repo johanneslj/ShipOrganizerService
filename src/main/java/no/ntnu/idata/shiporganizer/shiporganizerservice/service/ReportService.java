@@ -87,7 +87,7 @@ public class ReportService {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.FRANCE);
             date = formatter.parse(dateString);
-            date.setTime(date.getTime() + 3600000);
+            date.setTime(date.getTime());
         } catch (ParseException e) {
             date = new Date();
         }
