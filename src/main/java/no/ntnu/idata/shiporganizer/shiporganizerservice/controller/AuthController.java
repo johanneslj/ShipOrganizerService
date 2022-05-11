@@ -26,6 +26,11 @@ public class AuthController {
   final private LoginService loginService;
   final private UserService userService;
 
+  /**
+   * Creates an instance of the Auth controller
+   * @param loginService
+   * @param userService
+   */
   public AuthController(LoginService loginService,
                         UserService userService) {
     this.loginService = loginService;
