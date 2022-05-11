@@ -1,6 +1,8 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -16,6 +18,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -69,5 +72,20 @@ class UserControllerTest {
         .andExpect(status().is4xxClientError())
         .andDo(
             (result) -> System.out.println(result.getResponse().getErrorMessage()));
+  }
+
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  void validEditUserRequest() throws Exception {
+    Mockito.doNothing().when(userService).editUser(any(), any(), any());
+
+    mvc.perform(post("/api/user/edit-user").content(
+        "{" +
+            "oldEmail: \"some@email.com\"," +
+            "newEmail: \"new@email.com\"," +
+            "name: \"Some New Name\"," +
+            "departments: [\"Skipper\"]" +
+            "}"
+    )).andExpect(status().is2xxSuccessful());
   }
 }
