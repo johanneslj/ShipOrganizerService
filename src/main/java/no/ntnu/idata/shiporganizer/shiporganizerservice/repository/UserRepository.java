@@ -52,9 +52,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
   /**
    * Edit a user
-   * @param email
-   * @param newEmail
-   * @param fullname
+   * @param email the old email
+   * @param newEmail the new email
+   * @param fullname the users fullname
    */
 
   @Modifying

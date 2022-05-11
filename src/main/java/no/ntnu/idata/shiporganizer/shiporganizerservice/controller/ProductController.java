@@ -56,7 +56,7 @@ public class ProductController {
 
 	/**
 	 * Gets Initial inventory.
-	 *
+	 * @param entity Http request from the client
 	 * @return the inventory
 	 */
 	@PostMapping(path = "/get-inventory")
@@ -74,7 +74,7 @@ public class ProductController {
 
 	/**
 	 * Gets updated inventory.
-	 *
+	 * @param entity Http request from the client
 	 * @return the last updated inventory
 	 */
 	@PostMapping(path = "/recently-updated-inventory")
@@ -92,7 +92,7 @@ public class ProductController {
 
 	/**
 	 * Gets preferred inventory.
-	 *
+	 * @param entity Http request from the client
 	 * @return the preferred inventory
 	 */
 	@PostMapping(path = "/get-recommended-inventory")
@@ -177,6 +177,8 @@ public class ProductController {
 
 	/**
 	 * Deletes a product from all the tables the product linked
+	 * @param entity Http request from the client
+	 * @return ResponseEntity 200 if product is deleted and 400 if not or exception is present
 	 */
 	@PostMapping(path = "/delete-product")
 	public ResponseEntity<String> delterProduct(HttpEntity<String> entity) {

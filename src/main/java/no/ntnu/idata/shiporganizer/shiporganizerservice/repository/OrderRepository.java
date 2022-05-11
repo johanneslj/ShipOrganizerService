@@ -62,6 +62,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	 *
 	 * @param dep the user selected department
 	 * @param imageName The image name for the bill
+	 * @param status the status of the order. 0 = Pending, 1 = Confirmed and 2 = Rejected
 	 * @return int 1 if the query is completed
 	 */
 	@Query(value = "Call HandleOrders('Update',:dep,:imageName,:status);",nativeQuery = true)
