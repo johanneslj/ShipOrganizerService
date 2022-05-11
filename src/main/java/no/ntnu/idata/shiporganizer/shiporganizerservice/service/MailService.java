@@ -111,6 +111,7 @@ public class MailService {
     public String sendEmail() {
 
         SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setFrom("post@maoyi.no");
         msg.setTo("hansal@stud.ntnu.no");
 
         msg.setSubject("Testing from Spring Boot");
@@ -123,6 +124,7 @@ public class MailService {
 
     public void sendNewPasswordVerificationCode(String email, String code) {
         SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setFrom("post@maoyi.no");
 
         msg.setTo(email);
         msg.setSubject("Ship Organizer: Verification Code");
@@ -133,6 +135,7 @@ public class MailService {
 
     public void sendRegisteredEmail(String email) {
         SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setFrom("post@maoyi.no");
 
         msg.setTo(email);
         msg.setSubject("Ship Organizer: You have been registered!");
@@ -145,25 +148,24 @@ public class MailService {
     /// Sends the created PDF for all the products to order as an Email to a specific email
     public void sendPdfEmail(String userEmail, String[] recipients, String fileToAdd) throws MessagingException {
         MimeMessage msg = javaMailSender.createMimeMessage();
+        msg.setFrom("post@maoyi.no");
         try {
             FileSystemResource file = new FileSystemResource(new File(fileToAdd));
             MimeMessageHelper helper = new MimeMessageHelper(msg, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-                    StandardCharsets.UTF_8.name());
+                StandardCharsets.UTF_8.name());
             helper.setTo(userEmail);
             helper.setCc(recipients);
             helper.setSubject("Ship Organizer: PDF for orders");
             helper.setText("There has been a order list sent from the Ship Organizer app.\n" +
-                    "Please see attachment");
+                "Please see attachment");
             helper.addAttachment("Order.pdf", file);
 
             javaMailSender.send(msg);
-        }
-        catch (MailException ex) {
+        } catch (MailException ex) {
             // simply log it and go on...
             System.err.println(ex.getMessage());
         }
     }
-
 
 
 }

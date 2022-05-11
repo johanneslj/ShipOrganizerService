@@ -1,6 +1,7 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 
-import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Orders;
+import java.io.IOException;
+import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Order;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.OrderService;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * The type Order controller. Handles all the direct api calls and sends the variables to the service
@@ -41,23 +43,18 @@ public class OrderController {
 	 *
 	 * @return 200 OK or 204 No content
 	 */
-	@PostMapping (path = "/new")
-	public ResponseEntity<String> insertNewOrder(HttpEntity<String> http) {
-		String success = "";
-		try{
-			JSONObject json = new JSONObject(http.getBody());
-
-			String imagename = json.optString("imageName");
-			String department = json.getString("department");
-			success = orderService.insertNewOrder(department,imagename);
+	@PostMapping(path = "/new")
+	public ResponseEntity<String> insertNewOrder(
+			@RequestParam(value = "department") String department,
+			@RequestParam(value = "image", required = false) MultipartFile image) {
+		try {
+			System.out.println(department);
+			System.out.println(image.getOriginalFilename());
+			orderService.insertNewOrder(department, image);
+		} catch (IOException e) {
+			return ResponseEntity.noContent().build();
 		}
-		catch (JSONException e) {
-			e.printStackTrace();
-		}
-		if(success.equals("Success")){
-			return ResponseEntity.ok().build();
-		}
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.ok().build();
 	}
 
 	/**
@@ -70,10 +67,10 @@ public class OrderController {
 		String success = "";
 		try{
 			JSONObject json = new JSONObject(http.getBody());
-
-			String imagename = json.optString("imageName");
+			String imageName = json.getString("imageName");
 			String department = json.getString("department");
-			success = orderService.updateOrder(department,imagename);
+			int status = json.getInt("status");
+			success = orderService.updateOrder(department,imageName,status);
 		} 
 		catch (JSONException e) {
 			e.printStackTrace();
@@ -90,7 +87,7 @@ public class OrderController {
 	 * @return the pending orders
 	 */
 	@GetMapping(path = "/admin/pending")
-	public ResponseEntity<List<Orders>> getPendingOrders() {
+	public ResponseEntity<List<Order>> getPendingOrders() {
 		return ResponseEntity.ok(orderService.getPendingOrders(""));
 	}
 
@@ -100,14 +97,13 @@ public class OrderController {
 	 * @return the confirmed orders
 	 */
 	@PostMapping(path = "/user/pending")
-	public ResponseEntity<List<Orders>> getUserPendingOrders(HttpEntity<String> http) {
-		List<Orders> pendingOrders = new ArrayList<>();
-		try{
+	public ResponseEntity<List<Order>> getUserPendingOrders(HttpEntity<String> http) {
+		List<Order> pendingOrders = new ArrayList<>();
+		try {
 			JSONObject json = new JSONObject(http.getBody());
 			String department = json.getString("department");
 			pendingOrders = orderService.getPendingOrders(department);
-		}
-		catch (JSONException e) {
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return ResponseEntity.ok(pendingOrders);
@@ -120,7 +116,7 @@ public class OrderController {
 	 */
 	@GetMapping(path = "/confirmed")
 	@ResponseBody
-	public ResponseEntity<List<Orders>> getAdminConfirmedOrders() {
+	public ResponseEntity<List<Order>> getAdminConfirmedOrders() {
 		return ResponseEntity.ok(orderService.getConfirmedOrders(""));
 	}
 
