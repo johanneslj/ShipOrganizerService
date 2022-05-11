@@ -15,9 +15,17 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
-
+	/**
+	 * Gets an order based on id
+	 * @param id the id of the order to be found
+	 * @return Order with corresponding id if it exists
+	 */
 	Optional<Order> findById(int id);
-
+	/**
+	 * Gets an order based on image name
+	 * @param imageName the image name of the order to be found
+	 * @return Order with corresponding image name if it exists
+	 */
 	Optional<Order> findOrderByImageName(String imageName);
 
 	/**
