@@ -12,27 +12,20 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Service used to send email to users
+ */
 @Service
 public class MailService {
 
     @Autowired
     private JavaMailSender javaMailSender;
 
-
-    public String sendEmail() {
-
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setFrom("post@maoyi.no");
-        msg.setTo("hansal@stud.ntnu.no");
-
-        msg.setSubject("Testing from Spring Boot");
-        msg.setText("Hello World \n Spring Boot Email");
-
-        //javaMailSender.send(msg);
-
-        return "ok";
-    }
-
+    /**
+     * Send mail to given email with the given verification code
+     * @param email The users email
+     * @param code the verification code
+     */
     public void sendNewPasswordVerificationCode(String email, String code) {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setFrom("post@maoyi.no");
@@ -44,6 +37,10 @@ public class MailService {
         javaMailSender.send(msg);
     }
 
+    /**
+     * Sends a mail to the given user to tell the user that the user is registered
+     * @param email the new users email
+     */
     public void sendRegisteredEmail(String email) {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setFrom("post@maoyi.no");
@@ -56,11 +53,16 @@ public class MailService {
         javaMailSender.send(msg);
     }
 
-    /// Sends the created PDF for all the products to order as an Email to a specific email
-    public void sendPdfEmail(String userEmail, String[] recipients, String fileToAdd) throws MessagingException {
+    /**
+     *  Sends the created PDF for all the products to order as an Email to a specific email
+     * @param userEmail Email to the user who creates the report
+     * @param recipients List of recipients to receive the email
+     * @param fileToAdd Order list to add as an attachment
+     */
+    public void sendPdfEmail(String userEmail, String[] recipients, String fileToAdd){
         MimeMessage msg = javaMailSender.createMimeMessage();
-        msg.setFrom("post@maoyi.no");
         try {
+            msg.setFrom("post@maoyi.no");
             FileSystemResource file = new FileSystemResource(new File(fileToAdd));
             MimeMessageHelper helper = new MimeMessageHelper(msg, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                 StandardCharsets.UTF_8.name());
@@ -70,10 +72,8 @@ public class MailService {
             helper.setText("There has been a order list sent from the Ship Organizer app.\n" +
                 "Please see attachment");
             helper.addAttachment("Order.pdf", file);
-
             javaMailSender.send(msg);
-        } catch (MailException ex) {
-            // simply log it and go on...
+        } catch (MessagingException | MailException ex) {
             System.err.println(ex.getMessage());
         }
     }

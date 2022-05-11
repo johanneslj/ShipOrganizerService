@@ -28,8 +28,8 @@ public class AuthController {
 
   /**
    * Creates an instance of the Auth controller
-   * @param loginService
-   * @param userService
+   * @param loginService the LoginService
+   * @param userService the UserService
    */
   public AuthController(LoginService loginService,
                         UserService userService) {
