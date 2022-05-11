@@ -65,10 +65,10 @@ public class UserService {
    */
   public boolean registerAndGetSuccess(User user, List<Department> departments) {
     userRepository.addUser(user.getEmail(), "", user.getFullname());
-
     updateUserDepartments(user, departments);
-    mailService.sendRegisteredEmail(user.getEmail());
-
+    if(!user.getEmail().equals("admin@admin.com")){
+      mailService.sendRegisteredEmail(user.getEmail());
+    }
     return setNewTokenForUser(user.getEmail());
   }
 
@@ -100,7 +100,7 @@ public class UserService {
   }
 
   public void editUser(User editedUser, String oldEmail, List<Department> departments) {
-    userRepository.editUser(editedUser.getEmail(), editedUser.getFullname(), oldEmail);
+    userRepository.editUser(oldEmail,editedUser.getEmail(), editedUser.getFullname());
     updateUserDepartments(editedUser, departments);
   }
 

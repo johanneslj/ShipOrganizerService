@@ -53,7 +53,6 @@ public class AuthController {
       return ResponseEntity.badRequest().build();
     }
   }
-
   private Optional<User> getUserOptionalFromHttpEntity(HttpEntity<String> entity)
       throws JSONException {
     JSONObject json = new JSONObject(entity.getBody());
@@ -87,7 +86,7 @@ public class AuthController {
       }
       User user = new User(name, email);
       if (!userService.registerAndGetSuccess(user, getDepartmentsFromJson(json))) {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.unprocessableEntity().build();
       }
       return ResponseEntity.ok("User successfully registered.");
     } catch (JSONException e) {
