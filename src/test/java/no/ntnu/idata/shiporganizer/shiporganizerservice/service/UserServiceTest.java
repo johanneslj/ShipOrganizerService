@@ -18,13 +18,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
+
+  @MockBean
+  MailService mailService;
 
   @MockBean
   UserRepository userRepository;
@@ -54,6 +56,10 @@ class UserServiceTest {
         .doNothing()
         .when(userDepartmentRepository)
         .updateUserDepartment(any(), any());
+    Mockito
+        .doNothing()
+        .when(mailService)
+        .createAndSendPdf(any(), any(), any());
   }
 
   @Test
