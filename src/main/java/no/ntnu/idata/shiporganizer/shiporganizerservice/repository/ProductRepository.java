@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Repository for the products. This interface represents the connection to database
@@ -69,6 +70,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      */
     @Query(value = "Call HandleProduct('Insert',:dep,:name,:productNumber,:barcode,:desiredStock,:stock,:dateTime,0);", nativeQuery = true)
     @Modifying
+    @Transactional
     int createNewProduct(@Param(value = "name") String name, @Param(value = "productNumber") String productNumber, @Param(value = "desiredStock") int desiredStock, @Param(value = "stock") int stock, @Param(value = "barcode") String barcode, @Param(value = "dep") String dep, @Param(value = "dateTime") String dateTime);
 
     /**
@@ -79,6 +81,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      */
     @Query(value = "Call HandleProduct('Delete','','',:productNumber,'',0,0,'',0);", nativeQuery = true)
     @Modifying
+    @Transactional
     int deleteProduct(@Param(value = "productNumber") String productNumber);
 
 
@@ -97,6 +100,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      */
     @Query(value = "Call HandleProduct('Update',:dep,:name,:productNumber,:barcode,:desiredStock,0,:dateTime,:id);", nativeQuery = true)
     @Modifying
+    @Transactional
     int editProduct(@Param(value = "id") int id,@Param(value = "name") String name, @Param(value = "productNumber") String productNumber, @Param(value = "desiredStock") int desiredStock, @Param(value = "barcode") String barcode, @Param(value = "dep") String dep, @Param(value = "dateTime") String dateTime);
 
 
@@ -107,6 +111,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * @return String list from the database
      */
     @Query(value = "Call HandleProduct('Recommended',:dep,'','','',0,0,'',0);", nativeQuery = true)
+    @Transactional
+    @Modifying
     List<Product> getProductRecommendedInventory(@Param(value = "dep") String dep);
 
 
@@ -123,6 +129,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      */
     @Query(value = "Call InsertRecordAndUpdateStorelink(:productno,:username,:quantity,:Longitude,:Latitude,:date) ;", nativeQuery = true)
     @Modifying
+    @Transactional
     int setNewStock(@Param(value = "productno") String productno, @Param(value = "username") String username, @Param(value = "quantity") int quantity, @Param(value = "Longitude") float Longitude, @Param(value = "Latitude") float Latitude, @Param(value = "date") String date);
 
 

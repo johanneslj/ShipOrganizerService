@@ -87,10 +87,14 @@ public class OrderService {
 	 * @return Success or empty depending on if the query completed or not
 	 */
 	public String updateOrder(String department, String imageName, int status) {
-		int result = orderRepository.updateOrder(department, imageName,status);
-		if(result == 1){
+		int result = orderRepository.updateOrder(department, imageName, status);
+		if (result == 1) {
 			return "Success";
 		}
 		return "";
+	}
+
+	public void deleteAllOrders() {
+		this.orderRepository.deleteAll();
 	}
 }

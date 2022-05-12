@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The interface Order repository. Interface used for the connection to the database.
@@ -34,7 +35,8 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	 * @param dep the user selected department
 	 * @return List of pending orders
 	 */
-	@Query(value = "Call HandleOrders('Pending',:dep,'',0);",nativeQuery = true)
+	@Query(value = "Call HandleOrders('Pending',:dep,'',0);", nativeQuery = true)
+	@Transactional
 	List<String> getPendingOrders(@Param(value = "dep") String dep);
 
 	/**
@@ -55,6 +57,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	 */
 	@Query(value = "Call HandleOrders('New',:dep,:imageName,0);",nativeQuery = true)
 	@Modifying
+	@Transactional
 	int insertNewOrder(@Param(value = "dep") String dep , @Param(value = "imageName") String imageName);
 
 	/**
@@ -67,5 +70,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	 */
 	@Query(value = "Call HandleOrders('Update',:dep,:imageName,:status);",nativeQuery = true)
 	@Modifying
+	@Transactional
 	int updateOrder(@Param(value = "dep") String dep , @Param(value = "imageName") String imageName,@Param(value = "status") int status);
 }

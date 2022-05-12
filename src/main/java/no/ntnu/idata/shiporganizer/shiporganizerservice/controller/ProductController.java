@@ -3,23 +3,11 @@ package no.ntnu.idata.shiporganizer.shiporganizerservice.controller;
 import static java.lang.Float.parseFloat;
 
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
 
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Product;
-import no.ntnu.idata.shiporganizer.shiporganizerservice.service.MailService;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.service.ProductService;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,12 +15,9 @@ import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.mail.MessagingException;
 
 
 /**
@@ -46,7 +31,7 @@ public class ProductController {
 	private final ProductService productService;
 
 	/**
-	 * Instantiates a new Product contoller.
+	 * Instantiates a new Product controller.
 	 *
 	 * @param productService the product service
 	 */
@@ -175,26 +160,26 @@ public class ProductController {
 	}
 
 
-	/**
-	 * Deletes a product from all the tables the product linked
-	 * @param entity Http request from the client
-	 * @return ResponseEntity 200 if product is deleted and 400 if not or exception is present
-	 */
-	@PostMapping(path = "/delete-product")
-	public ResponseEntity<String> delterProduct(HttpEntity<String> entity) {
-		try {
-			JSONObject product = new JSONObject(entity.getBody());
-			String productNumber = product.getString("productNumber");
-			boolean success = productService.deleteProduct(productNumber);
-			if (success) {
-				return ResponseEntity.ok().build();
-			} else {
-				return ResponseEntity.badRequest().build();
-			}
-		} catch (JSONException e) {
-			return ResponseEntity.badRequest().build();
-		}
-	}
+    /**
+     * Deletes a product from all the tables the product linked
+     * @param entity Http request from the client
+     * @return ResponseEntity 200 if product is deleted and 400 if not or exception is present
+     */
+    @PostMapping(path = "/delete-product")
+    public ResponseEntity<String> deleteProduct(HttpEntity<String> entity) {
+        try {
+            JSONObject product = new JSONObject(entity.getBody());
+            String productNumber = product.getString("productNumber");
+            boolean success = productService.deleteProduct(productNumber);
+            if(success) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        } catch (JSONException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
 
 	/**
