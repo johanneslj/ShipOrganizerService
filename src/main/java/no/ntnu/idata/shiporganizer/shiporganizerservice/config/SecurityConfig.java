@@ -15,6 +15,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
+/**
+ * Class represents the Security Configuration
+ */
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -24,6 +27,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private final UserService userService;
   private final JWTProperties jwtProperties;
 
+  /**
+   * Instantiates a new Security config.
+   *
+   * @param passwordEncoder      the password encoder
+   * @param userPrincipalService the user principal service
+   * @param userService          the user service
+   * @param jwtProperties        the jwt properties
+   */
   public SecurityConfig(PasswordEncoder passwordEncoder,
                         UserPrincipalService userPrincipalService,
                         UserService userService,
@@ -76,6 +87,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     authBuilder.authenticationProvider(daoAuthenticationProvider());
   }
 
+  /**
+   * Dao authentication provider dao authentication provider.
+   *
+   * @return the dao authentication provider
+   */
   @Bean
   DaoAuthenticationProvider daoAuthenticationProvider() {
     DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
