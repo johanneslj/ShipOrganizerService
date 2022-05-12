@@ -59,7 +59,7 @@ class UserServiceTest {
     Mockito
         .doNothing()
         .when(mailService)
-        .createAndSendPdf(any(), any(), any());
+        .sendRegisteredEmail(any());
   }
 
   @Test
