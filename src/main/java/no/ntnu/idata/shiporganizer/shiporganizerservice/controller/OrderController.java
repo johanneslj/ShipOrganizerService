@@ -40,7 +40,8 @@ public class OrderController {
 
 	/**
 	 * Inserts new order.
-	 *
+	 * @param department the department the order belongs to
+	 * @param image the image to be on the order
 	 * @return 200 OK or 204 No content
 	 */
 	@PostMapping(path = "/new")
@@ -58,8 +59,8 @@ public class OrderController {
 	}
 
 	/**
-	 * Updates order from pending to confirmed
-	 *
+	 * Updates order from pending to confirm
+	 * @param http Http request from the client
 	 * @return 200 OK or 204 No content
 	 */
 	@PostMapping (path = "/update")
@@ -84,7 +85,7 @@ public class OrderController {
 	/**
 	 * Gets pending orders.
 	 *
-	 * @return the pending orders
+	 * @return A list of pending orders
 	 */
 	@GetMapping(path = "/admin/pending")
 	public ResponseEntity<List<Order>> getPendingOrders() {
@@ -92,9 +93,9 @@ public class OrderController {
 	}
 
 	/**
-	 * Gets confirmed orders.
-	 *
-	 * @return the confirmed orders
+	 * Gets a list of orders pending and for the user to confirm.
+	 * @param http Http request from the client
+	 * @return the pending user orders
 	 */
 	@PostMapping(path = "/user/pending")
 	public ResponseEntity<List<Order>> getUserPendingOrders(HttpEntity<String> http) {
@@ -112,7 +113,7 @@ public class OrderController {
 	/**
 	 * Gets confirmed orders.
 	 *
-	 * @return the confirmed orders
+	 * @return A list of confirmed orders
 	 */
 	@GetMapping(path = "/confirmed")
 	@ResponseBody

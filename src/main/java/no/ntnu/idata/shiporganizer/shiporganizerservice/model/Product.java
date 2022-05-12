@@ -29,6 +29,16 @@ public class Product {
 
 	private String Desired_Stock;
 
+	/**
+	 * Instantiates a Product.
+	 *
+	 * @param id            the products id
+	 * @param productname   the products productname
+	 * @param productnumber the products productnumber
+	 * @param barcode       the products barcode
+	 * @param stock         the products stock
+	 * @param desiredStock  the products desired stock
+	 */
 	public Product(int id,String productname,String productnumber, String barcode, String stock, String desiredStock) {
 		this.id = id;
 		this.productnumber = productnumber;
@@ -38,28 +48,42 @@ public class Product {
 		this.Desired_Stock  = desiredStock;
 	}
 
+	/**
+	 * Instantiates a Product.
+	 */
 	public Product() {
 
 	}
 
+	/**
+	 * Gets the products' id.
+	 *
+	 * @return the products' id
+	 */
 	public int getId() {
 		return id;
 	}
 
+	/**
+	 * Gets the products' desired stock.
+	 *
+	 * @return the products' desired stock
+	 */
 	public String getDesired_Stock() {
 		return Desired_Stock;
 	}
 
 	/**
-	 * Gets stock.
+	 * Gets the products' stock.
 	 *
-	 * @return the stock
+	 * @return the products' stock
 	 */
 	public String getStock() {
 		return stock;
 	}
+
 	/**
-	 * Gets product number.
+	 * Gets the product number.
 	 *
 	 * @return the product number
 	 */
@@ -69,7 +93,7 @@ public class Product {
 
 
 	/**
-	 * Gets product name.
+	 * Gets the product name.
 	 *
 	 * @return the product name
 	 */
@@ -78,9 +102,9 @@ public class Product {
 	}
 
 	/**
-	 * Gets barcode.
+	 * Gets the products' barcode.
 	 *
-	 * @return the barcode
+	 * @return the products' barcode
 	 */
 	public String getBarcode() {
 		return barcode;

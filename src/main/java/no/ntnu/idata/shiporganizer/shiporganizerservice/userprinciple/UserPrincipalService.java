@@ -7,12 +7,21 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * The type User principal service.
+ */
 @Service
 public class UserPrincipalService implements UserDetailsService {
 
   final private UserRepository userRepository;
   final private UserService userService;
 
+  /**
+   * Instantiates a  User principal service.
+   *
+   * @param userRepository the user repository
+   * @param userService    the user service
+   */
   public UserPrincipalService(
       UserRepository userRepository, UserService userService) {
     this.userRepository = userRepository;
