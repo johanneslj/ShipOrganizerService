@@ -10,9 +10,17 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Repository responsible for the connection to
+ * execute all user procedures in the database.
+ */
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
+  /**
+   * Gets a list of all users
+   * @return List of all users
+   */
   List<User> findAll();
 
   /*/**

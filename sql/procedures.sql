@@ -74,7 +74,8 @@ create
     definer = root@localhost procedure HandleProduct(IN Calltime varchar(255), IN Department varchar(255),
                                                      IN ProductNameString varchar(255),
                                                      IN ProductNumberString varchar(255), IN EANString varchar(255),
-                                                     IN DesiredStock int, IN Stock int, IN DateTimeString varchar(255))
+                                                     IN DesiredStock int, IN Stock int, IN DateTimeString varchar(255),
+                                                     IN ID int)
 BEGIN
     -- Local Variables
     Declare date datetime;
@@ -94,7 +95,7 @@ BEGIN
     end if;
     if (Calltime = 'Update')
     then
-        Update Product set ProductName=ProductNameString, EAN=EAN where ProductNumber = ProductNumberString;
+        Update Product set ProductName=ProductNameString, EAN=EAN , ProductNumber = ProductNumberString where PK_ProdID = ID;
         CALL HandleStock(ProductNumberString, DesiredStock, Stock, Department, date);
     end if;
     if (Calltime = 'InitialInventory')
@@ -110,7 +111,7 @@ BEGIN
                 Storelink.FK_Store = Department.PK_DepartmentID
                  left join Product on
                 Product.PK_ProdID = Storelink.FK_Product
-        where Department.DepartmentName like CONCAT('%', Department, '%');
+        where Department.DepartmentName like CONCAT('%', Department, '%') and FK_Product is not null;
     end if;
     if (Calltime = 'UpdatedInventory')
     then
@@ -126,7 +127,7 @@ BEGIN
                  left join Product on
                 Product.PK_ProdID = Storelink.FK_Product
         where Department.DepartmentName like CONCAT('%', Department, '%')
-          and Storelink.Updated > date;
+          and Storelink.Updated > date and FK_Product is not null;
     end if;
     if (Calltime = 'Recommended')
     then
@@ -151,7 +152,7 @@ BEGIN
                      Storelink.FK_Store = Department.PK_DepartmentID
                       left join Product on
                      Storelink.FK_Product = Product.PK_ProdID
-             where DepartmentName like CONCAT('%', Department, '%'));
+             where DepartmentName like CONCAT('%', Department, '%') and FK_Product is not null);
         Call UpdateTempList();
     end if;
     if (Calltime = 'Delete')
@@ -199,6 +200,7 @@ BEGIN
     DECLARE _next TEXT DEFAULT NULL;
     DECLARE _nextlen INT DEFAULT NULL;
     DECLARE _value TEXT DEFAULT NULL;
+    DECLARE UserPKID int;
 
     if(Calltime = 'Insert')
     then
@@ -237,14 +239,15 @@ BEGIN
             SET Department = INSERT(Department,1,_nextlen + 1,'');
         END lOOP;
     end if;
-    if(@Calltime = 'Delete')
+    if(Calltime = 'Delete')
     then
 -- UserDepartment
-        Set UserID = (Select PK_UserID from LoginTable where Username like CONCAT('%', UsernameString , '%'));
+        SET UserID  = (Select PK_UserID from LoginTable where Username = UsernameString LIMIT 1);
         Delete from UserDepartment where FK_User = UserID;
         Delete from LoginTable where PK_UserID = UserID;
     end if;
 END;
+
 create
     definer = root@localhost procedure InsertRecordAndUpdateStorelink(IN productno varchar(255),
                                                                       IN usernameString varchar(255), IN quantity int,
@@ -273,7 +276,6 @@ BEGIN
     SET CurrStock = (Select STOCK from Storelink where FK_Product = PK_Product);
     Update Storelink set Stock = (CurrStock + quantity) , Updated=date where FK_Product = PK_Product;
 END;
-
 
 create
     definer = root@localhost procedure SelectAll(IN Calltime varchar(255), IN Department varchar(255),
@@ -340,3 +342,4 @@ BEGIN
     DROP TABLE IF EXISTS TempList;
 
 END;
+
