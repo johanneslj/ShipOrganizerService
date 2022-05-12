@@ -61,6 +61,12 @@ public class OrderService {
 		return confirmedOrders;
 	}
 
+	/**
+	 * Inserts a new order
+	 * @param department desired department to check the order
+	 * @param image the image of the order
+	 * @throws IOException occurred of there is an exception with the image file
+	 */
 	public void insertNewOrder(String department, MultipartFile image) throws IOException {
 		String imageName = OrderImageStorageService.getFileName(image);
 		orderRepository.insertNewOrder(department, imageName);

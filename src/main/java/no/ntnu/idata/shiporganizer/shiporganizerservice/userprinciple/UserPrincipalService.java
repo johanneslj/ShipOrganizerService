@@ -7,22 +7,34 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * The type User principal service.
+ */
 @Service
 public class UserPrincipalService implements UserDetailsService {
 
+  final private UserRepository userRepository;
   final private UserService userService;
 
-  public UserPrincipalService(UserService userService) {
+  /**
+   * Instantiates a  User principal service.
+   *
+   * @param userRepository the user repository
+   * @param userService    the user service
+   */
+  public UserPrincipalService(
+      UserRepository userRepository, UserService userService) {
+    this.userRepository = userRepository;
     this.userService = userService;
   }
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-    if (userService.getByEmail(username).isEmpty()) {
+    if (!userRepository.findFirstByEmail(username).isPresent()) {
       throw new UsernameNotFoundException(username);
     }
 
-    return new UserPrincipal(userService.getByEmail(username).get(), userService);
+    return new UserPrincipal(userRepository.findFirstByEmail(username).get(), userService);
   }
 }

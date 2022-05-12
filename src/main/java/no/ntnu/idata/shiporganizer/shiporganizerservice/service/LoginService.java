@@ -11,13 +11,22 @@ import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.UserRepositor
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
+/**
+ * Class representing the Login service.
+ * This service is a connection between the Controller and Repository
+ */
 @Service
 public class LoginService {
   final private UserRepository userRepository;
   final private JWTProperties jwtProperties;
   final private PasswordEncoder passwordEncoder;
 
+  /**
+   * Instantiates a LoginService
+   * @param userRepository the UserRepository interface
+   * @param jwtProperties the JWTProperties class
+   * @param passwordEncoder the PasswordEncoder class
+   */
   public LoginService(UserRepository userRepository,
                       JWTProperties jwtProperties,
                       PasswordEncoder passwordEncoder) {
@@ -45,6 +54,12 @@ public class LoginService {
     return Optional.empty();
   }
 
+  /**
+   * Checks if the given user password matches with the one stored in the user object
+   * @param password Users password
+   * @param user the user object
+   * @return True if password matches and False if not
+   */
   private boolean checkCorrectPasswordAndSetNewTokenForUser(String password, User user) {
     if (passwordEncoder.matches(password, user.getPassword())) {
       setNewTokenForUser(user);
@@ -54,11 +69,20 @@ public class LoginService {
     return false;
   }
 
+  /**
+   * Setts a new token for the given user
+   * @param user the user object
+   */
   private void setNewTokenForUser(User user) {
     String newToken = buildJWT(user.getId(), user.getEmail(), user.getFullname());
     user.setToken(newToken);
   }
 
+  /**
+   * Finds a user based on the token given.
+   * @param token the token used in search
+   * @return if user is found the user is returned.
+   */
   public Optional<User> findByToken(String token) {
     return userRepository.findFirstUserByToken(token);
   }

@@ -13,13 +13,21 @@ import org.springframework.security.core.userdetails.UserDetails;
  * Provides UserDetails for the user principle.
  */
 public class UserPrincipal implements UserDetails {
-
+  // The User
   private final User user;
+  // The user service
   private final UserService userService;
-
+  // User is set to rights = 0
   private final int USER = 0;
+  // Admin is set to rights = 1
   private final int ADMIN = 1;
 
+  /**
+   * Instantiates a User principal.
+   *
+   * @param user        the user
+   * @param userService the user service
+   */
   public UserPrincipal(User user, UserService userService) {
     this.user = user;
     this.userService = userService;
