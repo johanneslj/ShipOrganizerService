@@ -1,6 +1,7 @@
 package no.ntnu.idata.shiporganizer.shiporganizerservice.model;
 
 
+import java.util.Objects;
 import javax.persistence.*;
 
 /**
@@ -84,5 +85,38 @@ public class Product {
 	 */
 	public String getBarcode() {
 		return barcode;
+	}
+
+	@Override
+	public String toString() {
+		return "Product{" +
+				"id=" + id +
+				", productnumber='" + productnumber + '\'' +
+				", productname='" + productname + '\'' +
+				", barcode='" + barcode + '\'' +
+				", stock='" + stock + '\'' +
+				", Desired_Stock='" + Desired_Stock + '\'' +
+				'}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		Product product = (Product) o;
+		return id == product.id && Objects.equals(productnumber, product.productnumber) &&
+				Objects.equals(productname, product.productname) &&
+				Objects.equals(barcode, product.barcode) &&
+				Objects.equals(stock, product.stock) &&
+				Objects.equals(Desired_Stock, product.Desired_Stock);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, productnumber, productname, barcode, stock, Desired_Stock);
 	}
 }
