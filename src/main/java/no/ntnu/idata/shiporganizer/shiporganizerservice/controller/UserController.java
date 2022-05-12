@@ -38,6 +38,8 @@ public class UserController {
 
   /**
    * Gets a list of all users with non-sensitive information.
+   *
+   * @return ResponseEntity with a list of PublicUserModels
    */
   @GetMapping("/all-users")
   public ResponseEntity<List<PublicUserModel>> getAllPublicUsers() {
@@ -172,6 +174,7 @@ public class UserController {
     /**
      * Checks if verification code is valid.
      *
+     * @param httpEntity Http request send from the client
      * @return ResponseEntity 200 OK if valid.
      */
     @PostMapping("/check-valid-verification-code")

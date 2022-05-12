@@ -29,6 +29,12 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
   private final UserService userService;
   private final JWTProperties jwtProperties;
 
+  /**
+   * Instantiates a JwtAuthenticationFilter.
+   * @param authenticationManager the AuthenticationManager
+   * @param userService the UserService
+   * @param jwtProperties the JWTProperties
+   */
   public JwtAuthenticationFilter(AuthenticationManager authenticationManager,
                                  UserService userService,
                                  JWTProperties jwtProperties) {
@@ -57,6 +63,11 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     chain.doFilter(request, response);
   }
 
+  /**
+   * Checks user based on token
+   * @param request Http request received from the start point
+   * @return New Authentication token if users token is expired and null if user is not created
+   */
   private Authentication getUsernamePasswordAuthentication(HttpServletRequest request) {
     // Get token string from header.
     String token = request.getHeader(jwtProperties.getHeaderString())

@@ -30,6 +30,7 @@ public class ReportService {
      * each report is added to a list which is then sorted to group the reports
      * together based on their relative closeness.
      *
+     * @param department Department the user are a part of
      * @return a sorted Map with LatLng as key and a List of reports as values
      */
     public Map<String, List<Report>> getMapMarkers(String department) {
@@ -43,6 +44,7 @@ public class ReportService {
      * each report is added to a list which is then sorted to group the reports
      * together based on their relative closeness.
      *
+     * @param department the active department of the user
      * @param name the name of equipment which is to be shown
      * @return a sorted Map with LatLng as key and a List of reports as values
      */

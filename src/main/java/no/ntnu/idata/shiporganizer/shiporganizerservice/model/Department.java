@@ -23,39 +23,84 @@ public class Department {
   @Column(name = "Rights")
   private int rights;
 
+  /**
+   * Instantiates a Department.
+   */
   public Department() {
   }
 
+  /**
+   * Instantiates a new Department.
+   *
+   * @param name the departments name
+   */
   public Department(String name) {
     this.name = name;
   }
 
+  /**
+   * Instantiates a new Department.
+   *
+   * @param id     the departments id
+   * @param name   the departments name
+   * @param rights the departments rights, For admin 1 and 0 for normal users
+   */
   public Department(int id, String name, int rights) {
     this.id = id;
     this.name = name;
     this.rights = rights;
   }
 
+  /**
+   * Gets departments id.
+   *
+   * @return the departments id
+   */
   public int getId() {
     return id;
   }
 
+  /**
+   * Sets departments new id.
+   *
+   * @param id the new id
+   */
   public void setId(int id) {
     this.id = id;
   }
 
+  /**
+   * Gets departments name.
+   *
+   * @return the departments name
+   */
   public String getName() {
     return name;
   }
 
+  /**
+   * Sets departments name.
+   *
+   * @param name the new name
+   */
   public void setName(String name) {
     this.name = name;
   }
 
+  /**
+   * Gets departments rights.
+   *
+   * @return the departments rights
+   */
   public int getRights() {
     return rights;
   }
 
+  /**
+   * Sets departments rights.
+   *
+   * @param rights the new rights
+   */
   public void setRights(int rights) {
     this.rights = rights;
   }

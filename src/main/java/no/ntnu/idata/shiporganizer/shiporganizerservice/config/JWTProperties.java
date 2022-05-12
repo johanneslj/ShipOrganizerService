@@ -3,6 +3,9 @@ package no.ntnu.idata.shiporganizer.shiporganizerservice.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Class representing the JWT token's properties.
+ */
 @ConfigurationProperties(prefix = "jwt.properties")
 @Configuration
 public class JWTProperties {
@@ -12,10 +15,20 @@ public class JWTProperties {
   private String tokenPrefix;
   private String headerString;
 
+  /**
+   * Gets JWT token's secret code.
+   *
+   * @return the JWT token's secret code
+   */
   public String getSecretCode() {
     return secretCode;
   }
 
+  /**
+   * Sets a new JWT token's secret code.
+   *
+   * @param secretCode the new secret code
+   */
   public void setSecretCode(String secretCode) {
     this.secretCode = secretCode;
   }

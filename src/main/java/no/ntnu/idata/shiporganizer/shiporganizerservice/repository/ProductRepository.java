@@ -37,7 +37,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     /**
      * Gets all the products from the database with current stock
-     *
+     * @param number the product number the check
      * @return String list from the database
      */
     @Query(value = "Call HandleProduct('CheckProduct','','',:number,'',0,0,'',0);", nativeQuery = true)
@@ -64,6 +64,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * @param stock         the current amount of the item
      * @param barcode       the barcode of the item
      * @param dep           the department to which the product will be registered
+     * @param dateTime      the current date and time send from the client
      * @return 1 if success else 0
      */
     @Query(value = "Call HandleProduct('Insert',:dep,:name,:productNumber,:barcode,:desiredStock,:stock,:dateTime,0);", nativeQuery = true)
@@ -85,12 +86,13 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     /**
      * Edits an existing product
-     *
+     * @param id            the product id
      * @param name          the new name for the product
      * @param productNumber the product number used to find the product to edit
      * @param desiredStock  the new desired stock
      * @param barcode       the new barcode
      * @param dep           the department to which the product is registered
+     * @param dateTime      the current date and time send from the client
      * @return 1 if success else 0
      */
     @Query(value = "Call HandleProduct('Update',:dep,:name,:productNumber,:barcode,:desiredStock,0,:dateTime,:id);", nativeQuery = true)
@@ -116,6 +118,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      * @param quantity  the taken quantity
      * @param Longitude the longitude when the user takes a product
      * @param Latitude  the latitude when the user takes a product
+     * @param date      the current date and time send from the client
      * @return int 1 is success
      */
     @Query(value = "Call InsertRecordAndUpdateStorelink(:productno,:username,:quantity,:Longitude,:Latitude,:date) ;", nativeQuery = true)
