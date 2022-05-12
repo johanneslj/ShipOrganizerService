@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.util.Arrays;
+import java.util.List;
 import no.ntnu.idata.shiporganizer.shiporganizerservice.model.Product;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +50,7 @@ class ProductServiceTest {
         productTwo.getProductName(),
         productTwo.getProductNumber(),
         2,
-        2,
+        1,
         productTwo.getBarcode(),
         "Skipper",
         "2022-02-2 02:22:22"
@@ -58,7 +59,7 @@ class ProductServiceTest {
         productThree.getProductName(),
         productThree.getProductNumber(),
         3,
-        3,
+        1,
         productThree.getBarcode(),
         "Skipper",
         "2022-03-3 03:33:33"
@@ -74,40 +75,39 @@ class ProductServiceTest {
 
   @Test
   void getInitialProductInventoryTest() {
-    assertEquals(
-        Arrays.asList(productOne, productTwo, productThree),
-        underTest.getInitialProductInventory("Skipper"));
+    assertEquals(3, underTest.getInitialProductInventory("Skipper").size());
   }
 
   @Test
   void getUpdatedProductInventoryTest() {
+    assertEquals(2, underTest.getUpdatedProductInventory("Skipper", "2022-02-01 11:11:10").size());
   }
 
   @Test
   void getProductRecommendedInventoryTest() {
+    List<Product> products = underTest.getProductRecommendedInventory("Skipper");
+    assertEquals("0", products.get(0).getStock());
+    assertEquals("1", products.get(1).getStock());
+    assertEquals("2", products.get(2).getStock());
   }
 
   @Test
   void setNewStockTest() {
-  }
-
-  @Test
-  void createNewProductTest() {
+    assertEquals(
+        "Success",
+        underTest.setNewStock("PN1", "username", -1, 1.11f, 1.12f, "2022-04-01 11:11:12")
+    );
   }
 
   @Test
   void checkProdNumberTest() {
-  }
-
-  @Test
-  void deleteProductTest() {
+    assertTrue(underTest.checkProdNumber("PN1"));
+    assertFalse(underTest.checkProdNumber("000"));
   }
 
   @Test
   void editProductTest() {
-  }
-
-  @Test
-  void createPdfTest() {
+    assertTrue(
+        underTest.editProduct(1, "One Edited", "PN1", 5, "111", "Skipper", "2022-05-07 10:10:11"));
   }
 }
