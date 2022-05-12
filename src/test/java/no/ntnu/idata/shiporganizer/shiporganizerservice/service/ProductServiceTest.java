@@ -31,8 +31,6 @@ class ProductServiceTest {
 
   @BeforeEach
   void setUp() {
-    Mockito.doNothing().when(mailService).createAndSendPdf(any(), any(), any());
-
     underTest.createNewProduct(
         productOne.getProductName(),
         productOne.getProductNumber(),
