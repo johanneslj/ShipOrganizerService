@@ -16,9 +16,17 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
-
+	/**
+	 * Gets an order based on id
+	 * @param id the id of the order to be found
+	 * @return Order with corresponding id if it exists
+	 */
 	Optional<Order> findById(int id);
-
+	/**
+	 * Gets an order based on image name
+	 * @param imageName the image name of the order to be found
+	 * @return Order with corresponding image name if it exists
+	 */
 	Optional<Order> findOrderByImageName(String imageName);
 
 	/**
@@ -57,6 +65,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	 *
 	 * @param dep the user selected department
 	 * @param imageName The image name for the bill
+	 * @param status the status of the order. 0 = Pending, 1 = Confirmed and 2 = Rejected
 	 * @return int 1 if the query is completed
 	 */
 	@Query(value = "Call HandleOrders('Update',:dep,:imageName,:status);",nativeQuery = true)

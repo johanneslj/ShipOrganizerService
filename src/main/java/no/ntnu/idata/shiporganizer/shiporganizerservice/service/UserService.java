@@ -12,6 +12,10 @@ import no.ntnu.idata.shiporganizer.shiporganizerservice.repository.UserRepositor
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service used to handle all
+ * communication between the User controller and repository
+ */
 @Service
 public class UserService {
   final private UserRepository userRepository;
@@ -21,6 +25,16 @@ public class UserService {
   final private PasswordEncoder passwordEncoder;
   final private LoginService loginService;
 
+  /**
+   * Instantiates a User service.
+   *
+   * @param userRepository           the user repository
+   * @param departmentRepository     the department repository
+   * @param userDepartmentRepository the user department repository
+   * @param mailService              the mail service
+   * @param passwordEncoder          the password encoder
+   * @param loginService             the login service
+   */
   public UserService(UserRepository userRepository,
                      DepartmentRepository departmentRepository,
                      UserDepartmentRepository userDepartmentRepository,
@@ -35,6 +49,11 @@ public class UserService {
     this.loginService = loginService;
   }
 
+  /**
+   * Gets a list of all users
+   *
+   * @return List of all users
+   */
   public List<User> getAllUsers() {
     return userRepository.findAll();
   }
@@ -49,10 +68,22 @@ public class UserService {
     return userRepository.findFirstUserByToken(token);
   }
 
+  /**
+   * Gets user by search on email
+   *
+   * @param email the email to use in search
+   * @return Optional of user. Is present if found.
+   */
   public Optional<User> getByEmail(String email) {
     return userRepository.findFirstByEmail(email);
   }
 
+  /**
+   * Checks if an email already exists
+   *
+   * @param email Email to check
+   * @return true on success
+   */
   public boolean emailExists(String email) {
     return userRepository.findFirstByEmail(email).isPresent();
   }
@@ -62,6 +93,7 @@ public class UserService {
    *
    * @param user        User to register.
    * @param departments List of departments the user gets access to.
+   * @return true on success
    */
   public boolean registerAndGetSuccess(User user, List<Department> departments) {
     userRepository.addUser(user.getEmail(), "", user.getFullname());
@@ -86,6 +118,12 @@ public class UserService {
     return departmentsString.toString();
   }
 
+  /**
+   * Send new password email boolean.
+   *
+   * @param email the email
+   * @return the boolean
+   */
   public boolean sendNewPasswordEmail(String email) {
     Optional<User> userOptional = userRepository.findFirstByEmail(email);
     if (userOptional.isEmpty()) {
@@ -99,6 +137,13 @@ public class UserService {
     return true;
   }
 
+  /**
+   * Edit user.
+   *
+   * @param editedUser  the edited user
+   * @param oldEmail    the old email
+   * @param departments the departments
+   */
   public void editUser(User editedUser, String oldEmail, List<Department> departments) {
     userRepository.editUser(oldEmail,editedUser.getEmail(), editedUser.getFullname());
     updateUserDepartments(editedUser, departments);

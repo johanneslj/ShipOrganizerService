@@ -9,9 +9,18 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Repository responsible for the connection to
+ * execute all user department procedures in the database.
+ */
 @Repository
 public interface UserDepartmentRepository extends JpaRepository<UserDepartment, Integer> {
 
+  /**
+   * Gets a list of all the connections the user has to the department table
+   * @param userID The id of the user
+   * @return List of Department connections for the user
+   */
   List<UserDepartment> getUserDepartmentsByUserID(int userID);
 
   /**

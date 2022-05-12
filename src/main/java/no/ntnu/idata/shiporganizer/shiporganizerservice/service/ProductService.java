@@ -32,7 +32,7 @@ public class ProductService {
      * Instantiates a new Product service.
      *
      * @param productRepository the product repository
-     * @param mailService
+     * @param mailService the MailService
      */
     public ProductService(ProductRepository productRepository, MailService mailService) {
         this.productRepository = productRepository;
@@ -53,7 +53,7 @@ public class ProductService {
      * Gets updated product inventory.
      *
      * @param department the users department
-     * @param date
+     * @param date the current date and time send from the client
      * @return the product inventory
      */
     public List<Product> getUpdatedProductInventory(String department, String date) {
@@ -80,6 +80,7 @@ public class ProductService {
      * @param quantity  the quantity
      * @param longitude the longitude
      * @param latitude  the latitude
+     * @param date      the current date and time send from the client
      * @return Successful if update is successful
      */
     public String setNewStock(String productNo, String username, int quantity, float longitude, float latitude, String date) {
@@ -90,6 +91,17 @@ public class ProductService {
         return "";
     }
 
+    /**
+     * Creates a new product
+     * @param productName   the new products name
+     * @param productNumber the new products number
+     * @param desiredStock  the new products desired stock
+     * @param stock         the new products stock
+     * @param barcode       the new products barcode
+     * @param department    the department the product show under
+     * @param dateTime      the current date and time send from the client
+     * @return boolean True if the record is inserted and false if not
+     */
     public boolean createNewProduct(String productName, String productNumber, int desiredStock, int stock, String barcode, String department,String dateTime) {
         boolean success = false;
         int successInt = productRepository.createNewProduct(productName, productNumber, desiredStock, stock, barcode, department,dateTime);
@@ -100,7 +112,11 @@ public class ProductService {
         return success;
     }
 
-
+    /**
+     * Checks if a product number already exists
+     * @param productNumber the product number to check
+     * @return boolean True if the product number exists and false if not
+     */
     public boolean checkProdNumber(String productNumber){
         boolean success = false;
         List<Product> products = productRepository.getAll(productNumber);
@@ -111,6 +127,11 @@ public class ProductService {
         return success;
     }
 
+    /**
+     * Deletes a product
+     * @param productNumber the product number of the product to be deleted
+     * @return boolean True if the product is deleted and false if not
+     */
     public boolean deleteProduct(String productNumber) {
         boolean success = false;
 
@@ -123,6 +144,17 @@ public class ProductService {
         return success;
     }
 
+    /**
+     * Updated the information on a product
+     * @param id            the updated products id
+     * @param productName   the updated products name
+     * @param productNumber the updated products number
+     * @param desiredStock  the updated products desired stock
+     * @param barcode       the updated products barcode
+     * @param department    the department the product show under
+     * @param dateTime      the current date and time send from the client
+     * @return boolean True if the record is updated and false if not
+     */
     public boolean editProduct(int id,String productName, String productNumber, int desiredStock, String barcode, String department,String dateTime) {
         boolean success = false;
 
@@ -133,7 +165,13 @@ public class ProductService {
         return success;
     }
 
-    /// Creates the pdf with correct content and calls the mailService to send the email with the pdf
+    /**
+     * Creates the pdf with correct content and calls the mailService to send the email with the pdf
+     * @param products List of products to be orders
+     * @param email the user who generated the reports email
+     * @param recipients List of recipients to receive the email
+     * @param department the users department
+     */
     public void createPdf(List<Product> products, String email, String[] recipients,String department){
         try{
             Document document = new Document();
@@ -145,17 +183,26 @@ public class ProductService {
             document.close();
 
             mailService.sendPdfEmail(email,recipients,"BestillingsListe.pdf");
-        }catch (DocumentException | FileNotFoundException | MessagingException e ){
+        }catch (DocumentException | FileNotFoundException e ){
             System.out.println(e);
         }
     }
-    // Add File meta data
+
+    /**
+     * Adds meta data to the pdf document
+     * @param document The pdf document
+     */
     private static void addMetaData(Document document) {
         document.addTitle("Produkter for bestilling");
         document.addAuthor("Ship Organizer app");
         document.addCreator("Ship Organizer app");
     }
-    // Add Text to pdf
+    /**
+     * Adds the main text to the pdf document
+     * @param document The pdf document
+     * @param email The users email
+     * @param department The users department
+     */
     private static void addTextToPdf(Document document,String email, String department) throws DocumentException {
         Paragraph preface = new Paragraph();
         Font font = FontFactory.getFont(FontFactory.TIMES, 16, BaseColor.BLACK);
@@ -177,7 +224,12 @@ public class ProductService {
         addEmptyLine(preface, 3);
         document.add(preface);
     }
-    // Add Table with products to pdf
+
+    /**
+     * Adds Table with products to pdf document
+     * @param document The pdf document
+     * @param products List of the products to be ordered
+     */
     private static void addTableToPdf(Document document, List<Product> products) throws DocumentException {
         PdfPTable table = new PdfPTable(3);
         Stream.of("Produkt navn", "Produkt nummer", "Antall å bestille")
@@ -196,7 +248,12 @@ public class ProductService {
         }
         document.add(table);
     }
-    // Adds an empty line to the pdf
+
+    /**
+     * Adds an empty line to the pdf
+     * @param paragraph the paragraph to add the spaces
+     * @param number number of spaces to add
+     */
     private static void addEmptyLine(Paragraph paragraph, int number) {
         for (int i = 0; i < number; i++) {
             paragraph.add(new Paragraph(" "));
