@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Repository for the products. This interface represents the connection to database
@@ -68,6 +69,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      */
     @Query(value = "Call HandleProduct('Insert',:dep,:name,:productNumber,:barcode,:desiredStock,:stock,:dateTime,0);", nativeQuery = true)
     @Modifying
+    @Transactional
     int createNewProduct(@Param(value = "name") String name, @Param(value = "productNumber") String productNumber, @Param(value = "desiredStock") int desiredStock, @Param(value = "stock") int stock, @Param(value = "barcode") String barcode, @Param(value = "dep") String dep, @Param(value = "dateTime") String dateTime);
 
     /**
@@ -78,6 +80,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
      */
     @Query(value = "Call HandleProduct('Delete','','',:productNumber,'',0,0,'',0);", nativeQuery = true)
     @Modifying
+    @Transactional
     int deleteProduct(@Param(value = "productNumber") String productNumber);
 
 
